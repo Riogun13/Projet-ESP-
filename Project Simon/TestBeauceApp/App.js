@@ -38,7 +38,6 @@ export default class App extends Component<Props> {
   }
   render() {
     return (
-      <View style={styles.container}>
         <MapView
           style={styles.mapStyle}
           region={{
@@ -53,7 +52,6 @@ export default class App extends Component<Props> {
         >
         {/* <Marker coordinate={this.state} /> */}
         </MapView>
-      </View> 
     );
   }
 }
