@@ -50,11 +50,18 @@ export default class App extends Component<Props> {
           showsMyLocationButton={true}
           followsUserLocation={true}
         >
+            <MapView.Marker
+              coordinate={marker.latlng}
+            />
         {/* <Marker coordinate={this.state} /> */}
         </MapView>
     );
   }
 }
+
+const array = Array.create({
+  
+})
 
 const styles = StyleSheet.create({
   container: {
