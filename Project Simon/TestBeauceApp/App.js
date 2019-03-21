@@ -7,9 +7,9 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform,ScrollView, StyleSheet, Text, View, Dimensions, StatusBar} from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-
+const { width, height } = Dimensions.get('screen');
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -19,8 +19,13 @@ export default class App extends Component<Props> {
     this.state = {
       latitude: 0,
       longitude: 0,
-      error: null
-    }
+      error: null,
+      statusBarHeight: 0
+    };
+  }
+
+  componentWillMount() {
+    setTimeout(()=>this.setState({statusBarHeight: 5}),500);
   }
 
   componentDidMount() {
@@ -36,36 +41,62 @@ export default class App extends Component<Props> {
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
     );
   }
+
   render() {
     return (
-        <MapView
-          style={styles.mapStyle}
-          region={{
-            latitude: 46.1213889,
-            longitude: -70.6661111,
-            latitudeDelta: 0.015,
-            longitudeDelta: 0.0121,
-          }}
-          showsUserLocation={true}
-          showsMyLocationButton={true}
-          followsUserLocation={true}
-        >
-        {/* <Marker coordinate={this.state} /> */}
-        </MapView>
+      <View style={{flex: 1}}>
+        <StatusBar backgroundColor="#c87604" barStyle="light-content" />
+        <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
+          <View style={styles.header}>
+            <Text style={styles.title} allowFontScaling={false}>
+              Beauce Art App 
+            </Text>
+          </View>
+          <View style={{flex:6, paddingTop: this.state.statusBarHeight}}>  
+            <MapView
+              style={{flex: 1, height:(height * 0.5), width: width}}
+              region={{
+                latitude: 46.123532,
+                longitude: -70.681716,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }}
+              showsUserLocation={true}
+              followsUserLocation={true}
+              scrollEnabled={false}
+            >
+            {/* <Marker coordinate={this.state} /> */}
+            </MapView>
+          </View>
+        </ScrollView>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
-    height: 400,
-    width: 400,
-    justifyContent: 'flex-end',
+    flex: 1,
+    backgroundColor: '#fff'
+  },
+  header: {
+    flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FB9D1D',
+    elevation: 5
+  },
+  title: {
+    fontSize: 24,
+    fontFamily: 'OpenSans',
+    fontWeight: 'bold',
+    color: 'white',
+    textShadowColor: 'rgba(200, 117, 4, 0.75)',
+    textShadowOffset: {width: 1, height: 4},
+    textShadowRadius: 5
   },
   map: {
-    ...StyleSheet.absoluteFillObject,
+    flex: 6,
   },
   mapStyle: {
     flex: 1,
