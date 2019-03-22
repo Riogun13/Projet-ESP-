@@ -26,16 +26,16 @@ export default class App extends Component<Props> {
     };
   }
 
-  async getArtist() {
-    const artists = [];
-    await firebase.firestore().collection('Artiste').get()
+  async getSculpture() {
+    const sculptures = [];
+    await firebase.firestore().collection('Sculpture').get()
       .then(querySnapshot => {
         querySnapshot.docs.forEach(doc => {
-          artists.push(doc.data());
+          sculptures.push(doc.data());
         });
       });
-      console.log(artists);
-    return artists;
+      console.log(sculptures);
+    return sculptures;
   }
   componentWillMount() {
     setTimeout(()=>this.setState({statusBarHeight: 5}),500);
@@ -53,7 +53,7 @@ export default class App extends Component<Props> {
       error => this.setState({error : error.message}),
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
     );
-    const test = this.getArtist();
+    const test = this.getSculpture();
 
   }
 
