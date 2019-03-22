@@ -21,9 +21,19 @@ export default class App extends Component<Props> {
       longitude: 0,
       error: null
     }
+ var markers =[
+   {
+     latitude: 46.123461666667,
+     longitude: -70.684985,
+     title: "Yolo",
+     subtitle: "1234 Blvd Yolo"
+   }
+ ];
+
+    
   }
 
-  componentDidMount() {
+  componentDidMount() {/*fetch les données ici bas*/
     navigator.geolocation.getCurrentPosition(
       position => {
         this.setState({
@@ -35,7 +45,9 @@ export default class App extends Component<Props> {
       error => this.setState({error : error.message}),
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
     );
-  }
+}
+
+  
   render() {
     return (
         <MapView
@@ -50,18 +62,16 @@ export default class App extends Component<Props> {
           showsMyLocationButton={true}
           followsUserLocation={true}
         >
-            <MapView.Marker
-              coordinate={marker.latlng}
-            />
+        <MapView.Marker
+            coordinate={{latitude: 46.123461666667, longitude: -70.684985}}
+            title={"Sublime machine"}
+            description={"Yann Farley"}
+         />
         {/* <Marker coordinate={this.state} /> */}
         </MapView>
     );
   }
 }
-
-const array = Array.create({
-  
-})
 
 const styles = StyleSheet.create({
   container: {
