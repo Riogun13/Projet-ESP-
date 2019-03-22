@@ -11,10 +11,11 @@ import {Platform,ScrollView, StyleSheet, Text, View, Dimensions, StatusBar} from
 import MapView, { Marker } from 'react-native-maps';
 import firebase from 'react-native-firebase';
 
-const { width, height } = Dimensions.get('screen');
+const { width, height } = Dimensions.get('window');
+
 
 type Props = {};
-export default class App extends Component<Props> {
+class App extends Component<Props> {
 
   constructor(props){
     super(props);
@@ -83,11 +84,29 @@ export default class App extends Component<Props> {
             {/* <Marker coordinate={this.state} /> */}
             </MapView>
           </View>
+          <MapInformation></MapInformation>
         </ScrollView>
       </View>
     );
   }
 }
+
+
+//slide animation https://stackoverflow.com/questions/39117599/how-to-slide-view-in-and-out-from-the-bottom-in-react-native
+class MapInformation extends Component<Props> {
+
+  render() {
+    let rndArray = ["Saab", "Volvo", "BMW"];
+    return (
+      <View style={styles.mapInformation}>
+        {rndArray.map(r => <Text>{r}</Text>)}
+      </View>
+    );
+  }
+
+}
+
+export default App;
 
 const styles = StyleSheet.create({
   container: {
@@ -117,4 +136,13 @@ const styles = StyleSheet.create({
     flex: 1,
     ...StyleSheet.absoluteFillObject
   },
+  mapInformation: {
+    top: height - StatusBar.currentHeight - 100 ,
+    left: 0,
+    height: 100,
+    width: width,
+    position: 'absolute',
+    elevation: 5,
+    backgroundColor: '#118800'
+  }
  });
