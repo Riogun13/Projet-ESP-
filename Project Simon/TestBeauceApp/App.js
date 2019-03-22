@@ -9,6 +9,8 @@
 import React, {Component} from 'react';
 import {Platform,ScrollView, StyleSheet, Text, View, Dimensions, StatusBar} from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
+import firebase from 'react-native-firebase';
+
 const { width, height } = Dimensions.get('screen');
 
 type Props = {};
@@ -22,6 +24,7 @@ export default class App extends Component<Props> {
       error: null,
       statusBarHeight: 0
     };
+    this.ref = firebase.firestore().collection('artiste');
   }
 
   componentWillMount() {
