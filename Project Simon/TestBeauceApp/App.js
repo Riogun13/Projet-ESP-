@@ -19,18 +19,43 @@ export default class App extends Component<Props> {
     this.state = {
       latitude: 0,
       longitude: 0,
-      error: null
+      error: null,
+      markers: [
+        {
+          coordinates:{
+            latitude: 46.123461666667,
+            longitude: -70.684985
+          },
+            title: "Sublime machine",
+            description: "Yann Farley"
+        },
+        {
+          coordinates:{
+            latitude: 46.123581666667,
+            longitude: -70.685
+          },
+          title: "Piste",
+          description: "Pascale Archambault"
+        },
+        {
+          coordinates:{
+            latitude: 46.123461666667,
+            longitude: -70.685266666667
+          },
+          title: "Quadrature du cercle",
+          description: "Karl Dufour"
+        },
+        {
+          coordinates:{
+            latitude: 46.12379,
+            longitude: -70.685373333333
+          },
+          title: "L'Intrigante Assemblée",
+          description: "Paul Duval"
+        }],
     }
- var markers =[
-   {
-     latitude: 46.123461666667,
-     longitude: -70.684985,
-     title: "Yolo",
-     subtitle: "1234 Blvd Yolo"
-   }
- ];
 
-    
+
   }
 
   componentDidMount() {/*fetch les données ici bas*/
@@ -62,11 +87,28 @@ export default class App extends Component<Props> {
           showsMyLocationButton={true}
           followsUserLocation={true}
         >
-        <MapView.Marker
+
+        {/* this.markers.array.forEach(element => {
+        });((sculptureData) => (
+          <MapView.Marker coordinate={{test.latitude, test.longitude}}title={title}description={description}/>
+        ); */}
+
+       { this.state.markers.map((marker, index) => (
+          <MapView.Marker 
+            key={index}
+            coordinate={marker.coordinates}
+            title={marker.title}
+            description={marker.description}
+          />
+        ))}
+
+
+        {/* <MapView.Marker
+
             coordinate={{latitude: 46.123461666667, longitude: -70.684985}}
             title={"Sublime machine"}
             description={"Yann Farley"}
-         />
+         /> */}
         {/* <Marker coordinate={this.state} /> */}
         </MapView>
     );
