@@ -10,7 +10,6 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
-
 type Props = {};
 export default class App extends Component<Props> {
 
@@ -55,7 +54,6 @@ export default class App extends Component<Props> {
         }],
     }
 
-
   }
 
   componentDidMount() {/*fetch les données ici bas*/
@@ -72,7 +70,6 @@ export default class App extends Component<Props> {
     );
 }
 
-  
   render() {
     return (
         <MapView
@@ -99,9 +96,9 @@ export default class App extends Component<Props> {
             coordinate={marker.coordinates}
             title={marker.title}
             description={marker.description}
+            onCalloutPress={() => console.log('test')}
           />
         ))}
-
 
         {/* <MapView.Marker
 
