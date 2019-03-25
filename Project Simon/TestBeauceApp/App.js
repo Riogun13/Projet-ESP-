@@ -11,7 +11,6 @@ import {Platform,ScrollView, StyleSheet, Text, View, Dimensions, StatusBar} from
 import MapView, { Marker } from 'react-native-maps';
 import firebase from 'react-native-firebase';
 
-const { width, height } = Dimensions.get('screen');
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -22,10 +21,21 @@ export default class App extends Component<Props> {
       latitude: 0,
       longitude: 0,
       error: null,
-      statusBarHeight: 0
+      statusBarHeight: 0,
+      isLoading: true,
+      pageHeight: Dimensions.get('screen').height,
+      pageWidth: Dimensions.get('screen').width
     };
+    this.mapRef = null;
   }
 
+  getNewDimensions(event){
+    this.setState({
+      pageHeight: event.nativeEvent.layout.height,
+      pageWidth: event.nativeEvent.layout.width
+    });
+    console.log(this.state);
+  }
   async getSculpture() {
     const sculptures = [];
     await firebase.firestore().collection('Sculpture').get()
@@ -34,8 +44,19 @@ export default class App extends Component<Props> {
           sculptures.push(doc.data());
         });
       });
-      console.log(sculptures);
+      this.setState({sculptures: sculptures});
+      console.log(this.state);
     return sculptures;
+  }
+
+  setMarkers(sculptures) {
+    const markers = [];
+    sculptures.map((sculpture, index) => {
+      markers.push({latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude});
+    });
+    this.setState({markers: markers});
+    return markers;
+
   }
   componentWillMount() {
     setTimeout(()=>this.setState({statusBarHeight: 5}),500);
@@ -53,39 +74,89 @@ export default class App extends Component<Props> {
       error => this.setState({error : error.message}),
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
     );
-    const test = this.getSculpture();
+
+    this.getSculpture().then(()=>{
+      console.log('set state loading a false');
+      this.setState({isLoading: false});
+      this.setMarkers(this.state.sculptures)
+    });
+
+    
 
   }
 
   render() {
-    return (
-      <View style={{flex: 1}}>
-        <StatusBar backgroundColor="#c87604" barStyle="light-content" />
-        <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
-          <View style={styles.header}>
-            <Text style={styles.title} allowFontScaling={false}>
-              Beauce Art App 
-            </Text>
-          </View>
-          <View style={{flex:6, paddingTop: this.state.statusBarHeight}}>  
-            <MapView
-              style={{flex: 1, height:(height * 0.5), width: width}}
-              region={{
-                latitude: 46.123532,
-                longitude: -70.681716,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}
-              showsUserLocation={true}
-              followsUserLocation={true}
-              scrollEnabled={false}
-            >
-            {/* <Marker coordinate={this.state} /> */}
-            </MapView>
-          </View>
-        </ScrollView>
-      </View>
-    );
+    if(this.state.isLoading){
+      return (
+        <View style={{flex: 1}} onLayout={(e)=>this.getNewDimensions(e)}>
+          <StatusBar backgroundColor="#c87604" barStyle="light-content" />
+          <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
+            <View style={styles.header}>
+              <Text style={styles.title} allowFontScaling={false}>
+                Beauce Art App 
+              </Text>
+            </View>
+            <View style={{flex:6, paddingTop: this.state.statusBarHeight}}>  
+              <MapView
+                style={{flex: 1, height:(this.state.pageHeight * 0.5), width: this.state.pageWidth}}
+                region={{
+                  latitude: 46.123532,
+                  longitude: -70.681716,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                }}
+                showsUserLocation={true}
+                followsUserLocation={true}
+                scrollEnabled={false}
+              >
+              </MapView>
+            </View>
+          </ScrollView>
+        </View>
+      );
+    }else{
+      return (
+        <View style={{flex: 1}} onLayout={(e)=>this.getNewDimensions(e)}>
+          <StatusBar backgroundColor="#c87604" barStyle="light-content" />
+          <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
+            <View style={styles.header}>
+              <Text style={styles.title} allowFontScaling={false}>
+                Beauce Art App 
+              </Text>
+            </View>
+            <View style={{flex:6, paddingTop: this.state.statusBarHeight}}>  
+              <MapView
+                ref={ref => { this.mapRef = ref}}
+                onLayout = {() => {
+                  this.mapRef.fitToCoordinates(this.state.markers,
+                    { edgePadding: { top: 10, right: 10, bottom: 10, left: 10 },
+                      animated: true });
+                    }}
+                style={{flex: 1, height:(this.state.pageHeight * 0.5), width: this.state.pageWidth}}
+                region={{
+                  latitude: 46.123532,
+                  longitude: -70.681716,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                }}
+                showsUserLocation={true}
+                followsUserLocation={true}
+                scrollEnabled={true}
+              >
+                {this.state.sculptures.map((sculpture,index) => (
+                  <MapView.Marker 
+                    key={index}
+                    coordinate={{latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude}}
+                    title={sculpture.Name}
+                    pinColor={'red'}
+                  />
+                ))}
+              </MapView>
+            </View>
+          </ScrollView>
+        </View>
+      );
+    }
   }
 }
 
