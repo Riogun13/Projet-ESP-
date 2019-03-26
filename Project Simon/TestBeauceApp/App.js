@@ -34,7 +34,6 @@ export default class App extends Component<Props> {
       pageHeight: event.nativeEvent.layout.height,
       pageWidth: event.nativeEvent.layout.width
     });
-    console.log(this.state);
   }
   async getSculpture() {
     const sculptures = [];
@@ -45,8 +44,18 @@ export default class App extends Component<Props> {
         });
       });
       this.setState({sculptures: sculptures});
-      console.log(this.state);
     return sculptures;
+  }
+
+  getMarkerColor(year){
+    switch (year){
+      case 2014:
+        return 'green';
+      case 2015:
+        return 'aqua';
+      default:
+        return 'red';
+    }
   }
 
   setMarkers(sculptures) {
@@ -76,7 +85,6 @@ export default class App extends Component<Props> {
     );
 
     this.getSculpture().then(()=>{
-      console.log('set state loading a false');
       this.setState({isLoading: false});
       this.setMarkers(this.state.sculptures)
     });
@@ -148,8 +156,9 @@ export default class App extends Component<Props> {
                     key={index}
                     coordinate={{latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude}}
                     title={sculpture.Name}
-                    pinColor={'red'}
-                  />
+                    pinColor={this.getMarkerColor(sculpture.Thematic.Year)}
+                  >
+                  </MapView.Marker>
                 ))}
               </MapView>
             </View>
