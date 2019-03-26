@@ -106,9 +106,6 @@ class App extends Component<Props> {
       this.setState({isLoading: false});
       this.setMarkers(this.state.sculptures)
     });
-
-    
-
   }
 
   onLayout(e){
@@ -173,18 +170,24 @@ class App extends Component<Props> {
                 showsUserLocation={true}
                 followsUserLocation={true}
                 scrollEnabled={true}
+                onPress={() =>{
+                  updateMapInformationState(false, null);
+                }}
               >
                 {this.state.sculptures.map((sculpture,index) => (
                   <MapView.Marker 
                     key={index}
                     coordinate={{latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude}}
-                    title={sculpture.Name}
+                    onPress={(event) =>{
+                      updateMapInformationState(true, sculpture);
+                    }}
                     pinColor={this.getMarkerColor(sculpture.Thematic.Year)}
                   >
                   </MapView.Marker>
                 ))}
               </MapView>
             </View>
+            <MapInformation></MapInformation>
           </ScrollView>
         </View>
       );
@@ -224,7 +227,7 @@ class MapInformation extends Component<Props> {
     return (
       <View style={styles.mapInformationMainView}>
         <Image source={{uri:this.state.picture}} style={{width: 193, height: 110}}/>
-        <Text>{this.state.artworkTitle}</Text>
+        <Text>{this.state.sculpture.Name}</Text>
         <Text>{this.state.artistFullName}</Text>
       </View>
     );
