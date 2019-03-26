@@ -7,7 +7,7 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View, TouchableHighlight} from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
 type Props = {};
@@ -53,8 +53,11 @@ export default class App extends Component<Props> {
           description: "Paul Duval"
         }],
     }
-
   }
+
+  markerClick(){
+    console.log("Marker was clicked");
+}
 
   componentDidMount() {/*fetch les données ici bas*/
     navigator.geolocation.getCurrentPosition(
@@ -69,6 +72,12 @@ export default class App extends Component<Props> {
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
     );
 }
+
+//class Test extends Component {
+  //Teast = () => {
+    //this._mapView.animateToCoordinate({
+      //consoleLog
+  //}
 
   render() {
     return (
@@ -96,17 +105,13 @@ export default class App extends Component<Props> {
             coordinate={marker.coordinates}
             title={marker.title}
             description={marker.description}
-            onCalloutPress={() => console.log('test')}
-          />
+            //onCalloutPress={this.markerClick}
+            onPress={this.markerClick}
+          >
+          </MapView.Marker>
         ))}
 
-        {/* <MapView.Marker
-
-            coordinate={{latitude: 46.123461666667, longitude: -70.684985}}
-            title={"Sublime machine"}
-            description={"Yann Farley"}
-         /> */}
-        {/* <Marker coordinate={this.state} /> */}
+        
         </MapView>
     );
   }
