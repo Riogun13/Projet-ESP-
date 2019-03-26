@@ -25,7 +25,6 @@ import {
 import MapView, { Marker } from 'react-native-maps';
 import firebase from 'react-native-firebase';
 
-const { width, height } = Dimensions.get('window');
 const { UIManager } = NativeModules;
 
 UIManager.setLayoutAnimationEnabledExperimental &&
@@ -41,19 +40,50 @@ class App extends Component<Props> {
       longitude: 0,
       error: null,
       statusBarHeight: 0,
+      isLoading: true,
+      pageHeight: Dimensions.get('screen').height,
+      pageWidth: Dimensions.get('screen').width
     };
+    this.mapRef = null;
   }
 
-  async getArtist() {
-    const artists = [];
-    await firebase.firestore().collection('Artiste').get()
+  getNewDimensions(event){
+    this.setState({
+      pageHeight: event.nativeEvent.layout.height,
+      pageWidth: event.nativeEvent.layout.width
+    });
+  }
+  async getSculpture() {
+    const sculptures = [];
+    await firebase.firestore().collection('Sculpture').get()
       .then(querySnapshot => {
         querySnapshot.docs.forEach(doc => {
-          artists.push(doc.data());
+          sculptures.push(doc.data());
         });
       });
-      console.log(artists);
-    return artists;
+      this.setState({sculptures: sculptures});
+    return sculptures;
+  }
+
+  getMarkerColor(year){
+    switch (year){
+      case 2014:
+        return 'green';
+      case 2015:
+        return 'aqua';
+      default:
+        return 'red';
+    }
+  }
+
+  setMarkers(sculptures) {
+    const markers = [];
+    sculptures.map((sculpture, index) => {
+      markers.push({latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude});
+    });
+    this.setState({markers: markers});
+    return markers;
+
   }
   componentWillMount() {
     setTimeout(()=>this.setState({statusBarHeight: 5}),500);
@@ -71,7 +101,13 @@ class App extends Component<Props> {
       error => this.setState({error : error.message}),
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
     );
-    const test = this.getArtist();
+
+    this.getSculpture().then(()=>{
+      this.setState({isLoading: false});
+      this.setMarkers(this.state.sculptures)
+    });
+
+    
 
   }
 
@@ -81,43 +117,78 @@ class App extends Component<Props> {
   }
 
   render() {
-    return (
-      <View style={{flex: 1}} onLayout={this.onLayout.bind(this)}>
-        <StatusBar backgroundColor="#c87604" barStyle="light-content" />
-        <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
-          <View style={styles.header}>
-            <Text style={styles.title} allowFontScaling={false}>
-              Beauce Art App 
-            </Text>
-          </View>
-          <View style={{flex:6, paddingTop: this.state.statusBarHeight}}>  
-            <MapView
-              style={{flex: 1, height:(height * 0.5), width: width}}
-              region={{
-                latitude: 46.123532,
-                longitude: -70.681716,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}
-              showsUserLocation={true}
-              followsUserLocation={true}
-              scrollEnabled={false}
-              onPress={() => {
-                updateMapInformationState(false, null);
-              }}
-            >
-            <Marker coordinate={this.state}
-              onPress={() => {
-                updateMapInformationState(true, null);
-              }}
-            />
-            
-            </MapView>
-          </View>
-          <MapInformation sculpture={this.state.selectedSculpture}></MapInformation>
-        </ScrollView>
-      </View>
-    );
+    if(this.state.isLoading){
+      return (
+        <View style={{flex: 1}} onLayout={(e)=>this.getNewDimensions(e)}>
+          <StatusBar backgroundColor="#c87604" barStyle="light-content" />
+          <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
+            <View style={styles.header}>
+              <Text style={styles.title} allowFontScaling={false}>
+                Beauce Art App 
+              </Text>
+            </View>
+            <View style={{flex:6, paddingTop: this.state.statusBarHeight}}>  
+              <MapView
+                style={{flex: 1, height:(this.state.pageHeight * 0.5), width: this.state.pageWidth}}
+                region={{
+                  latitude: 46.123532,
+                  longitude: -70.681716,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                }}
+                showsUserLocation={true}
+                followsUserLocation={true}
+                scrollEnabled={false}
+              >
+              </MapView>
+            </View>
+          </ScrollView>
+        </View>
+      );
+    }else{
+      return (
+        <View style={{flex: 1}} onLayout={(e)=>this.getNewDimensions(e)}>
+          <StatusBar backgroundColor="#c87604" barStyle="light-content" />
+          <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
+            <View style={styles.header}>
+              <Text style={styles.title} allowFontScaling={false}>
+                Beauce Art App 
+              </Text>
+            </View>
+            <View style={{flex:6, paddingTop: this.state.statusBarHeight}}>  
+              <MapView
+                ref={ref => { this.mapRef = ref}}
+                onLayout = {() => {
+                  this.mapRef.fitToCoordinates(this.state.markers,
+                    { edgePadding: { top: 10, right: 10, bottom: 10, left: 10 },
+                      animated: true });
+                    }}
+                style={{flex: 1, height:(this.state.pageHeight * 0.5), width: this.state.pageWidth}}
+                region={{
+                  latitude: 46.123532,
+                  longitude: -70.681716,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                }}
+                showsUserLocation={true}
+                followsUserLocation={true}
+                scrollEnabled={true}
+              >
+                {this.state.sculptures.map((sculpture,index) => (
+                  <MapView.Marker 
+                    key={index}
+                    coordinate={{latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude}}
+                    title={sculpture.Name}
+                    pinColor={this.getMarkerColor(sculpture.Thematic.Year)}
+                  >
+                  </MapView.Marker>
+                ))}
+              </MapView>
+            </View>
+          </ScrollView>
+        </View>
+      );
+    }
   }
 }
 
