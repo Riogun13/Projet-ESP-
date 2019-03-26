@@ -7,12 +7,29 @@
  */
 
 import React, {Component} from 'react';
-import {Platform,ScrollView, StyleSheet, Text, View, Dimensions, StatusBar} from 'react-native';
+import {
+  NativeModules,
+  LayoutAnimation,
+  TouchableOpacity,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  StatusBar,
+  Button,
+  Image,
+  Alert
+} from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import firebase from 'react-native-firebase';
 
 const { width, height } = Dimensions.get('window');
+const { UIManager } = NativeModules;
 
+UIManager.setLayoutAnimationEnabledExperimental &&
+  UIManager.setLayoutAnimationEnabledExperimental(true);
 
 type Props = {};
 class App extends Component<Props> {
@@ -23,7 +40,7 @@ class App extends Component<Props> {
       latitude: 0,
       longitude: 0,
       error: null,
-      statusBarHeight: 0
+      statusBarHeight: 0,
     };
   }
 
@@ -58,9 +75,14 @@ class App extends Component<Props> {
 
   }
 
+  onLayout(e){
+    const {newWidth, newHeight} = Dimensions.get('window')
+    console.log(newWidth, newHeight)
+  }
+
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1}} onLayout={this.onLayout.bind(this)}>
         <StatusBar backgroundColor="#c87604" barStyle="light-content" />
         <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
           <View style={styles.header}>
@@ -80,11 +102,19 @@ class App extends Component<Props> {
               showsUserLocation={true}
               followsUserLocation={true}
               scrollEnabled={false}
+              onPress={() => {
+                updateMapInformationState(false, null);
+              }}
             >
-            {/* <Marker coordinate={this.state} /> */}
+            <Marker coordinate={this.state}
+              onPress={() => {
+                updateMapInformationState(true, null);
+              }}
+            />
+            
             </MapView>
           </View>
-          <MapInformation></MapInformation>
+          <MapInformation sculpture={this.state.selectedSculpture}></MapInformation>
         </ScrollView>
       </View>
     );
@@ -93,13 +123,38 @@ class App extends Component<Props> {
 
 
 //slide animation https://stackoverflow.com/questions/39117599/how-to-slide-view-in-and-out-from-the-bottom-in-react-native
+
+function updateMapInformationState(display, sculpture){
+  LayoutAnimation.easeInEaseOut();
+  this.setState({
+    display: display,
+    sculpture: sculpture
+  });
+}
+
 class MapInformation extends Component<Props> {
+  constructor(props){
+    super(props)
+    this.state = {
+      display: false,
+      top: 0,
+      sculpture: null,
+      picture: "https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg",
+      artworkTitle: "Artwork",
+      artistFullName: "Jean-Paul Something"
+    }
+    updateMapInformationState = updateMapInformationState.bind(this)
+  }
 
   render() {
-    let rndArray = ["Saab", "Volvo", "BMW"];
+    if(!this.state.display)
+      return null;
+
     return (
-      <View style={styles.mapInformation}>
-        {rndArray.map(r => <Text>{r}</Text>)}
+      <View style={styles.mapInformationMainView}>
+        <Image source={{uri:this.state.picture}} style={{width: 193, height: 110}}/>
+        <Text>{this.state.artworkTitle}</Text>
+        <Text>{this.state.artistFullName}</Text>
       </View>
     );
   }
@@ -136,13 +191,17 @@ const styles = StyleSheet.create({
     flex: 1,
     ...StyleSheet.absoluteFillObject
   },
-  mapInformation: {
-    top: height - StatusBar.currentHeight - 100 ,
-    left: 0,
-    height: 100,
-    width: width,
+  mapInformationMainView: {
+    top: '79%' ,
+    left: '1%',
+    height: '20%',
+    //minHeight: 200,
+    width: '98%',
     position: 'absolute',
     elevation: 5,
-    backgroundColor: '#118800'
+    backgroundColor: '#118800',
+    borderRadius:10,
+    borderWidth: 1,
+    borderColor: '#fff'
   }
  });
