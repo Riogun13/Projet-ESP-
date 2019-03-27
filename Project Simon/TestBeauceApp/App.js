@@ -7,7 +7,7 @@
  */
 
 import React, {Component} from 'react';
-import {Platform,ScrollView, StyleSheet, Text, View, Dimensions, StatusBar} from 'react-native';
+import {Platform,ScrollView, StyleSheet, Text, View, Dimensions, StatusBar, Button} from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import firebase from 'react-native-firebase';
 
@@ -58,6 +58,13 @@ export default class App extends Component<Props> {
     }
   }
 
+  fitMapToMarkers(){
+    console.log(this.mapRef, this.state);
+    if(this.mapRef){
+      this.mapRef.fitToCoordinates(this.state.markers,
+        { animated: true });
+    }
+  }
   setMarkers(sculptures) {
     const markers = [];
     sculptures.map((sculpture, index) => {
@@ -137,8 +144,7 @@ export default class App extends Component<Props> {
                 ref={ref => { this.mapRef = ref}}
                 onLayout = {() => {
                   this.mapRef.fitToCoordinates(this.state.markers,
-                    { edgePadding: { top: 10, right: 10, bottom: 10, left: 10 },
-                      animated: true });
+                    { animated: true });
                     }}
                 style={{flex: 1, height:(this.state.pageHeight * 0.5), width: this.state.pageWidth}}
                 region={{
@@ -161,6 +167,20 @@ export default class App extends Component<Props> {
                   </MapView.Marker>
                 ))}
               </MapView>
+              <View
+                  style={{
+                      position: 'absolute',//use absolute position to show button on top of the map
+                      top: 60,
+                      right: 10,
+                      alignSelf: 'flex-end' //for align to right
+                  }}
+              >
+                  <Button 
+                    onPress={()=> this.fitMapToMarkers()} 
+                    title="Markers"
+                  >
+                  </Button>
+              </View>
             </View>
           </ScrollView>
         </View>
