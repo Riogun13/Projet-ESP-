@@ -10,6 +10,7 @@ import React, {Component} from 'react';
 import {Platform,ScrollView, StyleSheet, Text, View, Dimensions, StatusBar, Button} from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import firebase from 'react-native-firebase';
+import Icon from 'react-native-vector-icons/FontAwesome5'
 
 
 type Props = {};
@@ -53,6 +54,12 @@ export default class App extends Component<Props> {
         return 'green';
       case 2015:
         return 'aqua';
+      case 2016:
+        return 'purple';
+      case 2017:
+        return 'orange';
+      case 2018:
+        return 'blue';
       default:
         return 'red';
     }
@@ -171,15 +178,29 @@ export default class App extends Component<Props> {
                   style={{
                       position: 'absolute',//use absolute position to show button on top of the map
                       top: 60,
-                      right: 10,
-                      alignSelf: 'flex-end' //for align to right
+                      right: 12,
+                      alignSelf: 'flex-end', //for align to right
+                      width: 37,
+                      height: 37,
+                      backgroundColor: '#fff',
+                      opacity: 0.9,
+                      justifyContent: 'center',
+                      alignItems: 'center'
                   }}
               >
-                  <Button 
-                    onPress={()=> this.fitMapToMarkers()} 
-                    title="Markers"
-                  >
-                  </Button>
+                <Icon
+                  name="map-marked-alt"
+                  backgroundColor="#FB9D1D"
+                  color="#FB9D1D"
+                  size={25}
+                  onPress={()=> this.fitMapToMarkers()} 
+                >
+                </Icon>
+                {/* <Button 
+                  onPress={()=> this.fitMapToMarkers()} 
+                  title="Markers"
+                >
+                </Button> */}
               </View>
             </View>
           </ScrollView>
