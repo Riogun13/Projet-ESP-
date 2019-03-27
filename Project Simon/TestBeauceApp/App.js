@@ -42,7 +42,8 @@ class App extends Component<Props> {
       statusBarHeight: 0,
       isLoading: true,
       pageHeight: Dimensions.get('screen').height,
-      pageWidth: Dimensions.get('screen').width
+      pageWidth: Dimensions.get('screen').width,
+      // selectedArtwork: null,
     };
     this.mapRef = null;
   }
@@ -57,6 +58,7 @@ class App extends Component<Props> {
     const sculptures = [];
     await firebase.firestore().collection('Sculpture').get()
       .then(querySnapshot => {
+        console.log('get sculpture');
         querySnapshot.docs.forEach(doc => {
           sculptures.push(doc.data());
         });
@@ -71,6 +73,10 @@ class App extends Component<Props> {
         return 'green';
       case 2015:
         return 'aqua';
+      case 2016:
+        return 'purple';
+      case 2017:
+        return 'orange';
       default:
         return 'red';
     }
@@ -82,6 +88,7 @@ class App extends Component<Props> {
       markers.push({latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude});
     });
     this.setState({markers: markers});
+    console.log(markers);
     return markers;
 
   }
@@ -106,6 +113,7 @@ class App extends Component<Props> {
       this.setState({isLoading: false});
       this.setMarkers(this.state.sculptures)
     });
+    console.log("mount");
   }
 
   onLayout(e){
@@ -180,8 +188,14 @@ class App extends Component<Props> {
                     coordinate={{latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude}}
                     onPress={(event) =>{
                       updateMapInformationState(true, sculpture);
+                      // this.setState(selectedArtwork:index);
                     }}
-                    pinColor={this.getMarkerColor(sculpture.Thematic.Year)}
+                    pinColor={
+                      // if (this.state.selectedArtwork == index) {
+                      //   Other color
+                      // }
+                      this.getMarkerColor(sculpture.Thematic.Year)
+                    }
                   >
                   </MapView.Marker>
                 ))}
@@ -206,16 +220,13 @@ function updateMapInformationState(display, sculpture){
   });
 }
 
-class MapInformation extends Component<Props> {
+class MapInformation extends Component<Props> {l
   constructor(props){
     super(props)
     this.state = {
       display: false,
       top: 0,
       sculpture: null,
-      picture: "https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg",
-      artworkTitle: "Artwork",
-      artistFullName: "Jean-Paul Something"
     }
     updateMapInformationState = updateMapInformationState.bind(this)
   }
@@ -225,17 +236,42 @@ class MapInformation extends Component<Props> {
       return null;
 
     return (
-      <View style={styles.mapInformationMainView}>
-        <Image source={{uri:this.state.picture}} style={{width: 193, height: 110}}/>
-        <Text>{this.state.sculpture.Name}</Text>
-        <Text>{this.state.artistFullName}</Text>
+      <View style={mapInformationStyles.mainView}>
+        <View style={{flex:1,}}>
+          <Image
+            source={{uri:this.state.sculpture.Image}}
+            style={mapInformationStyles.image}
+            resizeMode="cover"
+          />
+        </View>
+        <ScrollView style={{flex:1}}>
+          <Text style={[mapInformationStyles.text, mapInformationStyles.title]}>Titre:</Text>
+          <Text style={mapInformationStyles.text}>{this.state.sculpture.Name}</Text>
+          <Text style={[mapInformationStyles.text, mapInformationStyles.title]}>Artiste:</Text>
+          <Text style={mapInformationStyles.text}>{this.state.sculpture.Artist.Name}</Text>
+          <Text style={[mapInformationStyles.text, mapInformationStyles.title]}>Édition:</Text>
+          <Text style={mapInformationStyles.text}>{this.state.sculpture.Thematic.Year}</Text>
+          <Button
+            style={mapInformationStyles.button}
+            onPress={() => {
+              Alert.alert('You tapped the button!');
+            }}
+            title="Plus d'informations"
+          />
+        </ScrollView>
       </View>
     );
   }
 
 }
 
+//onpress on marker slideup info view
 export default App;
+
+const primaryColor = {
+  backgroundColor: '#FB9D1D',
+  shadow: 'rgba(200, 117, 4, 0.75)',
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -246,7 +282,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FB9D1D',
+    backgroundColor: primaryColor.backgroundColor,
     elevation: 5
   },
   title: {
@@ -254,7 +290,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans',
     fontWeight: 'bold',
     color: 'white',
-    textShadowColor: 'rgba(200, 117, 4, 0.75)',
+    textShadowColor: primaryColor.shadow,
     textShadowOffset: {width: 1, height: 4},
     textShadowRadius: 5
   },
@@ -265,17 +301,40 @@ const styles = StyleSheet.create({
     flex: 1,
     ...StyleSheet.absoluteFillObject
   },
-  mapInformationMainView: {
-    top: '79%' ,
+ });
+
+
+ const mapInformationStyles = StyleSheet.create({
+  mainView:{
+    top: '79%',
     left: '1%',
     height: '20%',
     //minHeight: 200,
     width: '98%',
     position: 'absolute',
     elevation: 5,
-    backgroundColor: '#118800',
+    flexDirection: 'row',
+    backgroundColor: primaryColor.backgroundColor,
     borderRadius:10,
     borderWidth: 1,
-    borderColor: '#fff'
+    borderColor: primaryColor.shadow,
+  },
+  image:{
+    flex:1,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+  },
+  title: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    marginLeft: 10,
+  },
+  text:{
+    fontSize: 16,
+    fontFamily: 'OpenSans',
+    marginLeft: 20,
+    marginRight: 5,
+  },
+  button:{
   }
  });
