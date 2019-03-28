@@ -77,6 +77,8 @@ class App extends Component<Props> {
         return 'purple';
       case 2017:
         return 'orange';
+      case 2018:
+        return 'linen';
       default:
         return 'red';
     }
