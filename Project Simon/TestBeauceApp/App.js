@@ -86,7 +86,7 @@ class App extends Component<Props> {
       case 2017:
         return 'orange';
       case 2018:
-        return 'linen';
+        return 'indigo';
       default:
         return 'red';
     }
@@ -162,7 +162,11 @@ class App extends Component<Props> {
       );
     }else{
       return (
-        <View style={{flex: 1}} onLayout={(e)=>this.getNewDimensions(e)}>
+        <View style={{flex: 1}} onLayout={(e)=>{
+          this.getNewDimensions(e);
+          //on change of orientation make the popup
+          updateMapInformationState(false, null);
+          }}>
           <StatusBar backgroundColor="#c87604" barStyle="light-content" />
           <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
             <View style={styles.header}>
