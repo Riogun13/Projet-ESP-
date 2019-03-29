@@ -173,7 +173,7 @@ class App extends Component<Props> {
         <View style={{flex: 1}} onLayout={(e)=>{
           this.getNewDimensions(e);
           //on change of orientation make the popup
-          updateMapInformationState(false, null);
+          hideMapInformationPopUp();
           }}>
           <StatusBar backgroundColor="#c87604" barStyle="light-content" />
           <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
@@ -200,7 +200,7 @@ class App extends Component<Props> {
                 followsUserLocation={true}
                 scrollEnabled={true}
                 onPress={() =>{
-                  updateMapInformationState(false, null);
+                  hideMapInformationPopUp();
                 }}
               >
                 {this.state.sculptures.map((sculpture,index) => (
@@ -208,7 +208,7 @@ class App extends Component<Props> {
                     key={index}
                     coordinate={{latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude}}
                     onPress={(event) =>{
-                      updateMapInformationState(true, sculpture);
+                      changeMapInformationPopUpSculpture(sculpture);
                       // this.setState(selectedArtwork:index);
                     }}
                     pinColor={
@@ -245,7 +245,7 @@ class App extends Component<Props> {
                 </Icon>
               </View>
             </View>
-            <MapInformation></MapInformation>
+            <MapInformationPopUp></MapInformationPopUp>
           </ScrollView>
         </View>
       );
@@ -253,18 +253,32 @@ class App extends Component<Props> {
   }
 }
 
-
-//slide animation https://stackoverflow.com/questions/39117599/how-to-slide-view-in-and-out-from-the-bottom-in-react-native
-
-function updateMapInformationState(display, sculpture){
+function hideMapInformationPopUp(){
   LayoutAnimation.easeInEaseOut();
   this.setState({
-    display: display,
+    display: false
+  });
+}
+
+function changeMapInformationPopUpSculpture(sculpture){
+  var obj = this
+  this.setState({
+    display: false
+  });
+  
+  setTimeout(function(){
+    obj.refs.scrollView.scrollTo({x:0});
+  }, 0)
+  
+  LayoutAnimation.easeInEaseOut();
+  this.setState({
+    display: true,
     sculpture: sculpture
   });
 }
 
-class MapInformation extends Component<Props> {l
+
+class MapInformationPopUp extends Component<Props> {
   constructor(props){
     super(props)
     this.state = {
@@ -272,7 +286,9 @@ class MapInformation extends Component<Props> {l
       top: 0,
       sculpture: null,
     }
-    updateMapInformationState = updateMapInformationState.bind(this)
+    this.scrollViewRef = React.createRef();
+    hideMapInformationPopUp = hideMapInformationPopUp.bind(this)
+    changeMapInformationPopUpSculpture = changeMapInformationPopUpSculpture.bind(this)
   }
 
   showImage(){
@@ -299,6 +315,7 @@ class MapInformation extends Component<Props> {l
           </View>
           <ScrollView
             style={{flex:1}}
+            ref="scrollView"
           >
             <Text style={[mapInformationStyles.text, mapInformationStyles.title]}>Titre:</Text>
             <Text style={mapInformationStyles.text}>{this.state.sculpture.Name}</Text>
@@ -309,7 +326,7 @@ class MapInformation extends Component<Props> {l
 
             <TouchableOpacity
               onPress={() => {
-                Alert.alert("Plus d'informations");
+                Alert.alert("Plus d'informations",this.state.sculpture.Name);
               }}
               style={{marginTop:10}}
             >
