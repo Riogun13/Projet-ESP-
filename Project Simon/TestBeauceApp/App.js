@@ -24,6 +24,7 @@ import {
 } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import firebase from 'react-native-firebase';
+import Icon from 'react-native-vector-icons/FontAwesome5'
 
 
 function getScreenMinSize(){
@@ -92,6 +93,13 @@ class App extends Component<Props> {
     }
   }
 
+  fitMapToMarkers(){
+    console.log(this.mapRef, this.state);
+    if(this.mapRef){
+      this.mapRef.fitToCoordinates(this.state.markers,
+        { animated: true });
+    }
+  }
   setMarkers(sculptures) {
     const markers = [];
     sculptures.map((sculpture, index) => {
@@ -127,7 +135,7 @@ class App extends Component<Props> {
   }
 
   onLayout(e){
-    const {newWidth, newHeight} = Dimensions.get('window')
+    const {newWidth, newHeight} = Dimensions.get('screen')
     console.log(newWidth, newHeight)
   }
 
@@ -179,8 +187,7 @@ class App extends Component<Props> {
                 ref={ref => { this.mapRef = ref}}
                 onLayout = {() => {
                   this.mapRef.fitToCoordinates(this.state.markers,
-                    { edgePadding: { top: 10, right: 10, bottom: 10, left: 10 },
-                      animated: true });
+                    { animated: true });
                     }}
                 style={{flex: 1, height:(this.state.pageHeight * 0.5), width: this.state.pageWidth}}
                 region={{
@@ -214,6 +221,29 @@ class App extends Component<Props> {
                   </MapView.Marker>
                 ))}
               </MapView>
+              <View
+                  style={{
+                      position: 'absolute',//use absolute position to show button on top of the map
+                      top: 60,
+                      right: 12,
+                      alignSelf: 'flex-end', //for align to right
+                      width: 37,
+                      height: 37,
+                      backgroundColor: '#fff',
+                      opacity: 0.9,
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                  }}
+              >
+                <Icon
+                  name="map-marked-alt"
+                  backgroundColor="#FB9D1D"
+                  color="#FB9D1D"
+                  size={25}
+                  onPress={()=> this.fitMapToMarkers()} 
+                >
+                </Icon>
+              </View>
             </View>
             <MapInformation></MapInformation>
           </ScrollView>
