@@ -129,9 +129,9 @@ class App extends Component<Props> {
 
     this.getSculpture().then(()=>{
       this.setState({isLoading: false});
-      this.setMarkers(this.state.sculptures)
+      this.setMarkers(this.state.sculptures);
+      console.log("mount");
     });
-    console.log("mount");
   }
 
   onLayout(e){
