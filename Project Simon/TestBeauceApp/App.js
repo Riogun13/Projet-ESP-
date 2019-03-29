@@ -135,7 +135,7 @@ class App extends Component<Props> {
   }
 
   onLayout(e){
-    const {newWidth, newHeight} = Dimensions.get('window')
+    const {newWidth, newHeight} = Dimensions.get('screen')
     console.log(newWidth, newHeight)
   }
 
@@ -243,11 +243,6 @@ class App extends Component<Props> {
                   onPress={()=> this.fitMapToMarkers()} 
                 >
                 </Icon>
-                {/* <Button 
-                  onPress={()=> this.fitMapToMarkers()} 
-                  title="Markers"
-                >
-                </Button> */}
               </View>
             </View>
             <MapInformation></MapInformation>
