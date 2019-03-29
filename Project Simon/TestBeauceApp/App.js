@@ -28,10 +28,10 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 
 
 function getScreenMinSize(){
-  if(Dimensions.get('screen').width < Dimensions.get('screen').height){
-    return Dimensions.get('screen').width
+  if(Dimensions.get('window').width < Dimensions.get('window').height){
+    return Dimensions.get('window').width
   }else{
-    return Dimensions.get('screen').height
+    return Dimensions.get('window').height
   }
 }
 
@@ -292,37 +292,46 @@ class MapInformationPopUp extends Component<Props> {
     }
   }
 
+  getViewLeft(){
+    var width = Dimensions.get('window').width;
+    var height = Dimensions.get('window').height;
+    console.log(width, height, getScreenMinSize())
+    if(width > height){
+      return ((width - height) / 2);
+    }else{
+      return "1%";
+    }
+  }
+
   render() {
     if(!this.state.display)
       return null;
 
     return (
-      <View style={mapInformationStyles.mainView}>
-        <View style={mapInformationStyles.visibleView}>
-          <View style={{flex:1,}}>
-            {this.showImage()}
-          </View>
-          <ScrollView
-            style={{flex:1}}
-            ref="scrollView"
-          >
-            <Text style={[mapInformationStyles.text, mapInformationStyles.title]}>Titre:</Text>
-            <Text style={mapInformationStyles.text}>{this.state.sculpture.Name}</Text>
-            <Text style={[mapInformationStyles.text, mapInformationStyles.title]}>Artiste:</Text>
-            <Text style={mapInformationStyles.text}>{this.state.sculpture.Artist.Name}</Text>
-            <Text style={[mapInformationStyles.text, mapInformationStyles.title]}>Édition:</Text>
-            <Text style={mapInformationStyles.text}>{this.state.sculpture.Thematic.Year}</Text>
-
-            <TouchableOpacity
-              onPress={() => {
-                Alert.alert("Plus d'informations",this.state.sculpture.Name);
-              }}
-              style={{marginTop:10}}
-            >
-              <Text style={[mapInformationStyles.text, mapInformationStyles.title, mapInformationStyles.buttonText]}>Plus d'informations</Text>
-            </TouchableOpacity>
-          </ScrollView>
+      <View style={[mapInformationStyles.visibleView, {left:this.getViewLeft()}]}>
+        <View style={{flex:1,}}>
+          {this.showImage()}
         </View>
+        <ScrollView
+          style={{flex:1}}
+          ref="scrollView"
+        >
+          <Text style={[mapInformationStyles.text, mapInformationStyles.title]}>Titre:</Text>
+          <Text style={mapInformationStyles.text}>{this.state.sculpture.Name}</Text>
+          <Text style={[mapInformationStyles.text, mapInformationStyles.title]}>Artiste:</Text>
+          <Text style={mapInformationStyles.text}>{this.state.sculpture.Artist.Name}</Text>
+          <Text style={[mapInformationStyles.text, mapInformationStyles.title]}>Édition:</Text>
+          <Text style={mapInformationStyles.text}>{this.state.sculpture.Thematic.Year}</Text>
+
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert("Plus d'informations",this.state.sculpture.Name);
+            }}
+            style={{marginTop:10}}
+          >
+            <Text style={[mapInformationStyles.text, mapInformationStyles.title, mapInformationStyles.buttonText]}>Plus d'informations</Text>
+          </TouchableOpacity>
+        </ScrollView>
       </View>
     );
   }
@@ -370,25 +379,20 @@ const styles = StyleSheet.create({
 
 
  const mapInformationStyles = StyleSheet.create({
-  mainView:{
+  visibleView:{
     bottom: '1%',
     left: '1%',
     height: '20%',
     minHeight: 150,
     width: '98%',
-    position: 'absolute',
-    alignItems: 'center',
-    elevation: 5,
-  },
-  visibleView:{
-    height: '100%',
-    width: '100%',
     maxWidth: getScreenMinSize(),
     flexDirection: 'row',
+    position: 'absolute',
     backgroundColor: primaryColor.orange,
     borderRadius:10,
     borderWidth: 1,
     borderColor: primaryColor.darkOrange,
+    elevation: 5,
   },
   image:{
     flex:1,
