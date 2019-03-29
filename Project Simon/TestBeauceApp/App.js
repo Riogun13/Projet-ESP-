@@ -52,7 +52,6 @@ class App extends Component<Props> {
       isLoading: true,
       pageHeight: Dimensions.get('screen').height,
       pageWidth: Dimensions.get('screen').width,
-      // selectedArtwork: null,
     };
     this.mapRef = null;
   }
@@ -67,7 +66,6 @@ class App extends Component<Props> {
     const sculptures = [];
     await firebase.firestore().collection('Sculpture').get()
       .then(querySnapshot => {
-        console.log('get sculpture');
         querySnapshot.docs.forEach(doc => {
           sculptures.push(doc.data());
         });
@@ -94,11 +92,12 @@ class App extends Component<Props> {
   }
 
   fitMapToMarkers(){
-    console.log(this.mapRef, this.state);
-    if(this.mapRef){
-      this.mapRef.fitToCoordinates(this.state.markers,
-        { animated: true });
-    }
+    setTimeout(()=> {
+      if(this.mapRef){
+        this.mapRef.fitToCoordinates(this.state.markers,
+          { animated: true });
+      }
+    }, 1000);
   }
   setMarkers(sculptures) {
     const markers = [];
@@ -106,7 +105,6 @@ class App extends Component<Props> {
       markers.push({latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude});
     });
     this.setState({markers: markers});
-    console.log(markers);
     return markers;
 
   }
@@ -131,12 +129,10 @@ class App extends Component<Props> {
       this.setState({isLoading: false});
       this.setMarkers(this.state.sculptures)
     });
-    console.log("mount");
   }
 
   onLayout(e){
     const {newWidth, newHeight} = Dimensions.get('screen')
-    console.log(newWidth, newHeight)
   }
 
   render() {
@@ -185,10 +181,7 @@ class App extends Component<Props> {
             <View style={{flex:6, paddingTop: this.state.statusBarHeight}}>  
               <MapView
                 ref={ref => { this.mapRef = ref}}
-                onLayout = {() => {
-                  this.mapRef.fitToCoordinates(this.state.markers,
-                    { animated: true });
-                    }}
+                onLayout = {this.fitMapToMarkers()}
                 style={{flex: 1, height:(this.state.pageHeight * 0.5), width: this.state.pageWidth}}
                 region={{
                   latitude: 46.123532,
@@ -209,19 +202,15 @@ class App extends Component<Props> {
                     coordinate={{latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude}}
                     onPress={(event) =>{
                       changeMapInformationPopUpSculpture(sculpture);
-                      // this.setState(selectedArtwork:index);
                     }}
                     pinColor={
-                      // if (this.state.selectedArtwork == index) {
-                      //   Other color
-                      // }
                       this.getMarkerColor(sculpture.Thematic.Year)
                     }
                   >
                   </MapView.Marker>
                 ))}
               </MapView>
-              <View
+              {/* <View
                   style={{
                       position: 'absolute',//use absolute position to show button on top of the map
                       top: 60,
@@ -243,7 +232,7 @@ class App extends Component<Props> {
                   onPress={()=> this.fitMapToMarkers()} 
                 >
                 </Icon>
-              </View>
+              </View> */}
             </View>
             <MapInformationPopUp></MapInformationPopUp>
           </ScrollView>
