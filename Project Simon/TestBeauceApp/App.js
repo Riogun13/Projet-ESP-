@@ -25,16 +25,8 @@ import {
 import MapView, { Marker } from 'react-native-maps';
 import firebase from 'react-native-firebase';
 
-
-function getScreenMinSize(){
-  if(Dimensions.get('screen').width < Dimensions.get('screen').height){
-    return Dimensions.get('screen').width
-  }else{
-    return Dimensions.get('screen').height
-  }
-}
-
 const { UIManager } = NativeModules;
+
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
 
@@ -162,11 +154,7 @@ class App extends Component<Props> {
       );
     }else{
       return (
-        <View style={{flex: 1}} onLayout={(e)=>{
-          this.getNewDimensions(e);
-          //on change of orientation make the popup
-          updateMapInformationState(false, null);
-          }}>
+        <View style={{flex: 1}} onLayout={(e)=>this.getNewDimensions(e)}>
           <StatusBar backgroundColor="#c87604" barStyle="light-content" />
           <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
             <View style={styles.header}>
@@ -209,7 +197,7 @@ class App extends Component<Props> {
                       //   Other color
                       // }
                       this.getMarkerColor(sculpture.Thematic.Year)
-                    }
+                    }   
                   >
                   </MapView.Marker>
                 ))}
@@ -245,48 +233,34 @@ class MapInformation extends Component<Props> {l
     updateMapInformationState = updateMapInformationState.bind(this)
   }
 
-  showImage(){
-    if(this.state.sculpture.Image != ''){
-      return  <Image
-                source={{uri:this.state.sculpture.Image}}
-                style={mapInformationStyles.image}
-                resizeMode="cover"
-              />;
-    }else{
-      return;
-    }
-  }
-
   render() {
     if(!this.state.display)
       return null;
 
     return (
       <View style={mapInformationStyles.mainView}>
-        <View style={mapInformationStyles.visibleView}>
-          <View style={{flex:1,}}>
-            {this.showImage()}
-          </View>
-          <ScrollView
-            style={{flex:1}}
-          >
-            <Text style={[mapInformationStyles.text, mapInformationStyles.title]}>Titre:</Text>
-            <Text style={mapInformationStyles.text}>{this.state.sculpture.Name}</Text>
-            <Text style={[mapInformationStyles.text, mapInformationStyles.title]}>Artiste:</Text>
-            <Text style={mapInformationStyles.text}>{this.state.sculpture.Artist.Name}</Text>
-            <Text style={[mapInformationStyles.text, mapInformationStyles.title]}>Édition:</Text>
-            <Text style={mapInformationStyles.text}>{this.state.sculpture.Thematic.Year}</Text>
-
-            <TouchableOpacity
-              onPress={() => {
-                Alert.alert("Plus d'informations");
-              }}
-              style={{marginTop:10}}
-            >
-              <Text style={[mapInformationStyles.text, mapInformationStyles.title, mapInformationStyles.buttonText]}>Plus d'informations</Text>
-            </TouchableOpacity>
-          </ScrollView>
+        <View style={{flex:1,}}>
+          <Image
+            source={{uri:this.state.sculpture.Image}}
+            style={mapInformationStyles.image}
+            resizeMode="cover"
+          />
         </View>
+        <ScrollView style={{flex:1}}>
+          <Text style={[mapInformationStyles.text, mapInformationStyles.title]}>Titre:</Text>
+          <Text style={mapInformationStyles.text}>{this.state.sculpture.Name}</Text>
+          <Text style={[mapInformationStyles.text, mapInformationStyles.title]}>Artiste:</Text>
+          <Text style={mapInformationStyles.text}>{this.state.sculpture.Artist.Name}</Text>
+          <Text style={[mapInformationStyles.text, mapInformationStyles.title]}>Édition:</Text>
+          <Text style={mapInformationStyles.text}>{this.state.sculpture.Thematic.Year}</Text>
+          <Button
+            style={mapInformationStyles.button}
+            onPress={() => {
+              Alert.alert('You tapped the button!');
+            }}
+            title="Plus d'informations"
+          />
+        </ScrollView>
       </View>
     );
   }
@@ -297,9 +271,8 @@ class MapInformation extends Component<Props> {l
 export default App;
 
 const primaryColor = {
-  orange: '#FB9D1D',
-  darkOrange: 'rgba(200, 117, 4, 0.75)',
-  blue: 'rgba(0, 122, 255, 1)',
+  backgroundColor: '#FB9D1D',
+  shadow: 'rgba(200, 117, 4, 0.75)',
 }
 
 const styles = StyleSheet.create({
@@ -311,7 +284,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: primaryColor.orange,
+    backgroundColor: primaryColor.backgroundColor,
     elevation: 5
   },
   title: {
@@ -319,7 +292,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans',
     fontWeight: 'bold',
     color: 'white',
-    textShadowColor: primaryColor.darkOrange,
+    textShadowColor: primaryColor.shadow,
     textShadowOffset: {width: 1, height: 4},
     textShadowRadius: 5
   },
@@ -335,24 +308,18 @@ const styles = StyleSheet.create({
 
  const mapInformationStyles = StyleSheet.create({
   mainView:{
-    bottom: '1%',
+    top: '79%',
     left: '1%',
     height: '20%',
-    minHeight: 150,
+    //minHeight: 200,
     width: '98%',
     position: 'absolute',
-    alignItems: 'center',
     elevation: 5,
-  },
-  visibleView:{
-    height: '100%',
-    width: '100%',
-    maxWidth: getScreenMinSize(),
     flexDirection: 'row',
-    backgroundColor: primaryColor.orange,
+    backgroundColor: primaryColor.backgroundColor,
     borderRadius:10,
     borderWidth: 1,
-    borderColor: primaryColor.darkOrange,
+    borderColor: primaryColor.shadow,
   },
   image:{
     flex:1,
@@ -370,8 +337,6 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 5,
   },
-  buttonText:{
-    color: primaryColor.blue,
-    textDecorationLine: 'underline'
-  }
+  button:{
+  },
  });
