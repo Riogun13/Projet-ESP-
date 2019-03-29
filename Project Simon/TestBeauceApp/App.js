@@ -95,10 +95,12 @@ class App extends Component<Props> {
 
   fitMapToMarkers(){
     console.log(this.mapRef, this.state);
-    if(this.mapRef){
-      this.mapRef.fitToCoordinates(this.state.markers,
-        { animated: true });
-    }
+    setTimeout( ()=> {
+      if(this.mapRef){
+        this.mapRef.fitToCoordinates(this.state.markers,
+          { animated: true });
+      }
+    },1000);
   }
   setMarkers(sculptures) {
     const markers = [];
@@ -185,10 +187,7 @@ class App extends Component<Props> {
             <View style={{flex:6, paddingTop: this.state.statusBarHeight}}>  
               <MapView
                 ref={ref => { this.mapRef = ref}}
-                onLayout = {() => {
-                  this.mapRef.fitToCoordinates(this.state.markers,
-                    { animated: true });
-                    }}
+                onLayout = {this.fitMapToMarkers()}
                 style={{flex: 1, height:(this.state.pageHeight * 0.5), width: this.state.pageWidth}}
                 region={{
                   latitude: 46.123532,
@@ -221,29 +220,6 @@ class App extends Component<Props> {
                   </MapView.Marker>
                 ))}
               </MapView>
-              <View
-                  style={{
-                      position: 'absolute',//use absolute position to show button on top of the map
-                      top: 60,
-                      right: 12,
-                      alignSelf: 'flex-end', //for align to right
-                      width: 37,
-                      height: 37,
-                      backgroundColor: '#fff',
-                      opacity: 0.9,
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                  }}
-              >
-                <Icon
-                  name="map-marked-alt"
-                  backgroundColor="#FB9D1D"
-                  color="#FB9D1D"
-                  size={25}
-                  onPress={()=> this.fitMapToMarkers()} 
-                >
-                </Icon>
-              </View>
             </View>
             <MapInformation></MapInformation>
           </ScrollView>
