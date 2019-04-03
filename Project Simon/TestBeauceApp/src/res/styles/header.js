@@ -7,7 +7,7 @@ import Colors from '../colors';
 module.exports = StyleSheet.create({
 
   view: {
-    flex: 1,
+    height: 60,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.primary,
