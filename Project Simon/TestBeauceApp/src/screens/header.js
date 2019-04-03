@@ -14,7 +14,7 @@ class Header extends Component {
     console.log(HeaderStyle);
     return(
       <View style={HeaderStyle.view}>
-        <StatusBar backgroundColor="#c87604" barStyle="light-content" />
+      <StatusBar backgroundColor="#444" barStyle="light-content" />
         <Text style={HeaderStyle.title} allowFontScaling={false}>
           Beauce Art App
         </Text>

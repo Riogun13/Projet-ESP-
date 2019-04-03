@@ -5,17 +5,16 @@ import {
   StyleSheet,
   View,
   Dimensions,
+  Alert,
 } from 'react-native';
 
 import MapView, { Marker } from 'react-native-maps';
 
 import firebase from 'react-native-firebase';
 
-import MapStyle from '../../res/styles/map'
+import MapStyle from '../../res/styles/map';
 
 import MapInformation from './mapInformation'
-
-import Header from '../header'
 
 class Map extends Component {
 
@@ -26,7 +25,6 @@ class Map extends Component {
       longitude: 0,
       error: null,
       statusBarHeight: 0,
-      isLoading: true,
       pageHeight: Dimensions.get('screen').height,
       pageWidth: Dimensions.get('screen').width,
     };
@@ -44,7 +42,6 @@ class Map extends Component {
     const sculptures = [];
     await firebase.firestore().collection('Sculpture').get()
       .then(querySnapshot => {
-        console.log('get sculpture');
         querySnapshot.docs.forEach(doc => {
           sculptures.push(doc.data());
         });
@@ -71,7 +68,6 @@ class Map extends Component {
   }
 
   fitMapToMarkers(){
-    console.log(this.mapRef, this.state);
     setTimeout( ()=> {
       if(this.mapRef){
         this.mapRef.fitToCoordinates(this.state.markers,
@@ -86,7 +82,6 @@ class Map extends Component {
       markers.push({latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude});
     });
     this.setState({markers: markers});
-    console.log(markers);
     return markers;
   }
 
@@ -108,19 +103,16 @@ class Map extends Component {
     );
 
     this.getSculpture().then(()=>{
-      this.setState({isLoading: false});
       this.setMarkers(this.state.sculptures);
-      console.log("mount");
     });
   }
 
   onLayout(e){
     const {newWidth, newHeight} = Dimensions.get('screen')
-    console.log(newWidth, newHeight)
   }
 
   render() {
-    if(this.state.isLoading){
+    if(typeof this.state.markers === "undefined"){
       return (
         <View style={{flex: this.props.flex}} onLayout={(e)=>this.getNewDimensions(e)}>
           <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
