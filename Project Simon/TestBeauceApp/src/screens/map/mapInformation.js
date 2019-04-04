@@ -78,7 +78,7 @@ class MapInformation extends Component {
 
           <TouchableOpacity
             onPress={() => {
-              Alert.alert("Plus d'informations");
+              this.props.navigation.push('Details', {sculpture: this.state.sculpture});
             }}
             style={{marginTop:10}}
           >

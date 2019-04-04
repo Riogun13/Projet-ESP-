@@ -18,6 +18,9 @@ import MapInformation from './mapInformation'
 
 class Map extends Component {
 
+  static navigationOptions = {
+    title: 'Carte',
+  };
   constructor(props){
     super(props);
     this.state = {
@@ -114,10 +117,10 @@ class Map extends Component {
   render() {
     if(typeof this.state.markers === "undefined"){
       return (
-        <View style={{flex: this.props.flex}} onLayout={(e)=>this.getNewDimensions(e)}>
+        <View style={{flex: 1}} onLayout={(e)=>this.getNewDimensions(e)}>
           <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
             <MapView
-              style={{flex: 1, height:(this.state.pageHeight * 0.5), width: this.state.pageWidth}}
+              style={{flex: 1}}
               region={{
                 latitude: 46.123532,
                 longitude: -70.681716,
@@ -135,7 +138,7 @@ class Map extends Component {
     }else{
       return (
         <View
-          style={{flex: this.props.flex}}
+          style={{flex: 1}}
           onLayout={(e)=>{
             this.getNewDimensions(e);
             //on change of orientation make the popup
@@ -146,7 +149,7 @@ class Map extends Component {
             <MapView
               ref={ref => { this.mapRef = ref}}
               onLayout = {this.fitMapToMarkers()}
-              style={{flex: 1, height:(this.state.pageHeight * 0.5), width: this.state.pageWidth}}
+              style={{flex: 1}}
               region={{
                 latitude: 46.123532,
                 longitude: -70.681716,
@@ -178,7 +181,7 @@ class Map extends Component {
                 </MapView.Marker>
               ))}
             </MapView>
-            <MapInformation ref={ref => (this._MapInformation = ref)}></MapInformation>
+            <MapInformation ref={ref => (this._MapInformation = ref)} navigation={this.props.navigation}></MapInformation>
           </ScrollView>
         </View>
       );
