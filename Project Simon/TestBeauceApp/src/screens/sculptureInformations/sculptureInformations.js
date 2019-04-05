@@ -6,8 +6,13 @@ import {
   ScrollView,
   StyleSheet,
   Image,
+  TouchableOpacity,
   Alert
 } from 'react-native';
+
+import Colors from '../../res/colors'
+import Style from '../../res/styles/sculptureDetail'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 class DetailsScreen extends Component {
   
@@ -34,47 +39,40 @@ class DetailsScreen extends Component {
         ArtisticApproach: 'No Sculpture Found',
       });
 
+      sculpture.ArtisticApproach.replace("\n", "\n");
       return (
         <View>
           <ScrollView>
-            <View style={styles.titleContainer}>
-              <Text style={styles.titleName}>{sculpture.Name}</Text>
-              <Text style={styles.label}>{sculpture.Artist.Name}</Text>
+            <View>
+              <View style={Style.titleContainer}>
+                <Text style={Style.titleName}>{sculpture.Name}</Text>
+                <Text style={Style.label}>{sculpture.Artist.Name}</Text>
+              </View>
+              <TouchableOpacity
+                  style={Style.mapButton}
+                    onPress={()=>this.props.navigation.goBack()}
+                >
+                  <Ionicons name={"ios-pin"}  size={40} color={Colors.text} />
+                </TouchableOpacity>
             </View>
-            <View style={styles.imageContainer}>
+            <View style={Style.imageContainer}>
               <Image
                   source={{uri:sculpture.Image}}
-                  style={styles.image}
+                  style={Style.image}
                 />
+            </View>
+            <View>
+              <Text style={Style.label}>Matériaux :</Text>
+              <Text style={Style.text}>{sculpture.Material}</Text>
+              <Text style={Style.label}>Démarche Artistique :</Text>
+              {sculpture.ArtisticApproach.split('\\n').map((item,i)=>{
+                return <Text style={Style.paragraph} key={i}>{item}</Text>
+              })}
             </View>
           </ScrollView>
         </View>
       );
     }
   }
-  const styles = StyleSheet.create({
-    titleName: {
-      fontSize: 28,
-      fontWeight: 'bold',
-      color: '#4a4a4a',
-      margin: 8
-    },
-    titleContainer: {
-      width: '80%'
-    },
-    label: {
-      color: '#4a4a4a',
-      fontSize: 24,
-      marginLeft: 8
-    },
-    imageContainer: {
-      height: 250
-    },
-    image:{
-      flex:1,
-      borderTopLeftRadius: 10,
-      borderBottomLeftRadius: 10,
-      resizeMode: 'contain',
-    },
-  });
+ 
   export default DetailsScreen;
