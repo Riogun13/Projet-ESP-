@@ -12,7 +12,8 @@ import {
   Dimensions,
 } from 'react-native';
 
-import MapInformationStyle from '../../res/styles/mapInformation'
+import MapInformationStyle from '../../res/styles/mapInformation';
+import NotifService from '../../library/notification/notifService';
 
 const { UIManager } = NativeModules;
 UIManager.setLayoutAnimationEnabledExperimental &&
@@ -27,6 +28,7 @@ class MapInformation extends Component {
       sculpture: null,
     }
     this.updateMapInformationState = this.updateMapInformationState.bind(this);
+    this.notifService = new NotifService();
   }
 
   updateMapInformationState(display, sculpture){
@@ -78,11 +80,19 @@ class MapInformation extends Component {
 
           <TouchableOpacity
             onPress={() => {
-              Alert.alert("Plus d'informations");
+              this.notifService.localNotif("MapInformationNotif", "Notification", this.state.sculpture.Name, {tabToOpen:"Map"});
             }}
             style={{marginTop:10}}
           >
             <Text style={[MapInformationStyle.text, MapInformationStyle.title, MapInformationStyle.buttonText]}>Plus d'informations</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              this.notifService.removeAllDeliveredNotifications();
+            }}
+            style={{marginTop:10}}
+          >
+            <Text style={[MapInformationStyle.text, MapInformationStyle.title, MapInformationStyle.buttonText]}>Clear Notif</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>

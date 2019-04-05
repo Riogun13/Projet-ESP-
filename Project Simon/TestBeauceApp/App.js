@@ -8,17 +8,21 @@
 
 import React, {Component} from 'react';
 import { View, } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5'
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
-import Map from './src/screens/map/map'
-import Header from './src/screens/header'
+import Map from './src/screens/map/map';
+import Header from './src/screens/header';
+import NotifService from './src/library/notification/notifService';
 
 type Props = {};
 
 class App extends Component<Props> {
   constructor(props){
     super(props);
+    this.notifService = new NotifService();
+    //this.notifService.removeAllDeliveredNotifications();
   }
+
   render() {
     return(
       <View style={{flex:1}}>
