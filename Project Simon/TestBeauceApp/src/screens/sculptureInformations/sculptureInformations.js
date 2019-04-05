@@ -54,7 +54,7 @@ class DetailsScreen extends Component {
   }
   const styles = StyleSheet.create({
     titleName: {
-      fontSize: 24,
+      fontSize: 28,
       fontWeight: 'bold',
       color: '#4a4a4a',
       margin: 8
