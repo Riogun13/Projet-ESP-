@@ -46,8 +46,9 @@ class NotifService {
       
     notification
       .android.setChannelId('channelId')
-      .android.setSmallIcon('ic_launcher');
+      .android.setSmallIcon('ic_notification');
 
+    //On press
     firebase.notifications().onNotificationOpened((notificationOpen) => {
       this.removeDeliveredNotification(notificationOpen.notification.notificationId);
     });
