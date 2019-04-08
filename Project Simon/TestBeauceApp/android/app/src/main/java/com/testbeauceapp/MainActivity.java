@@ -1,6 +1,7 @@
 package com.testbeauceapp;
 
 import com.facebook.react.ReactActivity;
+import com.eddieowens.RNBoundaryPackage;
 
 public class MainActivity extends ReactActivity {
 
