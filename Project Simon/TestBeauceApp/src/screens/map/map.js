@@ -15,6 +15,7 @@ import firebase from 'react-native-firebase';
 import MapStyle from '../../res/styles/map';
 
 import MapInformation from './mapInformation'
+import { NavigationEvents } from 'react-navigation';
 
 class Map extends Component {
 
@@ -32,8 +33,24 @@ class Map extends Component {
       pageWidth: Dimensions.get('screen').width,
     };
     this.mapRef = null;
+    this.selectedSculpture = null;
   }
 
+  getParams(){
+    this.selectedSculpture = this.props.navigation.getParam('selectedSculpture');
+  }
+
+  focusOnSculpture(sculpture){
+    if(sculpture !== null){
+      this.mapRef.animateToRegion({
+        latitude: sculpture.Coordinate.latitude,
+        longitude: sculpture.Coordinate.longitude,
+        latitudeDelta: 0.0022921918458749246,
+        longitudeDelta: 0.0024545565247535706,
+      }, 1000);
+      this._MapInformation.updateMapInformationState(true, sculpture);
+    }
+  }
   getNewDimensions(event){
     this.setState({
       pageHeight: event.nativeEvent.layout.height,
@@ -73,8 +90,10 @@ class Map extends Component {
   fitMapToMarkers(){
     setTimeout( ()=> {
       if(this.mapRef){
-        this.mapRef.fitToCoordinates(this.state.markers,
+        if(this.selectedSculpture == null) {
+          this.mapRef.fitToCoordinates(this.state.markers,
           { animated: true });
+        }
       }
     },1000);
   }
@@ -145,6 +164,14 @@ class Map extends Component {
             this._MapInformation.updateMapInformationState(false, null);
           }}
         >
+          <NavigationEvents
+            onWillFocus={payload =>{
+              this._MapInformation.updateMapInformationState(false,null);
+              this.getParams();
+              this.focusOnSculpture(this.selectedSculpture);
+            }}>
+
+          </NavigationEvents>
           <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject} style={{paddingTop: this.state.statusBarHeight}}>
             <MapView
               ref={ref => { this.mapRef = ref}}
@@ -159,6 +186,7 @@ class Map extends Component {
               showsUserLocation={true}
               followsUserLocation={true}
               scrollEnabled={true}
+              onRegionChange={(region)=> console.log(region)}
               onPress={() =>{
                 this._MapInformation.updateMapInformationState(false, null);
               }}
