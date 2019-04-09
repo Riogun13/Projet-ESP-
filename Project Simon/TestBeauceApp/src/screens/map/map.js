@@ -34,10 +34,12 @@ class Map extends Component {
     };
     this.mapRef = null;
     this.selectedSculpture = null;
+    this.focusUser = false;
   }
 
   getParams(){
     this.selectedSculpture = this.props.navigation.getParam('selectedSculpture');
+    this.focusUser = this.props.navigation.getParam('focusUser',false);
   }
 
   focusOnSculpture(sculpture){
@@ -50,6 +52,19 @@ class Map extends Component {
         longitudeDelta: 0.0024545565247535706,
       }, 1000);
       this._MapInformation.updateMapInformationState(true, sculpture);
+    }
+  }
+
+  focusOnUserCoordinate(){
+    console.log('user', this.focusUser);
+    if(this.focusUser) {
+      this.mapRef.animateToRegion({
+      latitude: this.state.latitude,
+      longitude: this.state.longitude,
+      latitudeDelta: 0.0022921918458749246,
+      longitudeDelta: 0.0024545565247535706,
+      }, 1000);
+      this._MapInformation.updateMapInformationState(false, null);
     }
   }
   getNewDimensions(event){
@@ -91,7 +106,7 @@ class Map extends Component {
   fitMapToMarkers(){
     setTimeout( ()=> {
       if(this.mapRef){
-        if(this.selectedSculpture == null) {
+        if(this.selectedSculpture == null && this.focusUser == false) {
           this.mapRef.fitToCoordinates(this.state.markers,
           { animated: true });
         }
@@ -169,6 +184,7 @@ class Map extends Component {
             onWillFocus={payload =>{
               this._MapInformation.updateMapInformationState(false,null);
               this.getParams();
+              this.focusOnUserCoordinate();
               this.focusOnSculpture(this.selectedSculpture);
             }}>
 
