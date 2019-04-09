@@ -34,8 +34,8 @@ public class MainApplication extends Application implements ReactApplication {
           new RNFirebaseFirestorePackage(),
           new RNFirebaseMessagingPackage(),
           new RNFirebaseNotificationsPackage(),
-          new MapsPackage()
-            new RNGestureHandlerPackage(),
+          new MapsPackage(),
+            new RNGestureHandlerPackage()
       );
     }
 

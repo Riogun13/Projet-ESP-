@@ -41,7 +41,8 @@ class Map extends Component {
   }
 
   focusOnSculpture(sculpture){
-    if(sculpture !== null){
+    if(sculpture !== null && sculpture !== undefined){
+      console.log(sculpture);
       this.mapRef.animateToRegion({
         latitude: sculpture.Coordinate.latitude,
         longitude: sculpture.Coordinate.longitude,

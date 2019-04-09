@@ -81,20 +81,20 @@ class MapInformation extends Component {
           <TouchableOpacity
             onPress={() => {
               this.props.navigation.push('Details', {sculpture: this.state.sculpture});
-              this.notifService.localNotif("MapInformationNotif", "Beauce Art", this.state.sculpture.Name, {tabToOpen:"Map"});
+              this.notifService.localNotif("MapInformationNotif", "Beauce Art", this.state.sculpture.Name, {tabToOpen:"Carte"});
             }}
             style={{marginTop:10}}
           >
             <Text style={[MapInformationStyle.text, MapInformationStyle.title, MapInformationStyle.buttonText]}>Plus d'informations</Text>
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
               this.notifService.removeAllDeliveredNotifications();
             }}
             style={{marginTop:10}}
           >
             <Text style={[MapInformationStyle.text, MapInformationStyle.title, MapInformationStyle.buttonText]}>Clear Notif</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </ScrollView>
       </View>
     );
