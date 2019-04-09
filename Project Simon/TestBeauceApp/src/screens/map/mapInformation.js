@@ -19,7 +19,7 @@ const { UIManager } = NativeModules;
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
   
-class MapInformation extends Component {
+export default class MapInformation extends Component {
   constructor(props){
     super(props)
     this.state = {
@@ -100,5 +100,3 @@ class MapInformation extends Component {
     );
   }
 }
-
-export default MapInformation;

@@ -36,7 +36,6 @@ class App extends React.Component<Props> {
       console.log(notification.data.tabToOpen);
       // this.props.navigation.navigate(notification.data.tabToOpen);
       this.notifService.removeDeliveredNotification(notification.notificationId);
-
     });
   }
 
