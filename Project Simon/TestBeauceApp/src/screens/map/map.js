@@ -123,15 +123,11 @@ class Map extends Component {
       .catch(e => console.error("error :(", e));
 
       Boundary.on(Events.ENTER, ids => {
-        // Prints 'Get out of my Chipotle!!'
         Alert.alert(`Get out of my ${ids[0]}!!`);
-        //console.log(`Get out of my ${ids[0]}!!`);
       });
       
       Boundary.on(Events.EXIT, ids => {
-        // Prints 'Ya! You better get out of my Chipotle!!'
         Alert.alert(`Ya! You better get out of my ${ids[0]}!!`);
-        //console.log(`Ya! You better get out of my ${ids[0]}!!`)
       })
   }
 
