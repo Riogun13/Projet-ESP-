@@ -14,6 +14,7 @@ import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 
 import com.airbnb.android.react.maps.MapsPackage;
+import com.eddieowens.RNBoundaryPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +35,7 @@ public class MainApplication extends Application implements ReactApplication {
           new RNFirebaseFirestorePackage(),
           new RNFirebaseMessagingPackage(),
           new RNFirebaseNotificationsPackage(),
+            new RNBoundaryPackage(),
           new MapsPackage(),
             new RNGestureHandlerPackage()
       );

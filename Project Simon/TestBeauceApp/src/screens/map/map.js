@@ -17,6 +17,8 @@ import MapStyle from '../../res/styles/map';
 import MapInformation from './mapInformation'
 import { NavigationEvents } from 'react-navigation';
 
+import Boundary, {Events} from 'react-native-boundary';
+
 class Map extends Component {
 
   static navigationOptions = {
@@ -110,6 +112,27 @@ class Map extends Component {
 
   componentWillMount() {
     setTimeout(()=>this.setState({statusBarHeight: 5}),500);
+
+    Boundary.add({
+      lat: 46.1219811787,
+      lng: -70.6683856598,
+      radius: 50, // in meters
+      id: "Chipotle",
+    })
+      .then(() => console.log("success!"))
+      .catch(e => console.error("error :(", e));
+
+      Boundary.on(Events.ENTER, ids => {
+        // Prints 'Get out of my Chipotle!!'
+        Alert.alert(`Get out of my ${ids[0]}!!`);
+        //console.log(`Get out of my ${ids[0]}!!`);
+      });
+      
+      Boundary.on(Events.EXIT, ids => {
+        // Prints 'Ya! You better get out of my Chipotle!!'
+        Alert.alert(`Ya! You better get out of my ${ids[0]}!!`);
+        //console.log(`Ya! You better get out of my ${ids[0]}!!`)
+      })
   }
 
   componentDidMount() {
