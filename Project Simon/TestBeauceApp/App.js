@@ -7,27 +7,9 @@
  */
 
 import React, {Component} from 'react';
-import { View, } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5'
-
-import Map from './src/screens/map/map'
-import Header from './src/screens/header'
-
-type Props = {};
-
-class App extends Component<Props> {
-  constructor(props){
-    super(props);
-  }
+import AppContainer from './src/navigation/appContainer'
+export default class App extends React.Component {
   render() {
-    return(
-      <View style={{flex:1}}>
-        <Header></Header>
-        <Map flex={10}></Map>
-      </View>
-    );
+    return <AppContainer.AppContainer />;
   }
-}
-
-//onpress on marker slideup info view
-export default App;
+};
