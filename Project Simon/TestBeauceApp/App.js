@@ -40,15 +40,9 @@ class App extends Component<Props> {
     });
   }
 
+import AppContainer from './src/navigation/appContainer'
+export default class App extends React.Component {
   render() {
-    return(
-      <View style={{flex:1}}>
-        <Header></Header>
-        <Map flex={10}></Map>
-      </View>
-    );
+    return <AppContainer.AppContainer />;
   }
-}
-
-//onpress on marker slideup info view
-export default App;
+};

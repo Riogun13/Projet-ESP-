@@ -15,9 +15,13 @@ import firebase from 'react-native-firebase';
 import MapStyle from '../../res/styles/map';
 
 import MapInformation from './mapInformation'
+import { NavigationEvents } from 'react-navigation';
 
 class Map extends Component {
 
+  static navigationOptions = {
+    title: 'Carte',
+  };
   constructor(props){
     super(props);
     this.state = {
@@ -29,8 +33,24 @@ class Map extends Component {
       pageWidth: Dimensions.get('screen').width,
     };
     this.mapRef = null;
+    this.selectedSculpture = null;
   }
 
+  getParams(){
+    this.selectedSculpture = this.props.navigation.getParam('selectedSculpture');
+  }
+
+  focusOnSculpture(sculpture){
+    if(sculpture !== null){
+      this.mapRef.animateToRegion({
+        latitude: sculpture.Coordinate.latitude,
+        longitude: sculpture.Coordinate.longitude,
+        latitudeDelta: 0.0022921918458749246,
+        longitudeDelta: 0.0024545565247535706,
+      }, 1000);
+      this._MapInformation.updateMapInformationState(true, sculpture);
+    }
+  }
   getNewDimensions(event){
     this.setState({
       pageHeight: event.nativeEvent.layout.height,
@@ -70,8 +90,10 @@ class Map extends Component {
   fitMapToMarkers(){
     setTimeout( ()=> {
       if(this.mapRef){
-        this.mapRef.fitToCoordinates(this.state.markers,
+        if(this.selectedSculpture == null) {
+          this.mapRef.fitToCoordinates(this.state.markers,
           { animated: true });
+        }
       }
     },1000);
   }
@@ -114,10 +136,10 @@ class Map extends Component {
   render() {
     if(typeof this.state.markers === "undefined"){
       return (
-        <View style={{flex: this.props.flex}} onLayout={(e)=>this.getNewDimensions(e)}>
+        <View style={{flex: 1}} onLayout={(e)=>this.getNewDimensions(e)}>
           <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
             <MapView
-              style={{flex: 1, height:(this.state.pageHeight * 0.5), width: this.state.pageWidth}}
+              style={{flex: 1}}
               region={{
                 latitude: 46.123532,
                 longitude: -70.681716,
@@ -135,18 +157,26 @@ class Map extends Component {
     }else{
       return (
         <View
-          style={{flex: this.props.flex}}
+          style={{flex: 1}}
           onLayout={(e)=>{
             this.getNewDimensions(e);
             //on change of orientation make the popup
             this._MapInformation.updateMapInformationState(false, null);
           }}
         >
+          <NavigationEvents
+            onWillFocus={payload =>{
+              this._MapInformation.updateMapInformationState(false,null);
+              this.getParams();
+              this.focusOnSculpture(this.selectedSculpture);
+            }}>
+
+          </NavigationEvents>
           <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject} style={{paddingTop: this.state.statusBarHeight}}>
             <MapView
               ref={ref => { this.mapRef = ref}}
               onLayout = {this.fitMapToMarkers()}
-              style={{flex: 1, height:(this.state.pageHeight * 0.5), width: this.state.pageWidth}}
+              style={{flex: 1}}
               region={{
                 latitude: 46.123532,
                 longitude: -70.681716,
@@ -156,6 +186,7 @@ class Map extends Component {
               showsUserLocation={true}
               followsUserLocation={true}
               scrollEnabled={true}
+              onRegionChange={(region)=> console.log(region)}
               onPress={() =>{
                 this._MapInformation.updateMapInformationState(false, null);
               }}
@@ -178,7 +209,7 @@ class Map extends Component {
                 </MapView.Marker>
               ))}
             </MapView>
-            <MapInformation ref={ref => (this._MapInformation = ref)}></MapInformation>
+            <MapInformation ref={ref => (this._MapInformation = ref)} navigation={this.props.navigation}></MapInformation>
           </ScrollView>
         </View>
       );
