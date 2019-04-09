@@ -80,7 +80,7 @@ class MapInformation extends Component {
 
           <TouchableOpacity
             onPress={() => {
-              this.notifService.localNotif("MapInformationNotif", "Notification", this.state.sculpture.Name, {tabToOpen:"Map"});
+              this.notifService.localNotif("MapInformationNotif", "Beauce Art", this.state.sculpture.Name, {tabToOpen:"Map"});
             }}
             style={{marginTop:10}}
           >

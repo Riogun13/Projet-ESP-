@@ -13,11 +13,6 @@ class NotifService {
     //this.configure(onRegister, onNotification);
   }
 
-  getNewId(){
-    this.lastId++;
-    return this.notifStringId + this.lastId;
-  }
-
   configure(){
     this.configureNotificationChannel();
   }
@@ -29,6 +24,11 @@ class NotifService {
 
     // Create the channel
     firebase.notifications().android.createChannel(channel);
+  }
+
+  getNewId(){
+    this.lastId++;
+    return this.notifStringId + this.lastId;
   }
 
   localNotif(id, title, body, data){
@@ -48,10 +48,12 @@ class NotifService {
       .android.setChannelId('channelId')
       .android.setSmallIcon('ic_notification');
 
+      firebase.notifications().displayNotification(notification);
+
     //On press
-    firebase.notifications().onNotificationOpened((notificationOpen) => {
-      this.removeDeliveredNotification(notificationOpen.notification.notificationId);
-    });
+    // firebase.notifications().onNotificationOpened((notificationOpen) => {
+    //   this.removeDeliveredNotification(notificationOpen.notification.notificationId);
+    // });
     
     firebase.notifications().displayNotification(notification)
   }
