@@ -40,11 +40,11 @@ class Map extends Component {
   getParams(){
     this.selectedSculpture = this.props.navigation.getParam('selectedSculpture');
     this.focusUser = this.props.navigation.getParam('focusUser',false);
+    console.log(this.props.navigation.state);
   }
 
   focusOnSculpture(sculpture){
     if(sculpture !== null && sculpture !== undefined){
-      console.log(sculpture);
       this.mapRef.animateToRegion({
         latitude: sculpture.Coordinate.latitude,
         longitude: sculpture.Coordinate.longitude,
@@ -56,7 +56,6 @@ class Map extends Component {
   }
 
   focusOnUserCoordinate(){
-    console.log('user', this.focusUser);
     if(this.focusUser) {
       this.mapRef.animateToRegion({
       latitude: this.state.latitude,
@@ -203,7 +202,7 @@ class Map extends Component {
               showsUserLocation={true}
               followsUserLocation={true}
               scrollEnabled={true}
-              onRegionChange={(region)=> console.log(region)}
+              // onRegionChange={(region)=> console.log(region,this.state)}
               onPress={() =>{
                 this._MapInformation.updateMapInformationState(false, null);
               }}

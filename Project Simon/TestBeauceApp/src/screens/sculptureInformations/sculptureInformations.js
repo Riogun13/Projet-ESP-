@@ -64,7 +64,7 @@ class DetailsScreen extends Component {
             </View>
             <View>
               <Text style={Style.label}>Matériaux :</Text>
-              <Text style={Style.text}>{sculpture.Material}</Text>
+              <Text style={Style.text}>{sculpture.Material ? sculpture.Material : 'Non définie'}</Text>
               <Text style={Style.label}>Démarche Artistique :</Text>
               {sculpture.ArtisticApproach.split('\\n').map((item,i)=>{
                 return <Text style={Style.paragraph} key={i}>{item}</Text>
