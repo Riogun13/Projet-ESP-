@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { Text, View, Dimensions, Button, FlatList, TouchableHighlight, Linking } from 'react-native';
-
+import NewsFormat from './newsFormat'
 import firebase from 'react-native-firebase';
 
+import Moment from 'moment/min/moment-with-locales';
+
 export default class News extends Component {
+  
     static navigationOptions = {
       title: 'Nouvelles',
     };
@@ -33,15 +36,16 @@ export default class News extends Component {
         news: news,
         loading: false,
       });
-      console.log(this.state);
     }
 
     componentDidMount(){
-      this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
+      this.unsubscribe = this.ref.orderBy('Date',"ASC").onSnapshot(this.onCollectionUpdate);
     }
 
 
   render() {
+    
+    Moment.locale('fr-ca');
     if(this.state.loading){
       return (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -50,13 +54,18 @@ export default class News extends Component {
       );
     } else {
       return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <View>
           <FlatList 
             data={this.state.news} 
-            renderItem={({item}) => <TouchableHighlight onPress={() => Linking.openURL(item.ExternalUrl)}><Text>{item.Name}</Text></TouchableHighlight>
-            }></FlatList>
-          <Text>loaded</Text>
-          <Button title="See State" onPress={()=> console.log(this.state)}></Button>
+            renderItem={({item}) => 
+              <NewsFormat
+                title={item.Name}
+                description={Moment(item.Date).format('LLL')}
+                image_url={item.Image}
+                externalLink={item.ExternalUrl}
+                />
+            }
+            keyExtractor={item => item.Name}></FlatList>
         </View>
       );
     }

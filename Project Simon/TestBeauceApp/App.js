@@ -77,13 +77,11 @@ class App extends React.Component<Props> {
     const notificationOpen: NotificationOpen = await Firebase.notifications().getInitialNotification();
     if (notificationOpen) { // App was opened by a notification
         const notification: Notification = notificationOpen.notification;
-        console.log(notification);
         this.notifService.removeDeliveredNotification(notification.notificationId);
     }
 
     this.notificationOpenedListener = Firebase.notifications().onNotificationOpened((notificationOpen: NotificationOpen) => {
       const notification: Notification = notificationOpen.notification;
-      console.log(notification);
       // this.props.navigation.navigate(notification.data.tabToOpen);
       NavigationService.navigate(notification.data.tabToOpen,{focusUser: true},notification.data.stackToOpen);
       this.notifService.removeDeliveredNotification(notification.notificationId);

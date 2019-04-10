@@ -31,6 +31,7 @@ class Map extends Component {
       statusBarHeight: 0,
       pageHeight: Dimensions.get('screen').height,
       pageWidth: Dimensions.get('screen').width,
+      marginBottom: 1,
     };
     this.mapRef = null;
     this.selectedSculpture = null;
@@ -40,9 +41,15 @@ class Map extends Component {
   getParams(){
     this.selectedSculpture = this.props.navigation.getParam('selectedSculpture');
     this.focusUser = this.props.navigation.getParam('focusUser',false);
-    console.log(this.props.navigation.state);
   }
 
+  focusPosition(){
+    if(this.focusUser){
+      this.focusOnUserCoordinate();
+    }else if(this.selectedSculpture){
+      this.focusOnSculpture(this.selectedSculpture);
+    }
+  }
   focusOnSculpture(sculpture){
     if(sculpture !== null && sculpture !== undefined){
       this.mapRef.animateToRegion({
@@ -123,7 +130,7 @@ class Map extends Component {
   }
 
   componentWillMount() {
-    setTimeout(()=>this.setState({statusBarHeight: 5}),500);
+    setTimeout(()=>this.setState({marginBottom: 0}),100);
   }
 
   componentDidMount() {
@@ -142,6 +149,7 @@ class Map extends Component {
     this.getSculpture().then(()=>{
       this.setMarkers(this.state.sculptures);
     });
+
   }
 
   onLayout(e){
@@ -150,25 +158,26 @@ class Map extends Component {
 
   render() {
     if(typeof this.state.markers === "undefined"){
-      return (
-        <View style={{flex: 1}} onLayout={(e)=>this.getNewDimensions(e)}>
-          <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
-            <MapView
-              style={{flex: 1}}
-              region={{
-                latitude: 46.123532,
-                longitude: -70.681716,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}
-              showsUserLocation={true}
-              followsUserLocation={true}
-              scrollEnabled={false}
-            >
-            </MapView>
-          </ScrollView>
-        </View>
-      );
+      // return (
+      //   <View style={{flex: 1}} onLayout={(e)=>this.getNewDimensions(e)}>
+      //     <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
+      //       <MapView
+      //         style={{flex: 1}}
+      //         region={{
+      //           latitude: 46.123532,
+      //           longitude: -70.681716,
+      //           latitudeDelta: 0.0922,
+      //           longitudeDelta: 0.0421,
+      //         }}
+      //         showsUserLocation={true}
+      //         followsUserLocation={true}
+      //         scrollEnabled={false}
+      //       >
+      //       </MapView>
+      //     </ScrollView>
+      //   </View>
+      // );
+      return null;
     }else{
       return (
         <View
@@ -183,8 +192,7 @@ class Map extends Component {
             onWillFocus={payload =>{
               this._MapInformation.updateMapInformationState(false,null);
               this.getParams();
-              this.focusOnUserCoordinate();
-              this.focusOnSculpture(this.selectedSculpture);
+              this.focusPosition();
             }}>
 
           </NavigationEvents>
@@ -192,7 +200,7 @@ class Map extends Component {
             <MapView
               ref={ref => { this.mapRef = ref}}
               onLayout = {this.fitMapToMarkers()}
-              style={{flex: 1}}
+              style={{flex: 1, marginBottom: this.state.marginBottom}}
               region={{
                 latitude: 46.123532,
                 longitude: -70.681716,
@@ -202,7 +210,6 @@ class Map extends Component {
               showsUserLocation={true}
               followsUserLocation={true}
               scrollEnabled={true}
-              // onRegionChange={(region)=> console.log(region,this.state)}
               onPress={() =>{
                 this._MapInformation.updateMapInformationState(false, null);
               }}
