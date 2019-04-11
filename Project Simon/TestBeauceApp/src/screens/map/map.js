@@ -44,11 +44,14 @@ class Map extends Component {
   }
 
   focusPosition(){
-    if(this.focusUser){
-      this.focusOnUserCoordinate();
-    }else if(this.selectedSculpture){
-      this.focusOnSculpture(this.selectedSculpture);
-    }
+    this.setState({marginBottom: 0});
+    setTimeout(()=>{
+      if(this.focusUser){
+        this.focusOnUserCoordinate();
+      }else if(this.selectedSculpture){
+        this.focusOnSculpture(this.selectedSculpture);
+      }
+    }, 1000);
   }
   focusOnSculpture(sculpture){
     if(sculpture !== null && sculpture !== undefined){
@@ -158,25 +161,6 @@ class Map extends Component {
 
   render() {
     if(typeof this.state.markers === "undefined"){
-      // return (
-      //   <View style={{flex: 1}} onLayout={(e)=>this.getNewDimensions(e)}>
-      //     <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
-      //       <MapView
-      //         style={{flex: 1}}
-      //         region={{
-      //           latitude: 46.123532,
-      //           longitude: -70.681716,
-      //           latitudeDelta: 0.0922,
-      //           longitudeDelta: 0.0421,
-      //         }}
-      //         showsUserLocation={true}
-      //         followsUserLocation={true}
-      //         scrollEnabled={false}
-      //       >
-      //       </MapView>
-      //     </ScrollView>
-      //   </View>
-      // );
       return null;
     }else{
       return (
@@ -220,12 +204,8 @@ class Map extends Component {
                   coordinate={{latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude}}
                   onPress={(event) =>{
                     this._MapInformation.updateMapInformationState(true, sculpture);
-                    // this.setState(selectedArtwork:index);
                   }}
                   pinColor={
-                    // if (this.state.selectedArtwork == index) {
-                    //   Other color
-                    // }
                     this.getMarkerColor(sculpture.Thematic.Year)
                   }
                 >

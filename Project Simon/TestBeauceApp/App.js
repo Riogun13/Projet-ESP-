@@ -70,7 +70,6 @@ class App extends React.Component<Props> {
   constructor(props){
     super(props);
     this.notifService = new NotifService();
-    //this.notifService.removeAllDeliveredNotifications();
   }
   
   async componentDidMount() {
@@ -82,8 +81,7 @@ class App extends React.Component<Props> {
 
     this.notificationOpenedListener = Firebase.notifications().onNotificationOpened((notificationOpen: NotificationOpen) => {
       const notification: Notification = notificationOpen.notification;
-      // this.props.navigation.navigate(notification.data.tabToOpen);
-      NavigationService.navigate(notification.data.tabToOpen,{focusUser: true},notification.data.stackToOpen);
+      NavigationService.navigate(notification.data.tabToOpen,{focusUser: true, selectedSculpture: null},notification.data.stackToOpen);
       this.notifService.removeDeliveredNotification(notification.notificationId);
 
     });

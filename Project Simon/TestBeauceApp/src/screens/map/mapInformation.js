@@ -87,14 +87,6 @@ class MapInformation extends Component {
           >
             <Text style={[MapInformationStyle.text, MapInformationStyle.title, MapInformationStyle.buttonText]}>Plus d'informations</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity
-            onPress={() => {
-              this.notifService.removeAllDeliveredNotifications();
-            }}
-            style={{marginTop:10}}
-          >
-            <Text style={[MapInformationStyle.text, MapInformationStyle.title, MapInformationStyle.buttonText]}>Clear Notif</Text>
-          </TouchableOpacity> */}
         </ScrollView>
       </View>
     );
