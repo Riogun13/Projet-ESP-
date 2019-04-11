@@ -43,7 +43,6 @@ class App extends React.Component<Props> {
 
     }).catch((error) => {// catch egale le choix non de l'utilisateur
         console.log(error.message); // error.message => "disabled"
-        console.log("lol");  
     });
     
     BackHandler.addEventListener('hardwareBackPress', () => { //(optional) you can use it if you need it
