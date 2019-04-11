@@ -9,7 +9,7 @@ import {
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Colors from '../../res/colors'
+import Colors from '../../res/colors';
   
 export default class CollapsiblePanel extends Component {
   constructor(props){

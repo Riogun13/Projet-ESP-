@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Text, View, ScrollView, StyleSheet, TouchableOpacity, } from 'react-native';
 import CollapsiblePanel from '../../library/collapsible/collapsible';
-import MapInformation from '../map/mapInformation';
 import firebase from 'react-native-firebase';
+import Colors from '../../res/colors';
 
 export default class SculptureList extends Component {
   constructor(props){
@@ -30,35 +30,6 @@ export default class SculptureList extends Component {
       });
       this.setState({sculptures: sculptures});
   }
-
-  // showList(){
-  //   let list = null;
-  //   if (typeof this.state.sculptures !== "undefined") {
-
-  //     // const test = [];
-  //     // test.push("test0");
-  //     // test.push("test1");
-  //     // test.push("test2");
-  //     // test.push("test3");
-  //     // test.push("test4");
-  //     // test.map((text, index)=> {
-  //     //   return (
-  //     //     <CollapsiblePanel title="A Panel with long content text">
-  //     //       <TouchableOpacity style={styles.button} key={123123132}><Text style={styles.buttonText}>Oasdfffffggggggggffffssssssssssssst</Text></TouchableOpacity>
-  //     //     </CollapsiblePanel>
-  //     //   );
-  //     // })
-  //     Object.keys(this.state.sculptures).map((year, index) =>{
-  //       this.showSculptureList();
-  //     });
-  //       // <CollapsiblePanel title="A Panel with long content text">
-  //       //   <TouchableOpacity style={styles.button} key={123123132}><Text style={styles.buttonText}>Oasdfffffggggggggffffssssssssssssst</Text></TouchableOpacity>
-  //       // </CollapsiblePanel>
-  //     // ));
-  //   }
-  //   return list;
-  // }
-
 
   render() {
     if (typeof this.state.sculptures == "undefined") {
@@ -111,6 +82,7 @@ var styles = StyleSheet.create({
   buttonText: {
     paddingLeft : 10,
     fontSize: 16,
+    color: Colors.black,
   },
   collapsiblePanel: {
   }
