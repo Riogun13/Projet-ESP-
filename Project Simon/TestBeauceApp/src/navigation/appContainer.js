@@ -45,7 +45,7 @@ module.exports = {
     }),
     tabBarOptions: {
         activeTintColor: Colors.accentOrange,
-        inactiveTintColor: '#444444',
+        inactiveTintColor: Colors.black,
         style: {
         backgroundColor: Colors.primary
         }

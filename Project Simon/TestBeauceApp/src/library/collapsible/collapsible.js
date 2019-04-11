@@ -5,24 +5,25 @@ import {
   View,
   StyleSheet,
   Animated,
-  Dimensions
 } from 'react-native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import Colors from '../../res/colors'
   
 export default class CollapsiblePanel extends Component {
   constructor(props){
     super(props)
     let IconComponent = Ionicons;
     this.icons = {
-      'up' : <IconComponent name={'ios-arrow-dropdown'} size={25} color={'#444'} style={styles.buttonImage}/>,
-      'down' : <IconComponent name={'ios-arrow-dropup'} size={25} color={'#444'} style={styles.buttonImage}/>
+      'down' : <IconComponent name={'ios-arrow-dropdown'} size={25} color={Colors.accentOrange} style={styles.buttonImage}/>,
+      'up' : <IconComponent name={'ios-arrow-dropup'} size={25} color={Colors.black} style={styles.buttonImage}/>
     };
 
     this.state = {
       title : props.title,
       expanded : false,
+      animation : new Animated.Value(1),
     };
   }
 
@@ -58,10 +59,12 @@ export default class CollapsiblePanel extends Component {
   }
 
   render() {
-    let icon = this.icons['down'];
+    let icon = this.icons['up'];
+    let titleStyle = styles.title;
 
     if(this.state.expanded){
-      icon = this.icons['up'];
+      icon = this.icons['down'];
+      titleStyle = [styles.title, {color: Colors.accentOrange}];
     }
 
     return (
@@ -71,7 +74,7 @@ export default class CollapsiblePanel extends Component {
           style={styles.titleContainer}
           onLayout={this._setMinHeight.bind(this)}
           onPress={this.toggle.bind(this)}>
-          <Text style={styles.title}>{this.state.title}</Text>
+          <Text style={titleStyle}>{this.state.title}</Text>
           {icon}
         </TouchableOpacity>
           
@@ -87,8 +90,8 @@ export default class CollapsiblePanel extends Component {
 var styles = StyleSheet.create({
   container : {
     flex: 1,
-    backgroundColor : '#fff',
-    margin :10,
+    backgroundColor : Colors.primary,
+    margin : 3,
     overflow :'hidden'
   },
   titleContainer : {
@@ -96,14 +99,13 @@ var styles = StyleSheet.create({
     alignItems: 'center',
   },
   title : {
+    fontSize: 18,
     flex : 1,
     padding : 10,
-    color :'#2a2f43',
+    color : Colors.text,
     fontWeight:'bold'
   },
   buttonImage : {
-    width : 30,
-    height : 25
   },
   body : {
     padding : 10,

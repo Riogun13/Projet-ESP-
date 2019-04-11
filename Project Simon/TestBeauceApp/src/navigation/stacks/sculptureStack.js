@@ -4,11 +4,13 @@ import {createStackNavigator } from 'react-navigation';
 
 import Colors from '../../res/colors';
 import SculptureList from '../../screens/sculptureList/sculptureList';
+import Detail from '../../screens/sculptureInformations/sculptureInformations';
 
 module.exports = {
     SculptureStack: createStackNavigator(
         {
-            Sculptures: SculptureList
+            Sculptures: SculptureList,
+            SculptureDetail: Detail
         },
         {
             initialRouteName: 'Sculptures',

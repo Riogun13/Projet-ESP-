@@ -52,6 +52,7 @@ class Map extends Component {
       this._MapInformation.updateMapInformationState(true, sculpture);
     }
   }
+  
   getNewDimensions(event){
     this.setState({
       pageHeight: event.nativeEvent.layout.height,

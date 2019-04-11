@@ -19,8 +19,9 @@ class NotifService {
 
   configureNotificationChannel(){
     // Build a channel
-    const channel = new firebase.notifications.Android.Channel('-channel', 'Beauce Art Channel', firebase.notifications.Android.Importance.Max)
-    .setDescription('Beauce Art app notification channel');
+    const channel = new firebase.notifications.Android.Channel('beauceArtChannel', 'Beauce Art Channel', firebase.notifications.Android.Importance.Max)
+    .setDescription('Beauce Art app notification channel')
+    .setVibrationPattern([500]);
 
     // Create the channel
     firebase.notifications().android.createChannel(channel);
@@ -45,7 +46,7 @@ class NotifService {
       .setData(data);
       
     notification
-      .android.setChannelId('channelId')
+      .android.setChannelId('beauceArtChannel')
       .android.setSmallIcon('ic_notification');
 
       firebase.notifications().displayNotification(notification);
