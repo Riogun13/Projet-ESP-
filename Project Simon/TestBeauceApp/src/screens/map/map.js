@@ -5,7 +5,6 @@ import {
   StyleSheet,
   View,
   Dimensions,
-  ActivityIndicator,
 } from 'react-native';
 
 import MapView, { Marker } from 'react-native-maps';
@@ -160,11 +159,7 @@ class Map extends Component {
 
   render() {
     if(typeof this.state.markers === "undefined"){
-      return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-          <ActivityIndicator size="large" color={Colors.accentOrange}></ActivityIndicator>
-        </View>
-      )
+      return null;
     }else{
       return (
         <View

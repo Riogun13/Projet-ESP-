@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { Text,
   View, 
   Dimensions, 
-  FlatList,
-  ActivityIndicator } from 'react-native';
+  FlatList } from 'react-native';
 import NewsFormat from './newsFormat'
 import firebase from 'react-native-firebase';
 import Colors from '../../res/colors';
@@ -52,11 +51,7 @@ export default class News extends Component {
     
     Moment.locale('fr-ca');
     if(this.state.loading){
-      return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-          <ActivityIndicator size="large" color={Colors.accentOrange}></ActivityIndicator>
-        </View>
-      );
+      return null;
     } else {
       return (
         <View>
