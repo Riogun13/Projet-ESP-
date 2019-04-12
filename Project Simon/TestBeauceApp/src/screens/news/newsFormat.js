@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
 
 const NewsFormat = ({ title, description, image_url, externalLink }) => (
     <View style={styles.container}>
-        <Image source={{ uri: image_url }} style={styles.photo} />
+        <Image source={{ uri: image_url !== "" ? image_url : null}} style={styles.photo} />
         <View style={styles.container_text}>
             <Text style={styles.title}>
                 {title}
