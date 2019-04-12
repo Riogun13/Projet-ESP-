@@ -23,21 +23,29 @@ export default class CollapsiblePanel extends Component {
     this.state = {
       title : props.title,
       expanded : false,
+      initialHeightApplied : false,
       animation : new Animated.Value(1),
     };
   }
 
   _setMaxHeight(event){
-    this.setState({
-      maxHeight   : event.nativeEvent.layout.height
-    });
+      let maxHeight = event.nativeEvent.layout.height;
+      this.setState({
+        maxHeight : maxHeight,
+      });
   }
 
   _setMinHeight(event){
-    this.setState({
-      minHeight   : event.nativeEvent.layout.height,
-      animation : new Animated.Value(event.nativeEvent.layout.height),
-    });
+      let minHeight = event.nativeEvent.layout.height;
+      this.setState({
+        minHeight : minHeight,
+      });
+      if(!this.state.initialHeightApplied){
+        this.setState({
+          initialHeightApplied : true,
+          animation : new Animated.Value(minHeight),
+        });
+      }
   }
 
   toggle(){
@@ -112,96 +120,3 @@ var styles = StyleSheet.create({
     paddingTop : 0
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React,{Component,StyleSheet,Text,View,Image,TouchableHighlight,Animated} from 'react-native';
-
-// export default class CollapsiblePanel extends Component {
-//   constructor(props){
-//     //super(props);
-
-//     this.icons = {
-//       'up' : <IconComponent name={'ios-arrow-dropdown'} size={25} color={'#444'} />,
-//       'down' : <IconComponent name={'ios-arrow-dropup'} size={25} color={'#444'} />
-//     };
-
-//     this.state = {
-//       title : props.title,
-//       expanded : true
-//     };
-//   }
-
-//   toggle(){
-      
-//   }
-
-//   render(){
-//     let icon = this.icons['down'];
-
-//     if(this.state.expanded){
-//       icon = this.icons['up'];
-//     }
-
-//     return ( 
-//       <View style={styles.container}>
-//         <View style={styles.titleContainer}>
-//           <Text style={styles.title}>{this.state.title}</Text>
-//           <TouchableHighlight 
-//             style={styles.button} 
-//             onPress={this.toggle.bind(this)}
-//             underlayColor="#f1f1f1">
-//             <Image
-//               style={styles.buttonImage}
-//               source={icon}
-//             ></Image>
-//           </TouchableHighlight>
-//         </View>
-          
-//         <View style={styles.body}>
-//           {this.props.children}
-//         </View>
-
-//       </View>
-//     );
-//   }
-// };
-
-// var styles = StyleSheet.create({
-//   container : {
-//     backgroundColor : '#fff',
-//     margin :10,
-//     overflow :'hidden'
-//   },
-//   titleContainer : {
-//     flexDirection : 'row'
-//   },
-//   title : {
-//     flex : 1,
-//     padding : 10,
-//     color :'#2a2f43',
-//     fontWeight:'bold'
-//   },
-//   button : {
-
-//   },
-//   buttonImage : {
-//     width : 30,
-//     height : 25
-//   },
-//   body : {
-//     padding : 10,
-//     paddingTop : 0
-//   }
-// });
