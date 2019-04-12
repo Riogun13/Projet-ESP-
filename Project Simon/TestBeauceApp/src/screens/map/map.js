@@ -5,14 +5,12 @@ import {
   StyleSheet,
   View,
   Dimensions,
-  Alert,
 } from 'react-native';
 
 import MapView, { Marker } from 'react-native-maps';
 
 import firebase from 'react-native-firebase';
-
-import MapStyle from '../../res/styles/map';
+import Colors from '../../res/colors';
 
 import MapInformation from './mapInformation'
 import { NavigationEvents } from 'react-navigation';
@@ -31,18 +29,30 @@ class Map extends Component {
       statusBarHeight: 0,
       pageHeight: Dimensions.get('screen').height,
       pageWidth: Dimensions.get('screen').width,
+      marginBottom: 1,
     };
     this.mapRef = null;
     this.selectedSculpture = null;
+    this.focusUser = false;
   }
 
   getParams(){
     this.selectedSculpture = this.props.navigation.getParam('selectedSculpture');
+    this.focusUser = this.props.navigation.getParam('focusUser',false);
   }
 
+  focusPosition(){
+    this.setState({marginBottom: 0});
+    setTimeout(()=>{
+      if(this.focusUser){
+        this.focusOnUserCoordinate();
+      }else if(this.selectedSculpture){
+        this.focusOnSculpture(this.selectedSculpture);
+      }
+    }, 1000);
+  }
   focusOnSculpture(sculpture){
     if(sculpture !== null && sculpture !== undefined){
-      console.log(sculpture);
       this.mapRef.animateToRegion({
         latitude: sculpture.Coordinate.latitude,
         longitude: sculpture.Coordinate.longitude,
@@ -50,6 +60,18 @@ class Map extends Component {
         longitudeDelta: 0.0024545565247535706,
       }, 1000);
       this._MapInformation.updateMapInformationState(true, sculpture);
+    }
+  }
+
+  focusOnUserCoordinate(){
+    if(this.focusUser) {
+      this.mapRef.animateToRegion({
+      latitude: this.state.latitude,
+      longitude: this.state.longitude,
+      latitudeDelta: 0.0022921918458749246,
+      longitudeDelta: 0.0024545565247535706,
+      }, 1000);
+      this._MapInformation.updateMapInformationState(false, null);
     }
   }
   getNewDimensions(event){
@@ -91,7 +113,7 @@ class Map extends Component {
   fitMapToMarkers(){
     setTimeout( ()=> {
       if(this.mapRef){
-        if(this.selectedSculpture == null) {
+        if(this.selectedSculpture == null && this.focusUser == false) {
           this.mapRef.fitToCoordinates(this.state.markers,
           { animated: true });
         }
@@ -109,7 +131,7 @@ class Map extends Component {
   }
 
   componentWillMount() {
-    setTimeout(()=>this.setState({statusBarHeight: 5}),500);
+    setTimeout(()=>this.setState({marginBottom: 0}),100);
   }
 
   componentDidMount() {
@@ -128,6 +150,7 @@ class Map extends Component {
     this.getSculpture().then(()=>{
       this.setMarkers(this.state.sculptures);
     });
+
   }
 
   onLayout(e){
@@ -136,25 +159,7 @@ class Map extends Component {
 
   render() {
     if(typeof this.state.markers === "undefined"){
-      return (
-        <View style={{flex: 1}} onLayout={(e)=>this.getNewDimensions(e)}>
-          <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject}>
-            <MapView
-              style={{flex: 1}}
-              region={{
-                latitude: 46.123532,
-                longitude: -70.681716,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}
-              showsUserLocation={true}
-              followsUserLocation={true}
-              scrollEnabled={false}
-            >
-            </MapView>
-          </ScrollView>
-        </View>
-      );
+      return null;
     }else{
       return (
         <View
@@ -169,7 +174,7 @@ class Map extends Component {
             onWillFocus={payload =>{
               this._MapInformation.updateMapInformationState(false,null);
               this.getParams();
-              this.focusOnSculpture(this.selectedSculpture);
+              this.focusPosition();
             }}>
 
           </NavigationEvents>
@@ -177,7 +182,7 @@ class Map extends Component {
             <MapView
               ref={ref => { this.mapRef = ref}}
               onLayout = {this.fitMapToMarkers()}
-              style={{flex: 1}}
+              style={{flex: 1, marginBottom: this.state.marginBottom}}
               region={{
                 latitude: 46.123532,
                 longitude: -70.681716,
@@ -187,7 +192,6 @@ class Map extends Component {
               showsUserLocation={true}
               followsUserLocation={true}
               scrollEnabled={true}
-              onRegionChange={(region)=> console.log(region)}
               onPress={() =>{
                 this._MapInformation.updateMapInformationState(false, null);
               }}
@@ -198,12 +202,8 @@ class Map extends Component {
                   coordinate={{latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude}}
                   onPress={(event) =>{
                     this._MapInformation.updateMapInformationState(true, sculpture);
-                    // this.setState(selectedArtwork:index);
                   }}
                   pinColor={
-                    // if (this.state.selectedArtwork == index) {
-                    //   Other color
-                    // }
                     this.getMarkerColor(sculpture.Thematic.Year)
                   }
                 >

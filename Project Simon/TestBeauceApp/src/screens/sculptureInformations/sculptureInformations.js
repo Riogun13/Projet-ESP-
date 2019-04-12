@@ -50,7 +50,8 @@ class DetailsScreen extends Component {
               <TouchableOpacity
                   style={Style.mapButton}
                     onPress={()=> this.props.navigation.navigate('Map', {
-                      selectedSculpture: sculpture
+                      selectedSculpture: sculpture,
+                      focusUser: false
                     })}
                 >
                   <Ionicons name={"ios-pin"}  size={40} color={Colors.text} />
@@ -64,7 +65,7 @@ class DetailsScreen extends Component {
             </View>
             <View>
               <Text style={Style.label}>Matériaux :</Text>
-              <Text style={Style.text}>{sculpture.Material}</Text>
+              <Text style={Style.text}>{sculpture.Material ? sculpture.Material : 'Non définie'}</Text>
               <Text style={Style.label}>Démarche Artistique :</Text>
               {sculpture.ArtisticApproach.split('\\n').map((item,i)=>{
                 return <Text style={Style.paragraph} key={i}>{item}</Text>

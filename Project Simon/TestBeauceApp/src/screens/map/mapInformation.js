@@ -19,7 +19,7 @@ const { UIManager } = NativeModules;
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
   
-class MapInformation extends Component {
+export default class MapInformation extends Component {
   constructor(props){
     super(props)
     this.state = {
@@ -81,24 +81,14 @@ class MapInformation extends Component {
           <TouchableOpacity
             onPress={() => {
               this.props.navigation.push('Details', {sculpture: this.state.sculpture});
-              this.notifService.localNotif("MapInformationNotif", "Beauce Art", this.state.sculpture.Name, {tabToOpen:"Carte"});
+              this.notifService.localNotif("MapInformationNotif", "Beauce Art", this.state.sculpture.Name, {tabToOpen:"Carte", stackToOpen:"Map"});
             }}
             style={{marginTop:10}}
           >
             <Text style={[MapInformationStyle.text, MapInformationStyle.title, MapInformationStyle.buttonText]}>Plus d'informations</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity
-            onPress={() => {
-              this.notifService.removeAllDeliveredNotifications();
-            }}
-            style={{marginTop:10}}
-          >
-            <Text style={[MapInformationStyle.text, MapInformationStyle.title, MapInformationStyle.buttonText]}>Clear Notif</Text>
-          </TouchableOpacity> */}
         </ScrollView>
       </View>
     );
   }
 }
-
-export default MapInformation;
