@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, StyleSheet, TouchableOpacity, } from 'react-native';
+import { Text, View, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import CollapsiblePanel from '../../library/collapsible/collapsible';
 import firebase from 'react-native-firebase';
 import Colors from '../../res/colors';
@@ -34,34 +34,35 @@ export default class SculptureList extends Component {
   render() {
     if (typeof this.state.sculptures == "undefined") {
       return(
-        <View>
+        <View style={{flex: 1 , justifyContent: "center", alignItems: "center"}}>
+          <ActivityIndicator size="large" color={Colors.accentOrange}></ActivityIndicator>
         </View>
       );
     }else{
       return (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
           <ScrollView style={styles.container}>
-          {
-            Object.keys(this.state.sculptures).map((year, index) =>(
-                <CollapsiblePanel
-                  title={"Édition "+year}
-                  key={index}
-                  style={styles.collapsiblePanel}
-                >
-                  {
-                    Object.keys(this.state.sculptures[year]).map((sculptueId, index) =>(
-                      <TouchableOpacity
-                        style={styles.button}
-                        key={sculptueId}
-                        onPress={() => this.props.navigation.push('SculptureDetail', {sculpture: this.state.sculptures[year][sculptueId]})}
-                      >
-                        <Text style={styles.buttonText}>{this.state.sculptures[year][sculptueId].Name}</Text>
-                      </TouchableOpacity>
-                    ))
-                  }
-                </CollapsiblePanel>
-            ))
-          }
+            {
+              Object.keys(this.state.sculptures).map((year, index) =>(
+                  <CollapsiblePanel
+                    title={"Édition "+year}
+                    key={index}
+                    style={styles.collapsiblePanel}
+                  >
+                    {
+                      Object.keys(this.state.sculptures[year]).map((sculptueId, index) =>(
+                        <TouchableOpacity
+                          style={styles.button}
+                          key={sculptueId}
+                          onPress={() => this.props.navigation.push('SculptureDetail', {sculpture: this.state.sculptures[year][sculptueId]})}
+                        >
+                          <Text style={styles.buttonText}>{this.state.sculptures[year][sculptueId].Name}</Text>
+                        </TouchableOpacity>
+                      ))
+                    }
+                  </CollapsiblePanel>
+              ))
+            }
           </ScrollView>
         </View>
       );
