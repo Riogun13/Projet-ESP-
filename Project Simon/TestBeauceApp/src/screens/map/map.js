@@ -102,7 +102,7 @@ class Map extends Component {
     },1000);
   }
 
-  geoFenceTest(){
+  addGeoFence(){
     setTimeout( ()=>{ 
       this.state.sculptures.map((sculpture, index) => {
         navigator.geolocation.getCurrentPosition(
@@ -115,7 +115,7 @@ class Map extends Component {
           { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
         );
       });
-      this.geoFenceTest();
+      this.addGeoFence();
     },10000)
   }
 
@@ -128,7 +128,6 @@ class Map extends Component {
       Math.sin(dLon/2) * Math.sin(dLon/2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     var d = R * c;
-    //console.log(Math.round(d*1000));
     return Math.round(d*1000);
   }
 
@@ -148,7 +147,7 @@ class Map extends Component {
   componentDidMount() {
     this.getSculpture().then(()=>{
       this.setMarkers(this.state.sculptures);
-      this.geoFenceTest();
+     //this.addGeoFence();
     });
   }
 
@@ -192,7 +191,12 @@ class Map extends Component {
               this._MapInformation.updateMapInformationState(false,null);
               this.getParams();
               this.focusOnSculpture(this.selectedSculpture);
+            }}
+            onWillBlur={payload => {
+              //this.addGeoFence();
             }}>
+
+
 
           </NavigationEvents>
           <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject} style={{paddingTop: this.state.statusBarHeight}}>

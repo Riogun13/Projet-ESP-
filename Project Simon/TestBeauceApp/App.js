@@ -14,8 +14,59 @@ import NotifService from './src/library/notification/notifService';
 import type { Notification, NotificationOpen } from 'react-native-firebase';
 import Firebase from 'react-native-firebase';
 
-import { BackHandler, DeviceEventEmitter } from 'react-native';
+import { BackHandler, DeviceEventEmitter, AppRegistry} from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
+
+
+const LogLocation = async (data) => {
+console.log("setwegwegergwergerg");
+checkGeoFence();
+
+}
+AppRegistry.registerHeadlessTask('LogLocation', () => LogLocation);
+
+function checkGeoFence(){
+  let notifService = new NotifService();
+  console.log("12313");
+  getSculpture().then((sculptures)=>{
+    console.log(sculptures, "inside");
+    sculptures.map((sculpture, index) => {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          if(distanceEntreDeuxCoordonees(position.coords.latitude,position.coords.longitude,sculpture.Coordinate.latitude,sculpture.Coordinate.longitude) <= 25){
+            notifService.localNotif("MapInformationNotif", "Beauce Art", "Vous êtes proche d'une sculpture", {tabToOpen:"Carte"});
+          }
+        }, 
+        error => console.log("erreur rererer"),
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
+      );
+    });
+  });
+}
+
+function distanceEntreDeuxCoordonees(lat1,lon1,lat2,lon2) {
+  var R = 6371; // km (change this constant to get miles)
+  var dLat = (lat2-lat1) * Math.PI / 180;
+  var dLon = (lon2-lon1) * Math.PI / 180;
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180 ) * Math.cos(lat2 * Math.PI / 180 ) *
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  var d = R * c;
+  return Math.round(d*1000);
+}
+
+async function getSculpture() {
+  const sculptures = [];
+  await Firebase.firestore().collection('Sculpture').get()
+    .then(querySnapshot => {
+      querySnapshot.docs.forEach(doc => {
+        sculptures.push(doc.data());
+      });
+    });
+    console.log(sculptures);
+  return sculptures;
+}
 
 type Props = {};
 
