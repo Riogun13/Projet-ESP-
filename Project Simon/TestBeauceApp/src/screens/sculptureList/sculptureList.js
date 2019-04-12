@@ -35,7 +35,7 @@ export default class SculptureList extends Component {
     if (typeof this.state.sculptures == "undefined") {
       return(
         <View style={{flex: 1 , justifyContent: "center", alignItems: "center"}}>
-          <ActivityIndicator size="large" color={Colors.accentOrange}></ActivityIndicator>
+          {/* <ActivityIndicator size="large" color={Colors.accentOrange}></ActivityIndicator> */}
         </View>
       );
     }else{
