@@ -9,6 +9,8 @@
  //Component lifecycle : http://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/
 
 import React, {Component} from 'react';
+import { Alert } from 'react-native';
+import AppContainer from './src/navigation/appContainer'
 import NotifService from './src/library/notification/notifService';
 import type { Notification, NotificationOpen } from 'react-native-firebase';
 import Firebase from 'react-native-firebase';
@@ -83,7 +85,6 @@ class App extends React.Component<Props> {
       const notification: Notification = notificationOpen.notification;
       NavigationService.navigate(notification.data.tabToOpen,{focusUser: true, selectedSculpture: null},notification.data.stackToOpen);
       this.notifService.removeDeliveredNotification(notification.notificationId);
-
     });
   }
 

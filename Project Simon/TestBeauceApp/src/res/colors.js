@@ -4,4 +4,5 @@ module.exports = {
   accentColor: 'rgba(0, 122, 255, 1)',
   accentOrange: 'rgba(248, 145, 4, 1)',
   text: '#4a4a4a',
+  black: '#444',
 }
