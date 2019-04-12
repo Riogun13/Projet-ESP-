@@ -131,7 +131,7 @@ class Map extends Component {
   }
 
   componentWillMount() {
-    setTimeout(()=>this.setState({marginBottom: 0}),100);
+    setTimeout(()=>this.setState({marginBottom: 0}),1000);
   }
 
   componentDidMount() {
