@@ -15,6 +15,8 @@ import Colors from '../../res/colors';
 import MapInformation from './mapInformation'
 import { NavigationEvents } from 'react-navigation';
 
+import NotifService from '../../library/notification/notifService';
+
 class Map extends Component {
 
   static navigationOptions = {
@@ -34,6 +36,7 @@ class Map extends Component {
     this.mapRef = null;
     this.selectedSculpture = null;
     this.focusUser = false;
+    this.notifService = new NotifService();
   }
 
   getParams(){
@@ -121,6 +124,35 @@ class Map extends Component {
     },1000);
   }
 
+  addGeoFence(){
+    setTimeout( ()=>{ 
+      this.state.sculptures.map((sculpture, index) => {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            if(this.distanceEntreDeuxCoordonees(position.coords.latitude,position.coords.longitude,sculpture.Coordinate.latitude,sculpture.Coordinate.longitude) <= 25){
+              this.notifService.localNotif("MapInformationNotif", "Beauce Art", "Vous êtes proche d'une sculpture", {tabToOpen:"Carte"});
+            }
+          }, 
+          error => this.setState({error : error.message}),
+          { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
+        );
+      });
+      this.addGeoFence();
+    },10000)
+  }
+
+  distanceEntreDeuxCoordonees(lat1,lon1,lat2,lon2) {
+    var R = 6371; // km (change this constant to get miles)
+    var dLat = (lat2-lat1) * Math.PI / 180;
+    var dLon = (lon2-lon1) * Math.PI / 180;
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180 ) * Math.cos(lat2 * Math.PI / 180 ) *
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c;
+    return Math.round(d*1000);
+  }
+
   setMarkers(sculptures) {
     const markers = [];
     sculptures.map((sculpture, index) => {
@@ -135,20 +167,9 @@ class Map extends Component {
   }
 
   componentDidMount() {
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        this.setState({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          error: null
-        });
-      }, 
-      error => this.setState({error : error.message}),
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
-    );
-
     this.getSculpture().then(()=>{
       this.setMarkers(this.state.sculptures);
+     //this.addGeoFence();
     });
 
   }
@@ -176,6 +197,8 @@ class Map extends Component {
               this.getParams();
               this.focusPosition();
             }}>
+
+
 
           </NavigationEvents>
           <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject} style={{paddingTop: this.state.statusBarHeight}}>
