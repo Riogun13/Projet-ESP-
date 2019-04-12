@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, StyleSheet, TouchableOpacity, } from 'react-native';
+import { Text, View, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import CollapsiblePanel from '../../library/collapsible/collapsible';
 import firebase from 'react-native-firebase';
 import Colors from '../../res/colors';
@@ -34,7 +34,8 @@ export default class SculptureList extends Component {
   render() {
     if (typeof this.state.sculptures == "undefined") {
       return(
-        <View>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="large" color={Colors.accentOrange}></ActivityIndicator>
         </View>
       );
     }else{

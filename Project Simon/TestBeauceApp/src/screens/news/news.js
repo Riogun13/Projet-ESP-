@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
-import { Text, View, Dimensions, Button, FlatList, TouchableHighlight, Linking } from 'react-native';
+import { Text,
+  View, 
+  Dimensions, 
+  FlatList,
+  ActivityIndicator } from 'react-native';
 import NewsFormat from './newsFormat'
 import firebase from 'react-native-firebase';
+import Colors from '../../res/colors';
 
 import Moment from 'moment/min/moment-with-locales';
 
@@ -49,7 +54,7 @@ export default class News extends Component {
     if(this.state.loading){
       return (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-          <Text>loadgin false</Text>
+          <ActivityIndicator size="large" color={Colors.accentOrange}></ActivityIndicator>
         </View>
       );
     } else {

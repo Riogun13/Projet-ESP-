@@ -5,14 +5,13 @@ import {
   StyleSheet,
   View,
   Dimensions,
-  Alert,
+  ActivityIndicator,
 } from 'react-native';
 
 import MapView, { Marker } from 'react-native-maps';
 
 import firebase from 'react-native-firebase';
-
-import MapStyle from '../../res/styles/map';
+import Colors from '../../res/colors';
 
 import MapInformation from './mapInformation'
 import { NavigationEvents } from 'react-navigation';
@@ -161,7 +160,11 @@ class Map extends Component {
 
   render() {
     if(typeof this.state.markers === "undefined"){
-      return null;
+      return (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="large" color={Colors.accentOrange}></ActivityIndicator>
+        </View>
+      )
     }else{
       return (
         <View

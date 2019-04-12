@@ -10,7 +10,6 @@
 
 import React, {Component} from 'react';
 import { Alert } from 'react-native';
-import AppContainer from './src/navigation/appContainer'
 import NotifService from './src/library/notification/notifService';
 import type { Notification, NotificationOpen } from 'react-native-firebase';
 import Firebase from 'react-native-firebase';
