@@ -33,6 +33,8 @@ import com.airbnb.android.react.maps.MapsPackage;
 import java.util.Arrays;
 import java.util.List;
 
+import com.testbeauceapp.CustomToastPackage;
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
@@ -45,13 +47,14 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new LocationServicesDialogBoxPackage(),
+          new LocationServicesDialogBoxPackage(),
           new RNFirebasePackage(),
           new RNFirebaseFirestorePackage(),
           new RNFirebaseMessagingPackage(),
           new RNFirebaseNotificationsPackage(),
           new MapsPackage(),
-            new RNGestureHandlerPackage()
+          new RNGestureHandlerPackage(),
+          new CustomToastPackage()
       );
     }
 

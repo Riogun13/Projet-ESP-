@@ -23,7 +23,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import NavigationService from './NavigatorService';
 import { NavigationActions } from 'react-navigation';
 
-import { BackHandler, DeviceEventEmitter, AppRegistry, PermissionsAndroid, Alert} from 'react-native';
+import { BackHandler, DeviceEventEmitter, AppRegistry, PermissionsAndroid, Alert, NativeModules} from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
 let sculptures = null;
@@ -79,19 +79,19 @@ async function getSculpture() {
   return sculptures;
 }
 
-function requestLocationPermission() 
+async function requestLocationPermission() 
 {
   try {
-    const granted = PermissionsAndroid.request(
+    const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
     )
-
+    
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log("You can use the location")
-      Alert.alert("You can use the location");
+      console.log("You can use the location");
+      NativeModules.ToastExample.show('You can use the location', ToastExample.SHORT);
     } else {
-      console.log("location permission denied")
-      Alert.alert("Location permission denied");
+      console.log("Location permission denied");
+      NativeModules.ToastExample.show('Location permission denied', ToastExample.SHORT);
     }
   } catch (err) {
     console.warn(err)
