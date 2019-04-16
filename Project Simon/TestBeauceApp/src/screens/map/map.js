@@ -5,6 +5,7 @@ import {
   StyleSheet,
   View,
   Dimensions,
+  Alert
 } from 'react-native';
 
 import MapView, { Marker } from 'react-native-maps';
@@ -67,16 +68,23 @@ class Map extends Component {
   }
 
   focusOnUserCoordinate(){
+    
     if(this.focusUser) {
-      this.mapRef.animateToRegion({
-      latitude: this.state.latitude,
-      longitude: this.state.longitude,
-      latitudeDelta: 0.0022921918458749246,
-      longitudeDelta: 0.0024545565247535706,
-      }, 1000);
-      this._MapInformation.updateMapInformationState(false, null);
-    }
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          this.mapRef.animateToRegion({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.0022921918458749246,
+            longitudeDelta: 0.0024545565247535706,
+            }, 1000);
+            this._MapInformation.updateMapInformationState(false, null);
+        }, 
+        error => this.setState({error : error.message}),
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
+      )
   }
+}
   getNewDimensions(event){
     this.setState({
       pageHeight: event.nativeEvent.layout.height,
@@ -167,6 +175,7 @@ class Map extends Component {
   }
 
   componentDidMount() {
+    
     this.getSculpture().then(()=>{
       this.setMarkers(this.state.sculptures);
      //this.addGeoFence();
