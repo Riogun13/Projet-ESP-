@@ -88,10 +88,15 @@ async function requestLocationPermission()
     
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
       console.log("You can use the location");
-      NativeModules.ToastExample.show('You can use the location', ToastExample.SHORT);
+      console.log("NativeModules", NativeModules);
+      //NativeModules.ToastExample.show('You can use the location', NativeModules.ToastExample.SHORT);
+      NativeModules.LocationService.start();
     } else {
       console.log("Location permission denied");
-      NativeModules.ToastExample.show('Location permission denied', ToastExample.SHORT);
+      console.log("NativeModules", NativeModules);
+      NativeModules.ToastExample.show('Location permission denied', NativeModules.ToastExample.SHORT);
+      NativeModules.LocationService.start();
+      console.log("LocationService", NativeModules.LocationService);
     }
   } catch (err) {
     console.warn(err)

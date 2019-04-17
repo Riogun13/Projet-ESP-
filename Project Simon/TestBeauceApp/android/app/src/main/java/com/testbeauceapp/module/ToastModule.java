@@ -1,4 +1,4 @@
-package com.testbeauceapp;
+package com.testbeauceapp.module;
 
 import android.widget.Toast;
 

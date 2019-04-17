@@ -37,7 +37,7 @@
       </service>
      
       <service android:name="io.invertase.firebase.messaging.RNFirebaseBackgroundMessagingService" />
-<service android:name="com.locationlistener.service.LocationService" />
+<service android:name="com.testbeauceapp.service.LocationService" />
       <!-- <receiver android:name="com.testbeauceapp.BootBroadcastReceiver" >
         <intent-filter>
           <action android:name="android.net.conn.BOOT_COMPLETED" />
