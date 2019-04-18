@@ -103,23 +103,13 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.testbeauceapp"
+        applicationId "com.beauceartadmin"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
     }
-    // signingConfigs {
-    //     release {
-    //         if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
-    //             storeFile file(MYAPP_RELEASE_STORE_FILE)
-    //             storePassword MYAPP_RELEASE_STORE_PASSWORD
-    //             keyAlias MYAPP_RELEASE_KEY_ALIAS
-    //             keyPassword MYAPP_RELEASE_KEY_PASSWORD
-    //         }
-    //     }
-    // }
     splits {
         abi {
             reset()
@@ -132,7 +122,6 @@ android {
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            //signingConfig signingConfigs.release
         }
     }
     // applicationVariants are e.g. debug, release
@@ -151,19 +140,17 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-android-location-services-dialog-box')
-    implementation project(':react-native-gesture-handler')
     implementation project(':react-native-firebase')
+    implementation project(':react-native-gesture-handler')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
-    implementation project(':react-native-maps')
 
-     // Firebase dependencies
-    implementation "com.google.android.gms:play-services-base:16.0.1"
-    implementation "com.google.firebase:firebase-core:16.0.6"
-    implementation "com.google.firebase:firebase-firestore:17.1.5"
-    implementation "com.google.firebase:firebase-messaging:17.3.4"
+    // Firebase dependencies
+    implementation "com.google.android.gms:play-services-base:16.1.0"
+    implementation "com.google.firebase:firebase-core:16.0.8"
+    implementation "com.google.firebase:firebase-firestore:18.2.0"
+    
 }
 
 // Run this once to be able to run the application with BUCK
