@@ -4,11 +4,13 @@ import {createStackNavigator } from 'react-navigation';
 
 import Colors from '../../res/colors';
 import Donation from '../../screens/donation/donation';
+import DonationForm from '../../screens/donation/donationForm';
 
 module.exports = {
     DonationStack: createStackNavigator(
         {
-          Donation: Donation
+          Donation: Donation,
+          DonationForm: DonationForm
         },
         {
           initialRouteName: 'Donation',
