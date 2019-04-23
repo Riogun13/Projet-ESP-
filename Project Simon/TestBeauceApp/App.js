@@ -9,7 +9,13 @@
  //Component lifecycle : http://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/
 
 import React, {Component} from 'react';
-import { Alert } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Dimensions,
+  Alert
+} from 'react-native';
 import NotifService from './src/library/notification/notifService';
 import type { Notification, NotificationOpen } from 'react-native-firebase';
 import Firebase from 'react-native-firebase';
@@ -27,7 +33,7 @@ import { NavigationActions } from 'react-navigation';
 import { BackHandler, DeviceEventEmitter, AppRegistry} from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
-//import OfflineNotice from './OfflineNotice'
+import OfflineNotice from './src/library/noConnectionSign/offlineNotice'
 
 const LogLocation = async (data) => {
 console.log("setwegwegergwergerg");
@@ -174,11 +180,15 @@ class App extends React.Component<Props> {
 
   render() {
     return (
+      
       <AppContainer
         ref={navigatorRef => {
           NavigationService.setTopLevelNavigator(navigatorRef);
         }} 
-      />
+      >
+      <OfflineNotice />
+      </AppContainer>
+      
     );
   }
 

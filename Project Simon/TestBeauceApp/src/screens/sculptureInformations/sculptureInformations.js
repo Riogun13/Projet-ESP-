@@ -12,6 +12,7 @@ import {
 import Colors from '../../res/colors'
 import Style from '../../res/styles/sculptureDetail'
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import OfflineNotice from '../../library/noConnectionSign/offlineNotice/'
 
 class DetailsScreen extends Component {
   
@@ -72,6 +73,7 @@ class DetailsScreen extends Component {
               })}
             </View>
           </ScrollView>
+          <OfflineNotice />
         </View>
       );
     }

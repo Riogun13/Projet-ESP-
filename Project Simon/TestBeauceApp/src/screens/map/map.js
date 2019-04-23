@@ -18,6 +18,9 @@ import { NavigationEvents } from 'react-navigation';
 
 import NotifService from '../../library/notification/notifService';
 
+import OfflineNotice from '../../library/noConnectionSign/offlineNotice/'
+import { NetInfo } from 'react-native'
+
 class Map extends Component {
 
   static navigationOptions = {
@@ -33,6 +36,7 @@ class Map extends Component {
       pageHeight: Dimensions.get('screen').height,
       pageWidth: Dimensions.get('screen').width,
       marginBottom: 1,
+      isConnected: true,
     };
     this.mapRef = null;
     this.selectedSculpture = null;
@@ -55,6 +59,7 @@ class Map extends Component {
       }
     }, 1000);
   }
+
   focusOnSculpture(sculpture){
     if(sculpture !== null && sculpture !== undefined){
       this.mapRef.animateToRegion({
@@ -66,6 +71,12 @@ class Map extends Component {
       this._MapInformation.updateMapInformationState(true, sculpture);
     }
   }
+
+  //revenir en criss aparrt de ca dude
+  // function handleConnectivityChange = isConnected => {
+  //   this.setState({ isConnected });
+  // }
+  //revenir en criss aparrt de ca dude
 
   focusOnUserCoordinate(){
     
@@ -180,7 +191,6 @@ class Map extends Component {
       this.setMarkers(this.state.sculptures);
      //this.addGeoFence();
     });
-
   }
 
   onLayout(e){
@@ -244,6 +254,7 @@ class Map extends Component {
             </MapView>
             <MapInformation ref={ref => (this._MapInformation = ref)} navigation={this.props.navigation}></MapInformation>
           </ScrollView>
+          <OfflineNotice />
         </View>
       );
     }

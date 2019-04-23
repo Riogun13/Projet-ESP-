@@ -3,6 +3,7 @@ import { Text, View, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator
 import CollapsiblePanel from '../../library/collapsible/collapsible';
 import firebase from 'react-native-firebase';
 import Colors from '../../res/colors';
+import OfflineNotice from '../../library/noConnectionSign/offlineNotice/'
 
 export default class SculptureList extends Component {
   constructor(props){
@@ -64,6 +65,7 @@ export default class SculptureList extends Component {
               ))
             }
           </ScrollView>
+          <OfflineNotice />
         </View>
       );
     }
