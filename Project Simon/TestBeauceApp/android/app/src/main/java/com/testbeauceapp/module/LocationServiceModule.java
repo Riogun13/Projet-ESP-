@@ -42,6 +42,8 @@ public class LocationServiceModule extends ReactContextBaseJavaModule {
         }
     };
 
+    private LocationManager locationManager = (LocationManager) getReactApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+
     public LocationServiceModule(ReactApplicationContext reactContext){
         super(reactContext);
     }
@@ -54,12 +56,13 @@ public class LocationServiceModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void start() {
         if (checkLocationPermission()){
-            Toast.makeText(getReactApplicationContext(), "Start LocationService", Toast.LENGTH_LONG).show();
-            LocationManager locationManager = (LocationManager) getReactApplicationContext().getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5, listener);
-        }else{
-            Toast.makeText(getReactApplicationContext(), "Can't start LocationService", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @ReactMethod
+    public void stop() {
+        locationManager.removeUpdates(listener);
     }
 
     private boolean checkLocationPermission()

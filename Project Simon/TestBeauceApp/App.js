@@ -23,7 +23,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import NavigationService from './NavigatorService';
 import { NavigationActions } from 'react-navigation';
 
-import { BackHandler, DeviceEventEmitter, AppRegistry, PermissionsAndroid, Alert, NativeModules} from 'react-native';
+import { BackHandler, DeviceEventEmitter, AppRegistry, PermissionsAndroid, Alert, NativeModules, Platform} from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
 let sculptures = null;
@@ -81,25 +81,22 @@ async function getSculpture() {
 
 async function requestLocationPermission() 
 {
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-    )
-    
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log("You can use the location");
-      console.log("NativeModules", NativeModules);
-      //NativeModules.ToastExample.show('You can use the location', NativeModules.ToastExample.SHORT);
-      NativeModules.LocationService.start();
-    } else {
-      console.log("Location permission denied");
-      console.log("NativeModules", NativeModules);
-      NativeModules.ToastExample.show('Location permission denied', NativeModules.ToastExample.SHORT);
-      NativeModules.LocationService.start();
-      console.log("LocationService", NativeModules.LocationService);
+  if (Platform.OS === 'ios') {
+    //Some code here
+    //Code graveyard
+  }else{
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+      )
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        NativeModules.LocationService.start();
+      } else {
+        NativeModules.LocationService.stop();
+      }
+    } catch (err) {
+      console.warn(err)
     }
-  } catch (err) {
-    console.warn(err)
   }
 }
 
