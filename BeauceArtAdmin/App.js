@@ -12,7 +12,7 @@ import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from './src/screen/Home';
 import News from './src/screen/News';
-import Sculptures from './src/screen/Sculptures';
+import SculptureStack from './src/navigation/SculptureStack';
 import Colors from './src/res/colors';
 
 import NavigationService from './NavigatorService';
@@ -24,7 +24,7 @@ AppContainer = createAppContainer(createBottomTabNavigator(
   {
     Nouvelles: News,
     Home: Home,
-    Sculptures: Sculptures,
+    Sculptures: SculptureStack.SculptureStack,
   },
   {
     initialRouteName: 'Home',

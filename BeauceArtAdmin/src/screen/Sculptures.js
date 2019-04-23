@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, StyleSheet, TouchableOpacity, } from 'react-native';
+import { Text, View, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import CollapsiblePanel from '../library/collapsible/collapsible';
 import firebase from 'react-native-firebase';
 import Colors from '../res/colors';
@@ -36,7 +36,7 @@ export default class SculptureList extends Component {
     if (typeof this.state.sculptures == "undefined") {
       return(
         <View style={{flex: 1 , justifyContent: "center", alignItems: "center"}}>
-          {/* <ActivityIndicator size="large" color={Colors.accentOrange}></ActivityIndicator> */}
+          <ActivityIndicator size="large" color={Colors.accentOrange}></ActivityIndicator>
         </View>
       );
     }else{
@@ -67,7 +67,7 @@ export default class SculptureList extends Component {
           </ScrollView>
           <TouchableOpacity
                   style={styles.mapButton}
-                    onPress={()=> console.log("plus")}
+                    onPress={()=> this.props.navigation.push('SculptureForm')}
                 >
                   <Ionicons name={"ios-add"}  size={40} color={Colors.text} />
                 </TouchableOpacity>
