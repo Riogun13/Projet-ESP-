@@ -34,9 +34,9 @@ import { BackHandler, DeviceEventEmitter, AppRegistry} from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
 import OfflineNotice from './src/library/noConnectionSign/offlineNotice'
+import { NetInfo } from 'react-native'
 
 const LogLocation = async (data) => {
-console.log("setwegwegergwergerg");
 checkGeoFence();
 
 }
