@@ -1,12 +1,20 @@
 import React, { Component } from 'react';
 import { Text, View, Button, StyleSheet } from 'react-native';
+import t from 'tcomb-form-native';
+const Form = t.form.Form;
 import Email from '../../library/email/email';
 
 export default class DonationForm extends Component {
   constructor(props){
     super(props);
-
-    this.state={ }
+    this.state={
+      donationForm: t.struct({
+        name: t.String,
+        lastname: t.String,
+        email: t.String,
+        amount: t.Number,
+      })
+    };
   }
 
   static navigationOptions = {
@@ -15,7 +23,8 @@ export default class DonationForm extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={{ flex: 1, padding: 10 }}>
+        <Form type={this.state.donationForm} />
         <Button
           onPress={() => Email.generateEmail("touriste.ecole@gmail.com", "Winged reptile are way better than normal reptile", "Dragon > Sliver") }
           title="Envoyer"

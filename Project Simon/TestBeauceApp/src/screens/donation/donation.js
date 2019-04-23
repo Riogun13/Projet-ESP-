@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Button, StyleSheet } from 'react-native';
+import { Text, ScrollView, Button, StyleSheet } from 'react-native';
 import Email from '../../library/email/email';
 
 export default class Donation extends Component {
@@ -15,20 +15,22 @@ export default class Donation extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text style={styles.title}>Faites un don{"\n"}</Text>
-        <Text style={styles.text}>
-          Beauce Art prépare déjà la prochaine édition du Symposium international de la sculpture de Saint-Georges.
-          Vous aimeriez contribuer à la réalisation de ce projet unique au monde?
-          Remplissez le formulaire et devenez l’un de nos partenaires.
-          {"\n"}
-        </Text>
-        <Text style={styles.text}>Donnez!{"\n"}</Text>
-        <Text style={styles.text}>Merci et bonne journée!!!{"\n"}</Text>
-        <Button
-          onPress={() => this.props.navigation.push('DonationForm') }
-          title="Remplir le formulaire"
-        />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 10 }}>
+        <ScrollView>
+          <Text style={styles.title}>Faites un don{"\n"}</Text>
+          <Text style={styles.text}>
+            Beauce Art prépare déjà la prochaine édition du Symposium international de la sculpture de Saint-Georges.
+            Vous aimeriez contribuer à la réalisation de ce projet unique au monde?
+            Remplissez le formulaire et devenez l’un de nos partenaires.
+            {"\n"}
+          </Text>
+          <Text style={styles.text}>Donnez!{"\n"}</Text>
+          <Text style={styles.text}>Merci et bonne journée!!!{"\n"}</Text>
+          <Button
+            onPress={() => this.props.navigation.push('DonationForm') }
+            title="Remplir le formulaire"
+          />
+        </ScrollView>
       </View>
     );
   }
