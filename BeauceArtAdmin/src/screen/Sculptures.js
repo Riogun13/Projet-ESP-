@@ -9,27 +9,36 @@ export default class SculptureList extends Component {
   constructor(props){
     super(props);
 
+    this.ref = firebase.firestore().collection('Sculpture');
+    this.unsubscribe = null;
     this.state={
+      loading: true
     }
-    this.getSculpture();
   }
 
   static navigationOptions = {
     title: 'Liste des Sculptures',
   };
 
-  async getSculpture() {
+  
+  onCollectionUpdate = (querySnapshot) => {
+
+    console.log(querySnapshot);
     const sculptures = {};
-    await firebase.firestore().collection('Sculpture').get()
-      .then(querySnapshot => {
-        querySnapshot.docs.forEach(doc => {
-          if(typeof sculptures[doc.data().Thematic.Year] === "undefined"){ //lookup if there is already a year
-            sculptures[doc.data().Thematic.Year] = {};
-          }
-          sculptures[doc.data().Thematic.Year][doc._ref._documentPath._parts[1]] = doc.data();
-        });
-      });
-      this.setState({sculptures: sculptures});
+    querySnapshot.docs.forEach(doc => {
+      if(typeof sculptures[doc.data().Thematic.Year] === "undefined"){ //lookup if there is already a year
+        sculptures[doc.data().Thematic.Year] = {};
+      }
+      sculptures[doc.data().Thematic.Year][doc._ref._documentPath._parts[1]] = doc.data();
+    });
+    this.setState({
+      sculptures: sculptures,
+      loading: false,
+    });
+  }
+
+  componentDidMount(){
+    this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
   }
 
   render() {

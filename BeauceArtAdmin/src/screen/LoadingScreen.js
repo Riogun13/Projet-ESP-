@@ -31,7 +31,7 @@ export default class ImageHandler extends Component {
     }
 
     render(){
-        if(this.state.display){
+        if(!this.state.display){
             return null;
         } else {
             return (
