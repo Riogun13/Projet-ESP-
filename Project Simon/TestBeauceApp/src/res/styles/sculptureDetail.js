@@ -52,5 +52,18 @@ module.exports = StyleSheet.create({
       borderRadius: 25,
       top: 10,
       right: 10,
+    },
+    appButton: {
+      position: 'absolute',
+      borderWidth:1,
+      borderColor:'rgba(0,0,0,0.2)',
+      alignItems:'center',
+      justifyContent:'center',
+      width: 50,
+      height: 50,
+      backgroundColor:Colors.accentOrange,
+      borderRadius: 25,
+      top: 60,
+      right: 60,
     }
   });
