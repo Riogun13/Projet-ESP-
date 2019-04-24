@@ -56,6 +56,15 @@ class DetailsScreen extends Component {
                 >
                   <Ionicons name={"ios-pin"}  size={40} color={Colors.text} />
                 </TouchableOpacity>
+                <TouchableOpacity
+                  style={Style.appButton}
+                    onPress={()=> this.props.navigation.navigate('Map', {
+                      selectedSculpture: sculpture,
+                      focusUser: false
+                    })}
+                >
+                  <Ionicons name={"ios-pin"}  size={40} color={Colors.text} />
+                </TouchableOpacity>
             </View>
             <View style={Style.imageContainer}>
               <Image
