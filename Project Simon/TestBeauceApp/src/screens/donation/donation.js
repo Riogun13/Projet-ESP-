@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Text, ScrollView, Button, StyleSheet } from 'react-native';
+import { Text, View, ScrollView, Button, StyleSheet } from 'react-native';
 import Email from '../../library/email/email';
+import Colors from '../../res/colors';
 
 export default class Donation extends Component {
   constructor(props){
@@ -15,8 +16,8 @@ export default class Donation extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 10 }}>
-        <ScrollView>
+      <View style={{ flex: 1, padding: 10 }}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center", }}>
           <Text style={styles.title}>Faites un don{"\n"}</Text>
           <Text style={styles.text}>
             Beauce Art prépare déjà la prochaine édition du Symposium international de la sculpture de Saint-Georges.
@@ -27,6 +28,7 @@ export default class Donation extends Component {
           <Text style={styles.text}>Donnez!{"\n"}</Text>
           <Text style={styles.text}>Merci et bonne journée!!!{"\n"}</Text>
           <Button
+            color={Colors.accentOrange}
             onPress={() => this.props.navigation.push('DonationForm') }
             title="Remplir le formulaire"
           />
