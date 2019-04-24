@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
       android:name=".MainApplication"
@@ -14,7 +13,8 @@
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
-      android:theme="@style/AppTheme">
+      android:theme="@style/AppTheme"
+      android:debuggable="true">
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
@@ -37,7 +37,7 @@
       </service>
      
       <service android:name="io.invertase.firebase.messaging.RNFirebaseBackgroundMessagingService" />
-<service android:name="com.locationlistener.service.LocationService" />
+<service android:name="com.testbeauceapp.service.LocationService" />
       <!-- <receiver android:name="com.testbeauceapp.BootBroadcastReceiver" >
         <intent-filter>
           <action android:name="android.net.conn.BOOT_COMPLETED" />
@@ -53,5 +53,7 @@
           </intent-filter>
       </receiver>
     </application>
+    
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 </manifest>

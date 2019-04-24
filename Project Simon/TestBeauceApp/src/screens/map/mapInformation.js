@@ -76,7 +76,7 @@ export default class MapInformation extends Component {
           <Text style={[MapInformationStyle.text, MapInformationStyle.title]}>Titre:</Text>
           <Text style={MapInformationStyle.text}>{this.state.sculpture.Name}</Text>
           <Text style={[MapInformationStyle.text, MapInformationStyle.title]}>Artiste:</Text>
-          <Text style={MapInformationStyle.text}>{this.state.sculpture.Artist.Name}</Text>
+          <Text style={MapInformationStyle.text}>{this.state.sculpture.ArtistName}</Text>
 
           <TouchableOpacity
             onPress={() => {

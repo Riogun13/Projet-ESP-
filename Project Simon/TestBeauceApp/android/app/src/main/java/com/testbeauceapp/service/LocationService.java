@@ -1,5 +1,5 @@
-//imports
-package com.locationlistener.service;
+package com.testbeauceapp.service;
+
 import android.content.Intent;
 import android.os.Bundle;
 import com.facebook.react.HeadlessJsTaskService;

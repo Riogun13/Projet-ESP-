@@ -21,10 +21,7 @@ class DetailsScreen extends Component {
     render() {
       const sculpture = this.props.navigation.getParam('sculpture', {
         Name: 'No Sculpture Found',
-        Artist: {
-          Name: 'No Sculpture Found',
-          ArtistDocumentId: 'No Sculpture Found',
-        },
+        ArtistName: 'No Sculpture Found',
         Coordinate: {
           latitude: 46.123532,
           longitude: -70.681716
@@ -45,7 +42,7 @@ class DetailsScreen extends Component {
             <View>
               <View style={Style.titleContainer}>
                 <Text style={Style.titleName}>{sculpture.Name}</Text>
-                <Text style={Style.label}>{sculpture.Artist.Name}</Text>
+                <Text style={Style.label}>{sculpture.ArtistName}</Text>
               </View>
               <TouchableOpacity
                   style={Style.mapButton}
