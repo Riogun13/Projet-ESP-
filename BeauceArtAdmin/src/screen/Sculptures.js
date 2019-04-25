@@ -64,7 +64,12 @@ export default class SculptureList extends Component {
                         <TouchableOpacity
                           style={styles.button}
                           key={sculptueId}
-                          onPress={() => console.log(this.state.sculptures[year][sculptueId].Name)}
+                          onPress={() => this.props.navigation.push(
+                            'SculptureForm', 
+                            {
+                              sculpture: this.state.sculptures[year][sculptueId],
+                              sculptureId: sculptueId
+                            })}
                         >
                           <Text style={styles.buttonText}>{this.state.sculptures[year][sculptueId].Name}</Text>
                         </TouchableOpacity>
