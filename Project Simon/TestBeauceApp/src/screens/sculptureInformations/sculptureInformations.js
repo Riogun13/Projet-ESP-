@@ -17,9 +17,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 class DetailsScreen extends Component {
 
   linkingTest() {
-    //const url = "/storage/emulated/0/Android/data/com.bear.snappress/cache/default";
-    //const url = "/storage/emulated/0/Android/data/com.android";
-    const url = "snappress";
+    const url = 'snappress://';
     Linking.canOpenURL(url).then(supported => {
       if (!supported) {
         Linking.openURL("https://play.google.com/store/apps/details?id=com.bear.snappress");
