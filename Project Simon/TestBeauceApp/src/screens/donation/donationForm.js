@@ -60,7 +60,7 @@ export default class DonationForm extends Component {
     const value = this._form.getValue(); // use that ref to get the form value
     console.log('value: ', value);
     if(value != null){
-      Email.generateEmail(value.email, "Don", this.createEmailBody(value.name, value.lastname, value.email, value.amount, value.terms));
+      Email.generateEmail("olga@beauceart.com", "Donation", this.createEmailBody(value.name, value.lastname, value.email, value.amount, value.terms));
     }
   }
 
