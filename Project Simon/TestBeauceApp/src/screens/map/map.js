@@ -19,15 +19,28 @@ import { NavigationEvents } from 'react-navigation';
 import NotifService from '../../library/notification/notifService';
 import sculpturesEmitter from '../../res/sculptures';
 
+let sculptureList = null;
+
 sculpturesEmitter.on('onSculptureCollectionUpdate', function (sculptures) {
-  console.log("MAP onSculptureCollectionUpdate", sculptures);
+  sculptureList = sculptures;
+  updateStateSculpture();
 });
+
+function updateStateSculpture(){
+  try {
+    this.setState({sculptures: sculptureList, markers: this.generarteMarkers(sculptureList)});
+    console.log("updateStateSculpture MAP");
+  } catch (error) {
+    //path to exile
+  }
+}
 
 class Map extends Component {
 
   static navigationOptions = {
     title: 'Carte',
   };
+
   constructor(props){
     super(props);
     this.state = {
@@ -38,7 +51,10 @@ class Map extends Component {
       pageHeight: Dimensions.get('screen').height,
       pageWidth: Dimensions.get('screen').width,
       marginBottom: 1,
+      sculptures: sculptureList,
+      markers: this.generarteMarkers(sculptureList),
     };
+    updateStateSculpture = updateStateSculpture.bind(this);
     this.mapRef = null;
     this.selectedSculpture = null;
     this.focusUser = false;
@@ -60,6 +76,7 @@ class Map extends Component {
       }
     }, 1000);
   }
+
   focusOnSculpture(sculpture){
     if(sculpture !== null && sculpture !== undefined){
       this.mapRef.animateToRegion({
@@ -73,7 +90,6 @@ class Map extends Component {
   }
 
   focusOnUserCoordinate(){
-    
     if(this.focusUser) {
       navigator.geolocation.getCurrentPosition(
         position => {
@@ -88,25 +104,14 @@ class Map extends Component {
         error => this.setState({error : error.message}),
         { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
       )
+    }
   }
-}
+
   getNewDimensions(event){
     this.setState({
       pageHeight: event.nativeEvent.layout.height,
       pageWidth: event.nativeEvent.layout.width
     });
-  }
-
-  async getSculpture() {
-    const sculptures = [];
-    await firebase.firestore().collection('Sculpture').get()
-      .then(querySnapshot => {
-        querySnapshot.docs.forEach(doc => {
-          sculptures.push(doc.data());
-        });
-      });
-      this.setState({sculptures: sculptures});
-    return sculptures;
   }
 
   getMarkerColor(year){
@@ -137,42 +142,38 @@ class Map extends Component {
     },1000);
   }
 
-  addGeoFence(){
-    setTimeout( ()=>{ 
-      this.state.sculptures.map((sculpture, index) => {
-        navigator.geolocation.getCurrentPosition(
-          position => {
-            if(this.distanceEntreDeuxCoordonees(position.coords.latitude,position.coords.longitude,sculpture.Coordinate.latitude,sculpture.Coordinate.longitude) <= 25){
-              this.notifService.localNotif("MapInformationNotif", "Beauce Art", "Vous êtes proche d'une sculpture", {tabToOpen:"Carte"});
+  generarteMarkers(sculptures) {
+    const markers = [];
+    Object.keys(sculptures).map((year, index) =>{
+      Object.keys(sculptures[year]).map((sculptureId, index) =>{
+        markers.push({latitude: sculptures[year][sculptureId].Coordinate.latitude, longitude: sculptures[year][sculptureId].Coordinate.longitude});
+      });
+    });
+    return markers;
+  }
+
+  showMarkers = () => {
+    let markers = []
+
+    Object.keys(this.state.sculptures).map((year, index) =>{
+      Object.keys(this.state.sculptures[year]).map((sculptureId, index) =>{
+        markers.push(
+          <MapView.Marker
+            key={sculptureId}
+            coordinate={{latitude: this.state.sculptures[year][sculptureId].Coordinate.latitude, longitude: this.state.sculptures[year][sculptureId].Coordinate.longitude}}
+            onPress={(event) =>{
+              this._MapInformation.updateMapInformationState(true, this.state.sculptures[year][sculptureId]);
+            }}
+            pinColor={
+              this.getMarkerColor(this.state.sculptures[year][sculptureId].Thematic.Year)
             }
-          }, 
-          error => this.setState({error : error.message}),
-          { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
+          >
+          </MapView.Marker>
         );
       });
-      this.addGeoFence();
-    },10000)
-  }
-
-  distanceEntreDeuxCoordonees(lat1,lon1,lat2,lon2) {
-    var R = 6371; // km (change this constant to get miles)
-    var dLat = (lat2-lat1) * Math.PI / 180;
-    var dLon = (lon2-lon1) * Math.PI / 180;
-    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(lat1 * Math.PI / 180 ) * Math.cos(lat2 * Math.PI / 180 ) *
-      Math.sin(dLon/2) * Math.sin(dLon/2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    var d = R * c;
-    return Math.round(d*1000);
-  }
-
-  setMarkers(sculptures) {
-    const markers = [];
-    sculptures.map((sculpture, index) => {
-      markers.push({latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude});
     });
-    this.setState({markers: markers});
-    return markers;
+
+    return markers
   }
 
   componentWillMount() {
@@ -180,12 +181,6 @@ class Map extends Component {
   }
 
   componentDidMount() {
-    
-    this.getSculpture().then(()=>{
-      this.setMarkers(this.state.sculptures);
-     //this.addGeoFence();
-    });
-
   }
 
   onLayout(e){
@@ -211,9 +206,6 @@ class Map extends Component {
               this.getParams();
               this.focusPosition();
             }}>
-
-
-
           </NavigationEvents>
           <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject} style={{paddingTop: this.state.statusBarHeight}}>
             <MapView
@@ -233,19 +225,7 @@ class Map extends Component {
                 this._MapInformation.updateMapInformationState(false, null);
               }}
             >
-              {this.state.sculptures.map((sculpture,index) => (
-                <MapView.Marker 
-                  key={index}
-                  coordinate={{latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude}}
-                  onPress={(event) =>{
-                    this._MapInformation.updateMapInformationState(true, sculpture);
-                  }}
-                  pinColor={
-                    this.getMarkerColor(sculpture.Thematic.Year)
-                  }
-                >
-                </MapView.Marker>
-              ))}
+              {this.showMarkers()}
             </MapView>
             <MapInformation ref={ref => (this._MapInformation = ref)} navigation={this.props.navigation}></MapInformation>
           </ScrollView>

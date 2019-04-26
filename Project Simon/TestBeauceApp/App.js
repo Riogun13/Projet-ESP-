@@ -27,10 +27,12 @@ import sculpturesEmitter from './src/res/sculptures';
 import { BackHandler, DeviceEventEmitter, AppRegistry, PermissionsAndroid, Alert, NativeModules, Platform} from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
-let sculptures = null;
-let sculpturesRef = Firebase.firestore().collection('Sculpture');
-let sculpturesSubscribe = null;
 let notifService = new NotifService();
+let sculptures = null;
+
+sculpturesEmitter.on('onSculptureCollectionUpdate', function (sculpturesList) {
+  sculptures = sculpturesList;
+});
 
 const LogLocation = async (data) => {
   checkGeoFence();
@@ -39,7 +41,6 @@ AppRegistry.registerHeadlessTask('LogLocation', () => LogLocation);
 
 function checkGeoFence(){
   if(sculptures == null){
-    subscription();
     setTimeout(function(){ checkGeoFence(); }, 3000);
   }else{
     navigator.geolocation.getCurrentPosition(
@@ -68,24 +69,6 @@ function distanceEntreDeuxCoordonees(lat1,lon1,lat2,lon2) {
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   var d = R * c;
   return Math.round(d*1000);
-}
-
-function subscription(){
-  if(typeof subscription.subscribe == 'undefined'){
-    sculpturesSubscribe = sculpturesRef.onSnapshot(onSculptureCollectionUpdate);
-    subscription.subscribe = true;
-  }
-}
-
-onSculptureCollectionUpdate = (querySnapshot) => {
-  const mySculptures = {};
-  querySnapshot.forEach((doc) => {
-    if(typeof mySculptures[doc.data().Thematic.Year] === "undefined"){
-      mySculptures[doc.data().Thematic.Year] = {};
-    }
-    mySculptures[doc.data().Thematic.Year][doc._ref._documentPath._parts[1]] = doc.data();
-  });
-  sculptures = mySculptures;
 }
 
 async function requestLocationPermission() 
@@ -165,7 +148,6 @@ class App extends React.Component<Props> {
 
   componentWillMount(){
     requestLocationPermission();
-    subscription();
     LocationServicesDialogBox.checkLocationServicesIsEnabled({
       message: "<h2 style='color: #0af13e'>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
       ok: "YES",

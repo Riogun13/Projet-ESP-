@@ -1,42 +1,40 @@
 import React, { Component } from 'react';
 import { Text, View, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import CollapsiblePanel from '../../library/collapsible/collapsible';
-import firebase from 'react-native-firebase';
 import Colors from '../../res/colors';
 import sculpturesEmitter from '../../res/sculptures';
 
+let sculptureList = null;
+
 sculpturesEmitter.on('onSculptureCollectionUpdate', function (sculptures) {
-  console.log("SculptureList onSculptureCollectionUpdate", sculptures);
+  sculptureList = sculptures;
+  updateStateSculpture();
 });
+
+function updateStateSculpture(){
+  try {
+    this.setState({sculptures: sculptureList});
+  } catch (error) {
+    //Sword to plowshare
+  }
+}
 
 export default class SculptureList extends Component {
   constructor(props){
     super(props);
 
-    this.state={ }
-    this.getSculpture();
+    this.state={
+      sculptures: sculptureList
+    }
+    updateStateSculpture = updateStateSculpture.bind(this);
   }
 
   static navigationOptions = {
     title: 'Liste des Sculptures',
   };
 
-  async getSculpture() {
-    const sculptures = {};
-    await firebase.firestore().collection('Sculpture').get()
-      .then(querySnapshot => {
-        querySnapshot.docs.forEach(doc => {
-          if(typeof sculptures[doc.data().Thematic.Year] === "undefined"){ //lookup if there is already a year
-            sculptures[doc.data().Thematic.Year] = {};
-          }
-          sculptures[doc.data().Thematic.Year][doc._ref._documentPath._parts[1]] = doc.data();
-        });
-      });
-      this.setState({sculptures: sculptures});
-  }
-
   render() {
-    if (typeof this.state.sculptures == "undefined") {
+    if (typeof this.state.sculptures == "undefined" || this.state.sculptures == null) {
       return(
         <View style={{flex: 1 , justifyContent: "center", alignItems: "center"}}>
           {/* <ActivityIndicator size="large" color={Colors.accentOrange}></ActivityIndicator> */}

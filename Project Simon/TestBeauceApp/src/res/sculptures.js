@@ -13,7 +13,6 @@ let sculpturesRef = Firebase.firestore().collection('Sculpture');
 let sculpturesSubscribe = null;
 
 onSculptureCollectionUpdate = (querySnapshot) => {
-  console.log("subscription");
   const mySculptures = {};
   querySnapshot.forEach((doc) => {
     if(typeof mySculptures[doc.data().Thematic.Year] === "undefined"){
