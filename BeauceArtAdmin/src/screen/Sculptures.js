@@ -23,7 +23,6 @@ export default class SculptureList extends Component {
   
   onCollectionUpdate = (querySnapshot) => {
 
-    console.log(querySnapshot);
     const sculptures = {};
     querySnapshot.docs.forEach(doc => {
       if(typeof sculptures[doc.data().Thematic.Year] === "undefined"){ //lookup if there is already a year
@@ -56,7 +55,7 @@ export default class SculptureList extends Component {
               Object.keys(this.state.sculptures).map((year, index) =>(
                   <CollapsiblePanel
                     title={"Édition "+ year}
-                    key={index}
+                    key={year}
                     style={styles.collapsiblePanel}
                   >
                     {

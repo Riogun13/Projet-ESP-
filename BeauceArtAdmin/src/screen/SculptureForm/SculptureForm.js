@@ -74,14 +74,30 @@ export default class App extends Component {
 
   async addDocument(doc){
 
-    let success = ""
     if(this.state.sculptureId){
       let collectionSculpture = firebase.firestore().collection('Sculpture').doc(this.state.sculptureId);
-      collectionSculpture.set(doc).then(() => {
 
+      await collectionSculpture.set(doc).then(() => {
+        this._LoadingScreen.updateUI(false);
+        ToastAndroid.show('Modification Effectuée avec succès',ToastAndroid.LONG);
+        this.props.navigation.goBack();
+      })
+      .catch((error) => {
+        ToastAndroid.show('Erreur lors de la modification, veuillez réessayer',ToastAndroid.LONG);
+        this._LoadingScreen.updateUI(false);
       })
     } else {
       let collectionSculpture = firebase.firestore().collection('Sculpture');
+
+      await collectionSculpture.add(doc).then(() => {
+        this._LoadingScreen.updateUI(false);
+        ToastAndroid.show('Ajout Effectuée avec succès',ToastAndroid.LONG);
+        this.props.navigation.goBack();
+      })
+      .catch((error) => {
+        this._LoadingScreen.updateUI(false);
+        ToastAndroid.show('Erreur lors de l\'ajout, veuillez réessayer',ToastAndroid.LONG);
+      })
     }
   }
 
@@ -112,7 +128,7 @@ export default class App extends Component {
       let thumbnail = this._ImageThumbnail.getImage();
       if(thumbnail){
         let storage = firebase.storage();
-        let thumbnailRef = storage.ref(doc.Thematic.Year+'/sculpture/').child(thumbnail.fileName);
+        let thumbnailRef = storage.ref(doc.Thematic.Year+'/sculpture/thumbnail').child(thumbnail.fileName);
     
         await thumbnailRef.putFile(thumbnail.path, { contentType: thumbnail.type })
             .then((success) => {
@@ -143,12 +159,51 @@ export default class App extends Component {
 
     this._LoadingScreen.updateUI(true);
     await this.addNewImage(doc).then((imageUrl) => {
-      console.log(imageUrl, 'image');
+      if(imageUrl != ""){
+        doc.Image = imageUrl;
+      }
     });
     await this.addNewThumbnail(doc).then((thumbnailUrl) => {
-      console.log(thumbnailUrl, 'thumbnail');
-      this._LoadingScreen.updateUI(false);
+      if(thumbnailUrl != ""){
+        doc.Thumbnail = thumbnailUrl;
+      }
     })
+    await this.addDocument(doc);
+  }
+
+  async addNewSculpture(value){
+    let doc = {
+      Name: value.Name,
+      ArtistName: value.ArtistName,
+      Material: (value.Material == null) ? "" : value.Material,
+      Thematic: {
+          Name: value.ThematicName,
+          Year: value.ThematicYear
+      },
+      ArtisticApproach: value.ArtisticApproach,
+      Coordinate: new firebase.firestore.GeoPoint(value.Latitude, value.Longitude),
+      Image: "",
+      Thumbnail: ""
+    };
+    let image = this._ImageInfo.getImage();
+    let thumbnail = this._ImageThumbnail.getImage();
+    if(image && thumbnail){
+
+      this._LoadingScreen.updateUI(true);
+      await this.addNewImage(doc).then((imageUrl) => {
+        if(imageUrl != ""){
+          doc.Image = imageUrl;
+        }
+      });
+      await this.addNewThumbnail(doc).then((thumbnailUrl) => {
+        if(thumbnailUrl != ""){
+          doc.Thumbnail = thumbnailUrl;
+        }
+      })
+      await this.addDocument(doc);
+    } else {
+      ToastAndroid.show('Veuillez ajouter une image et un thumbnail', ToastAndroid.LONG);
+    }
   }
 
   componentDidMount(){
@@ -162,58 +217,8 @@ export default class App extends Component {
       if(this.state.sculpture){
         this.saveModificationOfSculpture(value);
       } else {
-        let doc = {
-          Name: value.Name,
-          ArtistName: value.ArtistName,
-          Material: (value.Material == null) ? "" : value.Material,
-          Thematic: {
-              Name: value.ThematicName,
-              Year: value.ThematicYear
-          },
-          ArtisticApproach: value.ArtisticApproach,
-          Coordinate: new firebase.firestore.GeoPoint(value.Latitude, value.Longitude),
-          Image: "",
-          Thumbnail: ""
-        };
-        let image = this._ImageInfo.getImage();
-        let thumbnail = this._ImageThumbnail.getImage();
-        if(image && thumbnail){
-          this._LoadingScreen.updateUI(true);
-          let storage = firebase.storage();
-          let mref = storage.ref(doc.Thematic.Year+'/sculpture/').child(image.fileName);
-          let thumbnailRef = storage.ref(doc.Thematic.Year+'/sculpture/thumbnail/').child(image.fileName);
-
-          mref.putFile(image.path, { contentType: image.type })
-              .then((success) =>{
-                doc.Image = success.downloadURL;
-                thumbnailRef.putFile(thumbnail.path, { contentType: thumbnail.type })
-                .then((success) => {
-                  doc.Thumbnail = success.downloadURL;
-                  collectionSculpture.add(doc)
-                  .then((success) => {
-                    this._LoadingScreen.updateUI(false);
-                    ToastAndroid.show('Enregistrement effectué avec succès', ToastAndroid.LONG);
-                    this.props.navigation.goBack();
-                  })
-                  .catch(() => {
-                    this._LoadingScreen.updateUI(false);
-                    ToastAndroid.show('Erreur lors de l\'ajout du document', ToastAndroid.LONG);
-                  })
-                })
-                .catch((error) => {
-                  this._LoadingScreen.updateUI(false);
-                  ToastAndroid.show('Erreur lors de l\'ajout du thumbnail', ToastAndroid.LONG);
-                })
-              })
-              .catch((error) => {
-                this._LoadingScreen.updateUI(false);
-                ToastAndroid.show('Erreur lors de l\'ajout de l\'image', ToastAndroid.LONG);
-              })
-        } else {
-            ToastAndroid.show('Veuillez ajouter une image et un thumbnail', ToastAndroid.LONG);
-        }
+        this.addNewSculpture(value);
       }
-      
     }
   };
 

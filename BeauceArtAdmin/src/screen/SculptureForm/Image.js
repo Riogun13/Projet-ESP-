@@ -25,7 +25,6 @@ export default class ImageHandler extends Component {
         mediaType: 'photo'
     };
     ImagePicker.launchImageLibrary(options, response => {
-        console.log("response", response);
         if(response.uri){
             this.setState({ image: response});
             this.imageUri = response.uri;
