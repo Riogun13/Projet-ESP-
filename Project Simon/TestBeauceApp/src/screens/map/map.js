@@ -17,6 +17,11 @@ import MapInformation from './mapInformation'
 import { NavigationEvents } from 'react-navigation';
 
 import NotifService from '../../library/notification/notifService';
+import sculpturesEmitter from '../../res/sculptures';
+
+sculpturesEmitter.on('onSculptureCollectionUpdate', function (sculptures) {
+  console.log("MAP onSculptureCollectionUpdate", sculptures);
+});
 
 class Map extends Component {
 

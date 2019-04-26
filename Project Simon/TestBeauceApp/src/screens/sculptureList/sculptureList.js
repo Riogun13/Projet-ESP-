@@ -3,6 +3,11 @@ import { Text, View, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator
 import CollapsiblePanel from '../../library/collapsible/collapsible';
 import firebase from 'react-native-firebase';
 import Colors from '../../res/colors';
+import sculpturesEmitter from '../../res/sculptures';
+
+sculpturesEmitter.on('onSculptureCollectionUpdate', function (sculptures) {
+  console.log("SculptureList onSculptureCollectionUpdate", sculptures);
+});
 
 export default class SculptureList extends Component {
   constructor(props){
