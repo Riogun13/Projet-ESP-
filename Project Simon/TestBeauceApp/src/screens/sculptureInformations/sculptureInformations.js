@@ -6,7 +6,8 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  Alert
+  Alert,
+  Linking
 } from 'react-native';
 
 import Colors from '../../res/colors'
@@ -14,6 +15,19 @@ import Style from '../../res/styles/sculptureDetail'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 class DetailsScreen extends Component {
+
+  linkingTest() {
+    //const url = "/storage/emulated/0/Android/data/com.bear.snappress/cache/default";
+    //const url = "/storage/emulated/0/Android/data/com.android";
+    const url = "snappress";
+    Linking.canOpenURL(url).then(supported => {
+      if (!supported) {
+        Linking.openURL("https://play.google.com/store/apps/details?id=com.bear.snappress");
+      } else {
+        Linking.openURL(url);
+      }
+    }).catch(err => console.error('An error occurred', err));
+  };
   
   static navigationOptions = {
     title: 'Detail',
@@ -55,12 +69,10 @@ class DetailsScreen extends Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={Style.appButton}
-                    onPress={()=> this.props.navigation.navigate('Map', {
-                      selectedSculpture: sculpture,
-                      focusUser: false
-                    })}
+                    onPress={()=> this.linkingTest()
+                  }
                 >
-                  <Ionicons name={"ios-pin"}  size={40} color={Colors.text} />
+                  <Ionicons name={"ios-barcode"}  size={40} color={Colors.text} />
                 </TouchableOpacity>
             </View>
             <View style={Style.imageContainer}>

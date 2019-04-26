@@ -12,7 +12,8 @@ module.exports = StyleSheet.create({
       margin: 8
     },
     titleContainer: {
-      width: '80%'
+      width: '80%',
+      minHeight: 120
     },
     label: {
       color: Colors.text,
@@ -63,7 +64,7 @@ module.exports = StyleSheet.create({
       height: 50,
       backgroundColor:Colors.accentOrange,
       borderRadius: 25,
-      top: 60,
-      right: 60,
+      top: 65,
+      right: 10,
     }
   });
