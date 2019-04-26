@@ -9,13 +9,10 @@ import {
 } from 'react-native';
 
 import MapView, { Marker } from 'react-native-maps';
-
 import firebase from 'react-native-firebase';
 import Colors from '../../res/colors';
-
 import MapInformation from './mapInformation'
 import { NavigationEvents } from 'react-navigation';
-
 import NotifService from '../../library/notification/notifService';
 
 import OfflineNotice from '../../library/noConnectionSign/offlineNotice/'
@@ -79,7 +76,6 @@ class Map extends Component {
   //revenir en criss aparrt de ca dude
 
   focusOnUserCoordinate(){
-    
     if(this.focusUser) {
       navigator.geolocation.getCurrentPosition(
         position => {
@@ -96,6 +92,7 @@ class Map extends Component {
       )
   }
 }
+
   getNewDimensions(event){
     this.setState({
       pageHeight: event.nativeEvent.layout.height,
@@ -160,6 +157,21 @@ class Map extends Component {
     },10000)
   }
 
+  verifSiPorcheStatueOuverture(){
+      this.state.sculptures.map((sculpture, index) => {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            if(this.distanceEntreDeuxCoordonees(position.coords.latitude,position.coords.longitude,sculpture.Coordinate.latitude,sculpture.Coordinate.longitude) <= 25){
+              this.focusUser = true;
+              this.focusOnUserCoordinate();
+            }
+          }, 
+          error => this.setState({error : error.message}),
+          { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
+        );
+      });
+  }
+
   distanceEntreDeuxCoordonees(lat1,lon1,lat2,lon2) {
     var R = 6371; // km (change this constant to get miles)
     var dLat = (lat2-lat1) * Math.PI / 180;
@@ -186,10 +198,10 @@ class Map extends Component {
   }
 
   componentDidMount() {
-    
+
     this.getSculpture().then(()=>{
       this.setMarkers(this.state.sculptures);
-     //this.addGeoFence();
+      this.verifSiPorcheStatueOuverture();
     });
   }
 
@@ -215,9 +227,8 @@ class Map extends Component {
               this._MapInformation.updateMapInformationState(false,null);
               this.getParams();
               this.focusPosition();
+              this.verifSiPorcheStatueOuverture();
             }}>
-
-
 
           </NavigationEvents>
           <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject} style={{paddingTop: this.state.statusBarHeight}}>

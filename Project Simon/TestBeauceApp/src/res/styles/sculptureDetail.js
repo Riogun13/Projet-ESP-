@@ -12,7 +12,8 @@ module.exports = StyleSheet.create({
       margin: 8
     },
     titleContainer: {
-      width: '80%'
+      width: '80%',
+      minHeight: 120
     },
     label: {
       color: Colors.text,
@@ -51,6 +52,19 @@ module.exports = StyleSheet.create({
       backgroundColor:Colors.accentOrange,
       borderRadius: 25,
       top: 10,
+      right: 10,
+    },
+    appButton: {
+      position: 'absolute',
+      borderWidth:1,
+      borderColor:'rgba(0,0,0,0.2)',
+      alignItems:'center',
+      justifyContent:'center',
+      width: 50,
+      height: 50,
+      backgroundColor:Colors.accentOrange,
+      borderRadius: 25,
+      top: 65,
       right: 10,
     }
   });

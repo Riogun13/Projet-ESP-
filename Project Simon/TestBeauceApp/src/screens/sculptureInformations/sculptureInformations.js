@@ -6,7 +6,8 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  Alert
+  Alert,
+  Linking
 } from 'react-native';
 
 import Colors from '../../res/colors'
@@ -15,6 +16,17 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import OfflineNotice from '../../library/noConnectionSign/offlineNotice/'
 
 class DetailsScreen extends Component {
+
+  linkingTest() {
+    const url = 'snappress://';
+    Linking.canOpenURL(url).then(supported => {
+      if (!supported) {
+        Linking.openURL("https://play.google.com/store/apps/details?id=com.bear.snappress");
+      } else {
+        Linking.openURL(url);
+      }
+    }).catch(err => console.error('An error occurred', err));
+  };
   
   static navigationOptions = {
     title: 'Detail',
@@ -53,6 +65,13 @@ class DetailsScreen extends Component {
                     })}
                 >
                   <Ionicons name={"ios-pin"}  size={40} color={Colors.text} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={Style.appButton}
+                    onPress={()=> this.linkingTest()
+                  }
+                >
+                  <Ionicons name={"ios-barcode"}  size={40} color={Colors.text} />
                 </TouchableOpacity>
             </View>
             <View style={Style.imageContainer}>
