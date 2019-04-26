@@ -3,7 +3,6 @@ import { View, ScrollView, SectionList, Text, StyleSheet } from 'react-native';
 import Colors from '../../res/colors';
 import Fonts from '../../res/fonts';
 import firebase from 'react-native-firebase';
-import { Text, View } from 'react-native';
 import OfflineNotice from '../../library/noConnectionSign/offlineNotice/'
 
 export default class About extends Component {

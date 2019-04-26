@@ -9,13 +9,6 @@
  //Component lifecycle : http://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/
 
 import React, {Component} from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  View,
-  Dimensions,
-  Alert
-} from 'react-native';
 import NotifService from './src/library/notification/notifService';
 import type { Notification, NotificationOpen } from 'react-native-firebase';
 import Firebase from 'react-native-firebase';
