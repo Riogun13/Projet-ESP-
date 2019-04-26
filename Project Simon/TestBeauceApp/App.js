@@ -22,6 +22,7 @@ import Colors from './src/res/colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import NavigationService from './NavigatorService';
 import { NavigationActions } from 'react-navigation';
+import SplashScreen from 'react-native-splash-screen';
 
 import { BackHandler, DeviceEventEmitter, AppRegistry, PermissionsAndroid, Alert, NativeModules, Platform} from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
@@ -181,6 +182,7 @@ class App extends React.Component<Props> {
   }
 
   async componentDidMount() {
+    SplashScreen.hide();
     const notificationOpen: NotificationOpen = await Firebase.notifications().getInitialNotification();
     if (notificationOpen) { // App was opened by a notification
         const notification: Notification = notificationOpen.notification;

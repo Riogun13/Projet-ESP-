@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "1024381500092",
+    "firebase_url": "https://beauce-art-application.firebaseio.com",
+    "project_id": "beauce-art-application",
+    "storage_bucket": "beauce-art-application.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1024381500092:android:7af6ecca60f27d8b",
+        "android_client_info": {
+          "package_name": "com.beauceartadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1024381500092-hjus76uem1jkprivgj4sc8fi0mlr8m6m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3YAh7v76bur0ZBNgARP36Uuib2drEyh0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1024381500092-hjus76uem1jkprivgj4sc8fi0mlr8m6m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1024381500092:android:be5863deb9bfd8cc",
+        "android_client_info": {
+          "package_name": "com.testbeauceapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1024381500092-hjus76uem1jkprivgj4sc8fi0mlr8m6m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3YAh7v76bur0ZBNgARP36Uuib2drEyh0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1024381500092-hjus76uem1jkprivgj4sc8fi0mlr8m6m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
