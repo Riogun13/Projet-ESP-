@@ -6,6 +6,7 @@ import { Text,
 import NewsFormat from './newsFormat'
 import firebase from 'react-native-firebase';
 import Colors from '../../res/colors';
+import OfflineNotice from '../../library/noConnectionSign/offlineNotice/'
 
 import Moment from 'moment/min/moment-with-locales';
 
@@ -66,6 +67,7 @@ export default class News extends Component {
                 />
             }
             keyExtractor={item => item.Name}></FlatList>
+            <OfflineNotice />
         </View>
       );
     }

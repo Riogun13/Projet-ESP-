@@ -9,6 +9,13 @@
  //Component lifecycle : http://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/
 
 import React, {Component} from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Dimensions,
+  Alert
+} from 'react-native';
 import NotifService from './src/library/notification/notifService';
 import type { Notification, NotificationOpen } from 'react-native-firebase';
 import Firebase from 'react-native-firebase';
@@ -27,6 +34,8 @@ import SplashScreen from 'react-native-splash-screen';
 import { BackHandler, DeviceEventEmitter, AppRegistry, PermissionsAndroid, Alert, NativeModules, Platform} from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
+import OfflineNotice from './src/library/noConnectionSign/offlineNotice'
+import { NetInfo } from 'react-native'
 let sculptures = null;
 let notifService = new NotifService();
 
@@ -153,9 +162,9 @@ class App extends React.Component<Props> {
   componentWillMount(){
     requestLocationPermission();
       LocationServicesDialogBox.checkLocationServicesIsEnabled({
-        message: "<h2 style='color: #0af13e'>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
-        ok: "YES",
-        cancel: "NO",
+        message: "<h2 style='color: #0af13e'>Utiliser la geolocalisation ?</h2>Cette application veut changer les paramètres de votre appareil:<br/><br/>Utiliser le GPS, le Wi-Fi et le réseau cellulaire pour la localisation<br/>",
+        ok: "OUI",
+        cancel: "NON",
         enableHighAccuracy: true, // true => GPS AND NETWORK PROVIDER, false => GPS OR NETWORK PROVIDER
         showDialog: true, // false => Opens the Location access page directly
         openLocationServices: true, // false => Directly catch method is called if location services are turned off
@@ -198,11 +207,15 @@ class App extends React.Component<Props> {
 
   render() {
     return (
+      
       <AppContainer
         ref={navigatorRef => {
           NavigationService.setTopLevelNavigator(navigatorRef);
         }} 
-      />
+      >
+      <OfflineNotice />
+      </AppContainer>
+      
     );
   }
 

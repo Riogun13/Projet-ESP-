@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Text, View, ScrollView, Button, StyleSheet } from 'react-native';
 import Email from '../../library/email/email';
 import Colors from '../../res/colors';
+import { Text, View } from 'react-native';
+import OfflineNotice from '../../library/noConnectionSign/offlineNotice/'
 
 export default class Donation extends Component {
   constructor(props){
@@ -33,6 +35,7 @@ export default class Donation extends Component {
             title="Remplir le formulaire"
           />
         </ScrollView>
+        <OfflineNotice />
       </View>
     );
   }
