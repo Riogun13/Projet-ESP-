@@ -9,7 +9,6 @@
  //Component lifecycle : http://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/
 
 import React, {Component} from 'react';
-import { Alert } from 'react-native';
 import NotifService from './src/library/notification/notifService';
 import type { Notification, NotificationOpen } from 'react-native-firebase';
 import Firebase from 'react-native-firebase';
@@ -24,34 +23,36 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import NavigationService from './NavigatorService';
 import { NavigationActions } from 'react-navigation';
 
-import { BackHandler, DeviceEventEmitter, AppRegistry} from 'react-native';
+import { BackHandler, DeviceEventEmitter, AppRegistry, PermissionsAndroid, Alert, NativeModules, Platform} from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
+let sculptures = null;
+let notifService = new NotifService();
 
 const LogLocation = async (data) => {
-console.log("setwegwegergwergerg");
-checkGeoFence();
-
+  checkGeoFence();
 }
 AppRegistry.registerHeadlessTask('LogLocation', () => LogLocation);
 
 function checkGeoFence(){
-  let notifService = new NotifService();
-  console.log("12313");
-  getSculpture().then((sculptures)=>{
-    console.log(sculptures, "inside");
-    sculptures.map((sculpture, index) => {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          if(distanceEntreDeuxCoordonees(position.coords.latitude,position.coords.longitude,sculpture.Coordinate.latitude,sculpture.Coordinate.longitude) <= 25){
-            notifService.localNotif("MapInformationNotif", "Beauce Art", "Vous êtes proche d'une sculpture", {tabToOpen:"Carte"});
-          }
-        }, 
-        error => console.log("erreur rererer"),
-        { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
-      );
+  if(sculptures != null){
+
+  }else{
+    getSculpture().then((sculptures)=>{
+      console.log(sculptures, "inside");
+      sculptures.map((sculpture, index) => {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            if(distanceEntreDeuxCoordonees(position.coords.latitude,position.coords.longitude,sculpture.Coordinate.latitude,sculpture.Coordinate.longitude) <= 25){
+              notifService.localNotif("MapInformationNotif", "Beauce Art", "Vous êtes proche d'une sculpture", {tabToOpen:"Carte"});
+            }
+          }, 
+          error => console.log("erreur rererer"),
+          { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
+        );
+      });
     });
-  });
+  }
 }
 
 function distanceEntreDeuxCoordonees(lat1,lon1,lat2,lon2) {
@@ -76,6 +77,27 @@ async function getSculpture() {
     });
     console.log(sculptures);
   return sculptures;
+}
+
+async function requestLocationPermission() 
+{
+  if (Platform.OS === 'ios') {
+    //Some code here
+    //Code graveyard
+  }else{
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+      )
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        NativeModules.LocationService.start();
+      } else {
+        NativeModules.LocationService.stop();
+      }
+    } catch (err) {
+      console.warn(err)
+    }
+  }
 }
 
 type Props = {};
@@ -128,6 +150,7 @@ class App extends React.Component<Props> {
   }
 
   componentWillMount(){
+    requestLocationPermission();
       LocationServicesDialogBox.checkLocationServicesIsEnabled({
         message: "<h2 style='color: #0af13e'>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
         ok: "YES",
