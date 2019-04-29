@@ -56,7 +56,7 @@ public class LocationServiceModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void start() {
         if (checkLocationPermission()){
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5, listener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 15, listener);
         }
     }
 
