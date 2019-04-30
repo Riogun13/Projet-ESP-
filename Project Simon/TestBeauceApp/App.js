@@ -154,6 +154,8 @@ class App extends React.Component<Props> {
 
   componentWillMount(){
     requestLocationPermission();
+    if(Platform.OS != 'ios'){
+
       LocationServicesDialogBox.checkLocationServicesIsEnabled({
         message: "<h2 style='color: #0af13e'>Utiliser la geolocalisation ?</h2>Cette application veut changer les paramètres de votre appareil:<br/><br/>Utiliser le GPS, le Wi-Fi et le réseau cellulaire pour la localisation<br/>",
         ok: "OUI",
@@ -164,23 +166,25 @@ class App extends React.Component<Props> {
         preventOutSideTouch: false, // true => To prevent the location services window from closing when it is clicked outside
         preventBackClick: false, // true => To prevent the location services popup from closing when it is clicked back button
         providerListener: false // true ==> Trigger locationProviderStatusChange listener when the location state changes
-    }).then(function(success) {
-        console.log(success); // success => {alreadyEnabled: false, enabled: true, status: "enabled"}
+      }).then(function(success) {
+          console.log(success); // success => {alreadyEnabled: false, enabled: true, status: "enabled"}
 
 
-    }).catch((error) => {// catch egale le choix non de l'utilisateur
-        console.log(error.message); // error.message => "disabled"
-    });
+      }).catch((error) => {// catch egale le choix non de l'utilisateur
+          console.log(error.message); // error.message => "disabled"
+      });
+      
+      BackHandler.addEventListener('hardwareBackPress', () => { //(optional) you can use it if you need it
+        //do not use this method if you are using navigation."preventBackClick: false" is already doing the same thing.
+        LocationServicesDialogBox.forceCloseDialog();
+      });
+      
+      DeviceEventEmitter.addListener('locationProviderStatusChange', function(status) { // only trigger when "providerListener" is enabled
     
-    BackHandler.addEventListener('hardwareBackPress', () => { //(optional) you can use it if you need it
-      //do not use this method if you are using navigation."preventBackClick: false" is already doing the same thing.
-      LocationServicesDialogBox.forceCloseDialog();
-    });
-    
-    DeviceEventEmitter.addListener('locationProviderStatusChange', function(status) { // only trigger when "providerListener" is enabled
-  
-    console.log(status); //  status => {enabled: false, status: "disabled"} or {enabled: true, status: "enabled"}
-    });
+      console.log(status); //  status => {enabled: false, status: "disabled"} or {enabled: true, status: "enabled"}
+      });
+    }
+      
   }
 
   async componentDidMount() {
