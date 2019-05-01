@@ -23,6 +23,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import NavigationService from './NavigatorService';
 import { NavigationActions } from 'react-navigation';
 import SplashScreen from 'react-native-splash-screen';
+import sculpturesEmitter from './src/res/sculptures';
 
 import { BackHandler, DeviceEventEmitter, AppRegistry, PermissionsAndroid, Alert, NativeModules, Platform} from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
@@ -30,7 +31,10 @@ import LocationServicesDialogBox from "react-native-android-location-services-di
 import OfflineNotice from './src/library/noConnectionSign/offlineNotice'
 import { NetInfo } from 'react-native'
 let sculptures = null;
-let notifService = new NotifService();
+
+sculpturesEmitter.on('onSculptureCollectionUpdate', function (sculpturesList) {
+  sculptures = sculpturesList;
+});
 
 const LogLocation = async (data) => {
   checkGeoFence();
@@ -38,23 +42,23 @@ const LogLocation = async (data) => {
 AppRegistry.registerHeadlessTask('LogLocation', () => LogLocation);
 
 function checkGeoFence(){
-  if(sculptures != null){
-
+  if(sculptures == null){
+    setTimeout(function(){ checkGeoFence(); }, 3000);
   }else{
-    getSculpture().then((sculptures)=>{
-      console.log(sculptures, "inside");
-      sculptures.map((sculpture, index) => {
-        navigator.geolocation.getCurrentPosition(
-          position => {
-            if(distanceEntreDeuxCoordonees(position.coords.latitude,position.coords.longitude,sculpture.Coordinate.latitude,sculpture.Coordinate.longitude) <= 25){
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        Object.keys(sculptures).map((year, yearIndex) => {
+          Object.keys(sculptures[year]).map((sculptueId, index) => {
+            if(distanceEntreDeuxCoordonees(position.coords.latitude, position.coords.longitude, sculptures[year][sculptueId].Coordinate.latitude, sculptures[year][sculptueId].Coordinate.longitude) <= 25){
+              notifService = new NotifService();
               notifService.localNotif("MapInformationNotif", "Beauce Art", "Vous êtes proche d'une sculpture", {tabToOpen:"Carte"});
             }
-          }, 
-          error => console.log("erreur rererer"),
-          { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
-        );
-      });
-    });
+          });
+        });
+      },
+      error => console.log("error: navigator.geolocation.getCurrentPosition"),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 5000 }
+    );
   }
 }
 
@@ -70,22 +74,9 @@ function distanceEntreDeuxCoordonees(lat1,lon1,lat2,lon2) {
   return Math.round(d*1000);
 }
 
-async function getSculpture() {
-  const sculptures = [];
-  await Firebase.firestore().collection('Sculpture').get()
-    .then(querySnapshot => {
-      querySnapshot.docs.forEach(doc => {
-        sculptures.push(doc.data());
-      });
-    });
-    console.log(sculptures);
-  return sculptures;
-}
-
 async function requestLocationPermission() 
 {
   if (Platform.OS === 'ios') {
-    //Some code here
     //Code graveyard
   }else{
     try {
@@ -102,8 +93,6 @@ async function requestLocationPermission()
     }
   }
 }
-
-type Props = {};
 
 AppContainer = createAppContainer(createBottomTabNavigator(
   {
@@ -143,13 +132,20 @@ AppContainer = createAppContainer(createBottomTabNavigator(
         backgroundColor: Colors.primary
         }
     },
+  },
+  {
+    testShit:"someOtherShit",
   }
 ))
 
+type Props = {};
 class App extends React.Component<Props> {
   constructor(props){
     super(props);
     this.notifService = new NotifService();
+    this.state = {
+      loading: true
+    };
   }
 
   UNSAFE_componentWillMount(){
@@ -191,8 +187,8 @@ class App extends React.Component<Props> {
     SplashScreen.hide();
     const notificationOpen: NotificationOpen = await Firebase.notifications().getInitialNotification();
     if (notificationOpen) { // App was opened by a notification
-        const notification: Notification = notificationOpen.notification;
-        this.notifService.removeDeliveredNotification(notification.notificationId);
+      const notification: Notification = notificationOpen.notification;
+      this.notifService.removeDeliveredNotification(notification.notificationId);
     }
 
     this.notificationOpenedListener = Firebase.notifications().onNotificationOpened((notificationOpen: NotificationOpen) => {
@@ -202,18 +198,31 @@ class App extends React.Component<Props> {
     });
   }
 
+  checkIfLoading(){
+    if (sculptures == null) {
+      setTimeout(()=>{ this.checkIfLoading(); }, 1000);
+    }else{
+      this.setState({
+        loading: false,
+      });
+    }
+  }
+
   render() {
-    return (
-      
-      <AppContainer
-        ref={navigatorRef => {
-          NavigationService.setTopLevelNavigator(navigatorRef);
-        }} 
+    if(this.state.loading){
+      this.checkIfLoading();
+      return ( null );
+    }else{
+      return (
+        <AppContainer
+          ref={navigatorRef => {
+            NavigationService.setTopLevelNavigator(navigatorRef);
+          }}
       >
-      <OfflineNotice />
+        <OfflineNotice />
       </AppContainer>
-      
-    );
+      );
+    }
   }
 
 };
