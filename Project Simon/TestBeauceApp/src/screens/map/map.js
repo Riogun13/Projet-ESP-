@@ -193,7 +193,7 @@ class Map extends Component {
     return markers;
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     setTimeout(()=>this.setState({marginBottom: 0}),1000);
   }
 

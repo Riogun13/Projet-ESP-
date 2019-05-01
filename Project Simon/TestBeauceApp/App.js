@@ -152,7 +152,7 @@ class App extends React.Component<Props> {
     this.notifService = new NotifService();
   }
 
-  componentWillMount(){
+  UNSAFE_componentWillMount(){
     requestLocationPermission();
     if(Platform.OS != 'ios'){
 
