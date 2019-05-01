@@ -14,15 +14,33 @@ import Colors from '../../res/colors';
 import MapInformation from './mapInformation'
 import { NavigationEvents } from 'react-navigation';
 import NotifService from '../../library/notification/notifService';
+import sculpturesEmitter from '../../res/sculptures';
 
 import OfflineNotice from '../../library/noConnectionSign/offlineNotice/'
 import { NetInfo } from 'react-native'
+
+let sculptureList = null;
+
+sculpturesEmitter.on('onSculptureCollectionUpdate', function (sculptures) {
+  sculptureList = sculptures;
+  updateStateSculpture();
+});
+
+function updateStateSculpture(){
+  try {
+    this.setState({sculptures: sculptureList, markers: this.generarteMarkers(sculptureList)});
+    console.log("updateStateSculpture MAP");
+  } catch (error) {
+    //path to exile
+  }
+}
 
 class Map extends Component {
 
   static navigationOptions = {
     title: 'Carte',
   };
+
   constructor(props){
     super(props);
     this.state = {
@@ -34,7 +52,10 @@ class Map extends Component {
       pageWidth: Dimensions.get('screen').width,
       marginBottom: 1,
       isConnected: true,
+      sculptures: sculptureList,
+      markers: this.generarteMarkers(sculptureList),
     };
+    updateStateSculpture = updateStateSculpture.bind(this);
     this.mapRef = null;
     this.selectedSculpture = null;
     this.focusUser = false;
@@ -90,26 +111,14 @@ class Map extends Component {
         error => this.setState({error : error.message}),
         { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
       )
+    }
   }
-}
 
   getNewDimensions(event){
     this.setState({
       pageHeight: event.nativeEvent.layout.height,
       pageWidth: event.nativeEvent.layout.width
     });
-  }
-
-  async getSculpture() {
-    const sculptures = [];
-    await firebase.firestore().collection('Sculpture').get()
-      .then(querySnapshot => {
-        querySnapshot.docs.forEach(doc => {
-          sculptures.push(doc.data());
-        });
-      });
-      this.setState({sculptures: sculptures});
-    return sculptures;
   }
 
   getMarkerColor(year){
@@ -140,28 +149,21 @@ class Map extends Component {
     },1000);
   }
 
-  addGeoFence(){
-    setTimeout( ()=>{ 
-      this.state.sculptures.map((sculpture, index) => {
-        navigator.geolocation.getCurrentPosition(
-          position => {
-            if(this.distanceEntreDeuxCoordonees(position.coords.latitude,position.coords.longitude,sculpture.Coordinate.latitude,sculpture.Coordinate.longitude) <= 25){
-              this.notifService.localNotif("MapInformationNotif", "Beauce Art", "Vous êtes proche d'une sculpture", {tabToOpen:"Carte"});
-            }
-          }, 
-          error => this.setState({error : error.message}),
-          { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
-        );
+  generarteMarkers(sculptures) {
+    const markers = [];
+    Object.keys(sculptures).map((year, index) =>{
+      Object.keys(sculptures[year]).map((sculptureId, index) =>{
+        markers.push({latitude: sculptures[year][sculptureId].Coordinate.latitude, longitude: sculptures[year][sculptureId].Coordinate.longitude});
       });
-      this.addGeoFence();
-    },10000)
+    });
+    return markers;
   }
 
   verifSiPorcheStatueOuverture(){
-      this.state.sculptures.map((sculpture, index) => {
+      this.state.markers.map((marker, index) => {
         navigator.geolocation.getCurrentPosition(
           position => {
-            if(this.distanceEntreDeuxCoordonees(position.coords.latitude,position.coords.longitude,sculpture.Coordinate.latitude,sculpture.Coordinate.longitude) <= 25){
+            if(this.distanceEntreDeuxCoordonees(position.coords.latitude, position.coords.longitude, marker.latitude, marker.longitude) <= 25){
               this.focusUser = true;
               this.focusOnUserCoordinate();
             }
@@ -184,13 +186,28 @@ class Map extends Component {
     return Math.round(d*1000);
   }
 
-  setMarkers(sculptures) {
-    const markers = [];
-    sculptures.map((sculpture, index) => {
-      markers.push({latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude});
+  showMarkers = () => {
+    let markers = []
+
+    Object.keys(this.state.sculptures).map((year, index) =>{
+      Object.keys(this.state.sculptures[year]).map((sculptureId, index) =>{
+        markers.push(
+          <MapView.Marker
+            key={sculptureId}
+            coordinate={{latitude: this.state.sculptures[year][sculptureId].Coordinate.latitude, longitude: this.state.sculptures[year][sculptureId].Coordinate.longitude}}
+            onPress={(event) =>{
+              this._MapInformation.updateMapInformationState(true, this.state.sculptures[year][sculptureId]);
+            }}
+            pinColor={
+              this.getMarkerColor(this.state.sculptures[year][sculptureId].Thematic.Year)
+            }
+          >
+          </MapView.Marker>
+        );
+      });
     });
-    this.setState({markers: markers});
-    return markers;
+
+    return markers
   }
 
   componentWillMount() {
@@ -198,11 +215,7 @@ class Map extends Component {
   }
 
   componentDidMount() {
-
-    this.getSculpture().then(()=>{
-      this.setMarkers(this.state.sculptures);
-      this.verifSiPorcheStatueOuverture();
-    });
+    this.verifSiPorcheStatueOuverture();
   }
 
   onLayout(e){
@@ -230,6 +243,8 @@ class Map extends Component {
               this.verifSiPorcheStatueOuverture();
             }}>
 
+
+
           </NavigationEvents>
           <ScrollView contentContainerStyle={StyleSheet.absoluteFillObject} style={{paddingTop: this.state.statusBarHeight}}>
             <MapView
@@ -249,19 +264,7 @@ class Map extends Component {
                 this._MapInformation.updateMapInformationState(false, null);
               }}
             >
-              {this.state.sculptures.map((sculpture,index) => (
-                <MapView.Marker 
-                  key={index}
-                  coordinate={{latitude: sculpture.Coordinate.latitude, longitude: sculpture.Coordinate.longitude}}
-                  onPress={(event) =>{
-                    this._MapInformation.updateMapInformationState(true, sculpture);
-                  }}
-                  pinColor={
-                    this.getMarkerColor(sculpture.Thematic.Year)
-                  }
-                >
-                </MapView.Marker>
-              ))}
+              {this.showMarkers()}
             </MapView>
             <MapInformation ref={ref => (this._MapInformation = ref)} navigation={this.props.navigation}></MapInformation>
           </ScrollView>
