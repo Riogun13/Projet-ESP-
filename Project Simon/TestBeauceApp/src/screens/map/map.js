@@ -261,6 +261,7 @@ class Map extends Component {
               followsUserLocation={true}
               scrollEnabled={true}
               onPress={() =>{
+                this.notifService.localNotif("MapInformationNotif", "Beauce Art", "Vous êtes proche d'une sculpture", {tabToOpen:"Carte"});
                 this._MapInformation.updateMapInformationState(false, null);
               }}
             >

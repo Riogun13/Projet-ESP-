@@ -42,7 +42,6 @@ module.exports = StyleSheet.create({
   },
   text:{
     fontSize: 16,
-    fontFamily: 'OpenSans',
     marginLeft: 20,
     marginRight: 5,
   },
