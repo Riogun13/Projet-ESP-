@@ -69,6 +69,8 @@
 		E2F876793DB34F6284B5CCCC /* OpenSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AD1804A759654628AA6AD336 /* OpenSans-SemiBold.ttf */; };
 		E4C04A713584489EB067B40E /* OpenSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 04C7020A91AA410B85B99EBC /* OpenSans-Bold.ttf */; };
 		E61AA5DEE75D4BCDBE55D179 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A8CE19B6CFB64897A0FACE37 /* Foundation.ttf */; };
+		EC76B5DE227B2F1500DF0AFB /* Geolocalisation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC76B5DD227B2F1500DF0AFB /* Geolocalisation.swift */; };
+		EC76B60C227B2FD000DF0AFB /* Geolocalisation.m in Sources */ = {isa = PBXBuildFile; fileRef = EC76B60B227B2FD000DF0AFB /* Geolocalisation.m */; };
 		ECDA1A7C2278E1CC006C72CD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = ECDA1A7B2278E1CC006C72CD /* GoogleService-Info.plist */; };
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
 		ED2971652150620600B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED2971642150620600B7C4FE /* JavaScriptCore.framework */; };
@@ -474,6 +476,9 @@
 		E1AE8E8F012C062E896CD452 /* Pods-TestBeauceApp-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestBeauceApp-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-TestBeauceApp-tvOSTests/Pods-TestBeauceApp-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		E5A2CA90F3F549DDBAB6A138 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		E82014F1635D4BBAB252DB35 /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
+		EC76B5DC227B2F1200DF0AFB /* TestBeauceApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TestBeauceApp-Bridging-Header.h"; sourceTree = "<group>"; };
+		EC76B5DD227B2F1500DF0AFB /* Geolocalisation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geolocalisation.swift; sourceTree = "<group>"; };
+		EC76B60B227B2FD000DF0AFB /* Geolocalisation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Geolocalisation.m; sourceTree = "<group>"; };
 		ECDA1A7B2278E1CC006C72CD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
@@ -629,6 +634,7 @@
 		13B07FAE1A68108700A75B9A /* TestBeauceApp */ = {
 			isa = PBXGroup;
 			children = (
+				EC76B5DD227B2F1500DF0AFB /* Geolocalisation.swift */,
 				ECDA1A7B2278E1CC006C72CD /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -637,6 +643,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				EC76B5DC227B2F1200DF0AFB /* TestBeauceApp-Bridging-Header.h */,
+				EC76B60B227B2FD000DF0AFB /* Geolocalisation.m */,
 			);
 			name = TestBeauceApp;
 			sourceTree = "<group>";
@@ -957,6 +965,9 @@
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					13B07F861A680F5B00A75B9A = {
+						LastSwiftMigration = 0940;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1501,15 +1512,11 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-TestBeauceApp/Pods-TestBeauceApp-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gRPCCertificates.bundle",
 			);
@@ -1552,6 +1559,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				EC76B60C227B2FD000DF0AFB /* Geolocalisation.m in Sources */,
+				EC76B5DE227B2F1500DF0AFB /* Geolocalisation.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1605,6 +1614,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7377B81D98A85E0378578930 /* Pods-TestBeauceAppTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -1645,6 +1655,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 90CD30A47167A3D489E17CCC /* Pods-TestBeauceAppTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				HEADER_SEARCH_PATHS = (
@@ -1683,6 +1694,7 @@
 			baseConfigurationReference = 024060417E3F6E8C4B602AF1 /* Pods-TestBeauceApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				HEADER_SEARCH_PATHS = (
@@ -1713,6 +1725,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = TestBeauceApp;
+				SWIFT_OBJC_BRIDGING_HEADER = "TestBeauceApp-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1722,6 +1737,7 @@
 			baseConfigurationReference = D5E3424A2C1A7E94B9B1F61E /* Pods-TestBeauceApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1751,6 +1767,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = TestBeauceApp;
+				SWIFT_OBJC_BRIDGING_HEADER = "TestBeauceApp-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
