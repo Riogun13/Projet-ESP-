@@ -8,7 +8,7 @@ import {
 import ImagePicker from "react-native-image-picker";
 import Colors from '../../res/colors';
 
-  
+
 export default class ImageHandler extends Component {
   constructor(props){
     super(props)

@@ -63,7 +63,7 @@ var Sculpture = t.struct({
 export default class App extends Component {
       
   static navigationOptions = {
-    title: 'Formulaire',
+    title: 'Formulaire Sculpture',
   };
   imageUri = null;
   thumbnailUri = "";
