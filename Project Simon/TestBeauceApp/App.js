@@ -25,11 +25,10 @@ import { NavigationActions } from 'react-navigation';
 import SplashScreen from 'react-native-splash-screen';
 import sculpturesEmitter from './src/res/sculptures';
 
-import { BackHandler, DeviceEventEmitter, AppRegistry, PermissionsAndroid, Alert, NativeModules, Platform} from 'react-native';
+import { BackHandler, DeviceEventEmitter, AppRegistry, PermissionsAndroid, Alert, NativeModules, Platform, NetInfo} from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
-import OfflineNotice from './src/library/noConnectionSign/offlineNotice'
-import { NetInfo } from 'react-native'
+import OfflineNotice from './src/library/noConnectionSign/offlineNotice';
 let sculptures = null;
 
 sculpturesEmitter.on('onSculptureCollectionUpdate', function (sculpturesList) {
@@ -78,6 +77,7 @@ async function requestLocationPermission()
 {
   if (Platform.OS === 'ios') {
     //Code graveyard
+    NativeModules.Geolocation.turnOn();
   }else{
     try {
       const granted = await PermissionsAndroid.request(
