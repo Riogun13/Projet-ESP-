@@ -7,3 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+
+@interface RCT_EXTERN_MODULE(Geolocalisation, NSObject)
+
+  RCT_EXTERN_METHOD(turnOn)
+
+@end

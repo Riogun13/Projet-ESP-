@@ -7,3 +7,17 @@
 //
 
 import Foundation
+
+@objc(Geolocalisation)
+class Geolocalisation: NSObject {
+
+  @objc
+  static var isOn = false
+
+  @objc
+  func turnOn() {
+    Geolocalisation.isOn = true
+    print("Geolocalisation is now ON")
+  }
+
+}
