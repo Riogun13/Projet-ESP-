@@ -25,7 +25,7 @@ import { NavigationActions } from 'react-navigation';
 import SplashScreen from 'react-native-splash-screen';
 import sculpturesEmitter from './src/res/sculptures';
 
-import { BackHandler, DeviceEventEmitter, AppRegistry, PermissionsAndroid, Alert, NativeModules, Platform, NetInfo} from 'react-native';
+import { BackHandler, DeviceEventEmitter, AppRegistry, PermissionsAndroid, Alert, NativeModules, NativeEventEmitter, Platform, NetInfo} from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
 import OfflineNotice from './src/library/noConnectionSign/offlineNotice';
@@ -35,10 +35,18 @@ sculpturesEmitter.on('onSculptureCollectionUpdate', function (sculpturesList) {
   sculptures = sculpturesList;
 });
 
+//Android
 const LogLocation = async (data) => {
   checkGeoFence();
 }
 AppRegistry.registerHeadlessTask('LogLocation', () => LogLocation);
+
+//iOS
+const CounterEvents = new NativeEventEmitter(NativeModules.Counter)
+CounterEvents.addListener(
+  "onGeolocalisationToggle",
+  res => console.log("onGeolocalisationToggle event", res)
+)
 
 function checkGeoFence(){
   if(sculptures == null){
@@ -75,20 +83,8 @@ function distanceEntreDeuxCoordonees(lat1,lon1,lat2,lon2) {
 
 async function requestLocationPermission() 
 {
-  console.log("NativeModules");
   if (Platform.OS === 'ios') {
-    //Code graveyard
-    console.log("NativeModules", NativeModules);
-    NativeModules.Geolocalisation.turnOn(); 
-    NativeModules.Geolocalisation.getStatus( (error, isOn)=>{
-      //Alert.alert({ isOn: isOn});
-      console.log("isOn", isOn);
-    })
-    NativeModules.Geolocalisation.turnOff(); 
-    NativeModules.Geolocalisation.getStatus( (error, isOn)=>{
-      //Alert.alert({ isOn: isOn});
-      console.log("isOn", isOn);
-    })
+    NativeModules.Geolocalisation.toggle(); 
   }else{
     try {
       const granted = await PermissionsAndroid.request(
