@@ -33,6 +33,7 @@ export default class MapInformation extends Component {
 
   updateMapInformationState(display, sculpture){
     LayoutAnimation.easeInEaseOut();
+    console.log(display,sculpture);
     this.setState({
       display: display,
       sculpture: sculpture
