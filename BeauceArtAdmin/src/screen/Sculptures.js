@@ -23,7 +23,7 @@ export default class SculptureList extends Component {
   
   onCollectionUpdate = (querySnapshot) => {
 
-    const nouvelles = {};
+    const sculptures = {};
     querySnapshot.docs.forEach(doc => {
       if(typeof sculptures[doc.data().Thematic.Year] === "undefined"){ //lookup if there is already a year
         sculptures[doc.data().Thematic.Year] = {};
