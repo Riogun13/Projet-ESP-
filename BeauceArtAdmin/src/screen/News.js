@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
-import Colors from '../res/colors';
 
 export default class News extends Component {
   constructor(props){
@@ -18,8 +17,8 @@ export default class News extends Component {
 
     onCollectionUpdate = (querySnapshot) => {
 
-      const nouvelles = {};
-      querySnapshot.docs.forEach(doc => {//revenir ici
+      const sculptures = {};
+      querySnapshot.docs.forEach(doc => {
         nouvelles[doc.data().Thematic.Year][doc._ref._documentPath._parts[1]] = doc.data();
       });
       this.setState({
@@ -52,7 +51,7 @@ export default class News extends Component {
                             style={styles.button}
                             key={sculptueId}
                             onPress={() => this.props.navigation.push(
-                              'NewsForm', 
+                              'SculptureForm', 
                               {
                                 sculpture: this.state.sculptures[year][sculptueId],
                                 sculptureId: sculptueId
@@ -68,7 +67,7 @@ export default class News extends Component {
             </ScrollView>
             <TouchableOpacity
                     style={styles.mapButton}
-                      onPress={()=> this.props.navigation.push('NewsForm')}
+                      onPress={()=> this.props.navigation.push('SculptureForm')}
                   >
                     <Ionicons name={"ios-add"}  size={40} color={Colors.text} />
                   </TouchableOpacity>
