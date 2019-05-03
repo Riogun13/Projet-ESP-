@@ -75,9 +75,20 @@ function distanceEntreDeuxCoordonees(lat1,lon1,lat2,lon2) {
 
 async function requestLocationPermission() 
 {
+  console.log("NativeModules");
   if (Platform.OS === 'ios') {
     //Code graveyard
-    NativeModules.Geolocation.turnOn();
+    console.log("NativeModules", NativeModules);
+    NativeModules.Geolocalisation.turnOn(); 
+    NativeModules.Geolocalisation.getStatus( (error, isOn)=>{
+      //Alert.alert({ isOn: isOn});
+      console.log("isOn", isOn);
+    })
+    NativeModules.Geolocalisation.turnOff(); 
+    NativeModules.Geolocalisation.getStatus( (error, isOn)=>{
+      //Alert.alert({ isOn: isOn});
+      console.log("isOn", isOn);
+    })
   }else{
     try {
       const granted = await PermissionsAndroid.request(
