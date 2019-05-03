@@ -201,6 +201,7 @@ class Map extends Component {
             onPress={(event) =>{
               console.log('marker toucher', this.state.sculptures[year][sculptureId]);
               this._MapInformation.updateMapInformationState(true, this.state.sculptures[year][sculptureId]);
+              event.stopPropagation();
             }}
             pinColor={
               this.getMarkerColor(this.state.sculptures[year][sculptureId].Thematic.Year)
@@ -266,8 +267,8 @@ class Map extends Component {
               onPress={() =>{
                 if(Platform.OS == 'android'){
                   this.notifService.localNotif("MapInformationNotif", "Beauce Art", "Vous êtes proche d'une sculpture", {tabToOpen:"Carte"});
-                  this._MapInformation.updateMapInformationState(false, {string: 'mapview'});
                 }
+                this._MapInformation.updateMapInformationState(false, {string: 'mapview'});
               }}
             >
               {this.showMarkers()}
