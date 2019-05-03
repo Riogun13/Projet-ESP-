@@ -42,7 +42,7 @@ const LogLocation = async (data) => {
 AppRegistry.registerHeadlessTask('LogLocation', () => LogLocation);
 
 //iOS
-const CounterEvents = new NativeEventEmitter(NativeModules.Counter)
+const CounterEvents = new NativeEventEmitter(NativeModules.Geolocalisation)
 CounterEvents.addListener(
   "onGeolocalisationToggle",
   res => console.log("onGeolocalisationToggle event", res)
