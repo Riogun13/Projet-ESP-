@@ -7,8 +7,11 @@
 //
 
 #import "React/RCTBridgeModule.h"
-@interface RCT_EXTERN_MODULE(Geolocalisation, NSObject)
-RCT_EXTERN_METHOD(turnOn)
-RCT_EXTERN_METHOD(turnOff)
-RCT_EXTERN_METHOD(getStatus: (RCTResponseSenderBlock)callback)
+#import "React/RCTEventEmitter.h"
+
+@interface RCT_EXTERN_MODULE(Geolocalisation, RCTEventEmitter)
+  RCT_EXTERN_METHOD(turnOn)
+  RCT_EXTERN_METHOD(turnOff)
+  RCT_EXTERN_METHOD(toggle)
+  RCT_EXTERN_METHOD(getStatus: (RCTResponseSenderBlock)callback)
 @end
