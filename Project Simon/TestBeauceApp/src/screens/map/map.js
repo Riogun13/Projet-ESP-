@@ -199,7 +199,9 @@ class Map extends Component {
             key={sculptureId}
             coordinate={{latitude: this.state.sculptures[year][sculptureId].Coordinate.latitude, longitude: this.state.sculptures[year][sculptureId].Coordinate.longitude}}
             onPress={(event) =>{
-              console.log('marker toucher', this.state.sculptures[year][sculptureId]);
+              if(Platform.OS == "ios"){
+                this.focusOnSculpture(this.state.sculptures[year][sculptureId]);
+              }
               this._MapInformation.updateMapInformationState(true, this.state.sculptures[year][sculptureId]);
               event.stopPropagation();
             }}
