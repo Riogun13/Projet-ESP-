@@ -127,11 +127,6 @@ export default class App extends Component {
           doc.Image = imageUrl;
         }
       });
-      await this.addNewThumbnail(doc).then((thumbnailUrl) => {
-        if(thumbnailUrl != ""){
-          doc.Thumbnail = thumbnailUrl;
-        }
-      })
       await this.addDocument(doc);
     } else {
       ToastAndroid.show('Veuillez ajouter une image et un thumbnail', ToastAndroid.LONG);

@@ -11,7 +11,7 @@ import React, {Component} from 'react';
 import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from './src/screen/Home';
-import News from './src/screen/News';
+import CollaboraterStack from './src/navigation/CollaboraterStack';
 import SculptureStack from './src/navigation/SculptureStack';
 import NewsStack from './src/navigation/NewsStack';
 import Colors from './src/res/colors';
@@ -23,9 +23,10 @@ import NavigationService from './NavigatorService';
 
 AppContainer = createAppContainer(createBottomTabNavigator(
   {
-    Nouvelles: NewsStack.NewsStack,
+    Nouvelles: NewsStack.NewsStack, //revenir ici pour demander a simon si faut mettre News ou Nouvelles
     Home: Home,
     Sculptures: SculptureStack.SculptureStack,
+    Collaborater: CollaboraterStack.CollaboraterStack,
   },
   {
     initialRouteName: 'Home',
@@ -38,8 +39,10 @@ AppContainer = createAppContainer(createBottomTabNavigator(
             iconName = `ios-list-box`;
         } else if (routeName === 'Home') {
             iconName = `ios-home`;
-        }else if (routeName === 'Nouvelles') {
+        } else if (routeName === 'Nouvelles') {
             iconName = `ios-calendar`;
+        } else if (routeName === 'Collaborater'){
+          iconName = `ios-people`;
         }
 
         // You can return any component that you like here!
