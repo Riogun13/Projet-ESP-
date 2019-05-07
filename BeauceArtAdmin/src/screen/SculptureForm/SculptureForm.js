@@ -12,8 +12,11 @@ var Positive = t.refinement(t.Number, function (n) {
     return n >= 0;
   });
 
-var LatitudeLongitude = t.refinement(t.Number, function (n) {
+var Latitude = t.refinement(t.Number, function (n) {
   return n <= 90 && n >= -90;
+});
+var Longitude = t.refinement(t.Number, function (n) {
+  return n <= 180 && n >= -180;
 });
 var Sculpture = t.struct({
     Name: t.String,
