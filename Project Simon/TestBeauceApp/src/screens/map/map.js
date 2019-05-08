@@ -133,6 +133,16 @@ class Map extends Component {
         return 'orange';
       case 2018:
         return 'indigo';
+      case 2019:
+        return 'yellow';
+      case 2020:
+        return 'gold';
+      case 2021:
+        return 'tan';
+      case 2022:
+        return 'tomato';
+      case 2023:
+        return 'blue';
       default:
         return 'red';
     }
