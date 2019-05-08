@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Button, ScrollView, ToastAndroid } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Button, ScrollView, ToastAndroid } from 'react-native';
 import firebase from 'react-native-firebase';
 import Image from './ImageN';
 import t from 'tcomb-form-native';
 import LoadingScreen from '../LoadingScreen';
 import Colors from '../../res/colors';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Form = t.form.Form;
 
@@ -26,7 +27,7 @@ var News = t.struct({
           "Lien de l\'événement obligatoire",
       },
       Date: {
-        label: 'Date de la nouvelle',
+        label: 'Date de la nouvelle (exemple: 25 Mars 2020)',
         error:
           'Date obligatoire',
       },
@@ -110,6 +111,23 @@ export default class App extends Component {
     await this.addDocument(doc);
   }
 
+  async deleteNews(value){
+    let doc = {
+      Name: value.Name,
+      Date: value.Date,
+      ExternalUrl: value.ExternalUrl,
+      Image: this.state.news.Image
+    };
+
+    this._LoadingScreen.updateUI(true);
+    await this.addNewImage(doc).then((imageUrl) => {
+      if(imageUrl != ""){
+        doc.Image = imageUrl;
+      }
+    });
+    await this.addDocument(doc);
+  }
+
   async addNewNews(value){
     let doc = {
       Name: value.Name,
@@ -161,9 +179,15 @@ export default class App extends Component {
           <LoadingScreen ref={ref =>(this._LoadingScreen = ref)}></LoadingScreen>
             <ScrollView>
                 <Form ref="form" type={News} options={options} value={value} />
+                <TouchableOpacity
+                    style={styles.mapButton}
+                      
+                  >
+                    <Ionicons name={"ios-add"}  size={40} color={Colors.text} />
+                  </TouchableOpacity>
                 <Image ref={ref => (this._ImageInfo = ref)} buttonText="Ajouter Image" url={this.state.news.Image}></Image>
                 <Button title="Enregistrer" onPress={this.handleSubmit} color={Colors.accentOrange} />
-                <Button title="Supprimer Nouvelle" onPress={this.handleSubmit} color={Colors.accentOrange} />
+                <Button title="Supprimer Nouvelle" onPress={this.handleSubmit} color={Colors.deleteRed} />
             </ScrollView>
         </View>
       );
@@ -173,9 +197,15 @@ export default class App extends Component {
           <LoadingScreen ref={ref =>(this._LoadingScreen = ref)}></LoadingScreen>
             <ScrollView>
                 <Form ref="form" type={News} options={options} />
+                <TouchableOpacity
+                    style={styles.mapButton}
+                      
+                  >
+                    <Ionicons name={"ios-add"}  size={40} color={Colors.redDelete} />
+                  </TouchableOpacity>
                 <Image ref={ref => (this._ImageInfo = ref)} buttonText="Ajouter Image"></Image>
                 <Button title="Enregistrer" onPress={this.handleSubmit} color={Colors.accentOrange}/>
-                <Button title="Supprimer Nouvelle" onPress={this.handleSubmit} color={Colors.accentOrange}/>
+                <Button title="Supprimer Nouvelle" onPress={this.handleSubmit} color={Colors.deleteRed}/>
             </ScrollView>
         </View>
       );
@@ -188,5 +218,18 @@ var styles = StyleSheet.create({
       flex : 1,
       padding: 10,
       width: '100%',
+  },
+  mapButton: {
+    position: 'absolute',
+    borderWidth:1,
+    borderColor:'rgba(0,0,0,0.2)',
+    alignItems:'center',
+    justifyContent:'center',
+    width: 50,
+    height: 50,
+    backgroundColor:Colors.accentOrange,
+    borderRadius: 25,
+    bottom: 10,
+    right: 10,
   }
 });
