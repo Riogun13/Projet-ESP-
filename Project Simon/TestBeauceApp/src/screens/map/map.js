@@ -264,7 +264,6 @@ class Map extends Component {
                 longitudeDelta: 0.0421,
               }}
               showsUserLocation={true}
-              followsUserLocation={true}
               scrollEnabled={true}
               onPress={() =>{
                 if(Platform.OS == 'android'){
