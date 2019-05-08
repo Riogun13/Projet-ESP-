@@ -242,6 +242,7 @@ export default class App extends Component {
                 <Image ref={ref => (this._ImageInfo = ref)} buttonText="Ajouter Image" url={this.state.sculpture.Image}></Image>
                 <Image ref={ref => (this._ImageThumbnail = ref)} buttonText="Ajouter Thumbnail" url={this.state.sculpture.Thumbnail}></Image>
                 <Button title="Enregistrer" onPress={this.handleSubmit} color={Colors.accentOrange} />
+                <Button title="Supprimer Sculpture" onPress={this.handleSubmit} color={Colors.accentOrange} />
             </ScrollView>
         </View>
       );
@@ -254,6 +255,7 @@ export default class App extends Component {
                 <Image ref={ref => (this._ImageInfo = ref)} buttonText="Ajouter Image"></Image>
                 <Image ref={ref => (this._ImageThumbnail = ref)} buttonText="Ajouter Thumbnail"></Image>
                 <Button title="Enregistrer" onPress={this.handleSubmit} color={Colors.accentOrange}/>
+                <Button title="Supprimer Sculpture" onPress={this.handleSubmit} color={Colors.accentOrange}/>
             </ScrollView>
         </View>
       );

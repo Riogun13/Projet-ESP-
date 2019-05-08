@@ -163,6 +163,7 @@ export default class App extends Component {
                 <Form ref="form" type={News} options={options} value={value} />
                 <Image ref={ref => (this._ImageInfo = ref)} buttonText="Ajouter Image" url={this.state.news.Image}></Image>
                 <Button title="Enregistrer" onPress={this.handleSubmit} color={Colors.accentOrange} />
+                <Button title="Supprimer Nouvelle" onPress={this.handleSubmit} color={Colors.accentOrange} />
             </ScrollView>
         </View>
       );
@@ -174,6 +175,7 @@ export default class App extends Component {
                 <Form ref="form" type={News} options={options} />
                 <Image ref={ref => (this._ImageInfo = ref)} buttonText="Ajouter Image"></Image>
                 <Button title="Enregistrer" onPress={this.handleSubmit} color={Colors.accentOrange}/>
+                <Button title="Supprimer Nouvelle" onPress={this.handleSubmit} color={Colors.accentOrange}/>
             </ScrollView>
         </View>
       );

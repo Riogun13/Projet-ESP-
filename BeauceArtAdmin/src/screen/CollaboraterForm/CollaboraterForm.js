@@ -8,12 +8,12 @@ import Colors from '../../res/colors';
 const Form = t.form.Form;
 
 var Collaborater = t.struct({
-    Role: t.String,
+    Title: t.String,
     Name: t.String,
   });
   const options = {
     fields: {
-        Role: {
+        Title: {
         label: 'Rôle du collaborateur',
         error:
           'Rôle du collaborateur obligatoire',
@@ -39,7 +39,7 @@ export default class App extends Component {
   async addDocument(doc){
 
     if(this.state.collaboraterId){
-      let collectionCollaborater = firebase.firestore().collection('Collaborateur').doc(this.state.collaboraterId);
+      let collectionCollaborater = firebase.firestore().collection('Collaborater').doc(this.state.collaboraterId);
 
       await collectionCollaborater.set(doc).then(() => {
         this._LoadingScreen.updateUI(false);
@@ -67,7 +67,7 @@ export default class App extends Component {
 
   async saveModificationOfCollaborater(value){
     let doc = {
-      Role: value.Role,
+      Title: value.Title,
       Name: value.Name,
     };
 
@@ -104,7 +104,7 @@ export default class App extends Component {
   render() {
     if(this.state.collaborater != null){
       const value = {
-        Role: this.state.collaborater.Role,
+        Title: this.state.collaborater.Title,
         Name: this.state.collaborater.Name,
       }
       return (
@@ -112,7 +112,8 @@ export default class App extends Component {
           <LoadingScreen ref={ref =>(this._LoadingScreen = ref)}></LoadingScreen>
             <ScrollView>
                 <Form ref="form" type={Collaborater} options={options} value={value} />
-                <Button title="Enregistrer" onPress={this.handleSubmit} color={Colors.accentOrange} />
+                <Button title="Enregistrer" style={styles.button} onPress={this.handleSubmit} color={Colors.accentOrange} />
+                <Button title="Supprimer" style={styles.button} onPress={this.handleSubmit} color={Colors.accentOrange} />
             </ScrollView>
         </View>
       );
@@ -122,7 +123,8 @@ export default class App extends Component {
           <LoadingScreen ref={ref =>(this._LoadingScreen = ref)}></LoadingScreen>
             <ScrollView>
                 <Form ref="form" type={Collaborater} options={options} />
-                <Button title="Enregistrer" onPress={this.handleSubmit} color={Colors.accentOrange}/>
+                <Button title="Enregistrer" style={styles.button} onPress={this.handleSubmit} color={Colors.accentOrange}/>
+                <Button title="Supprimer" style={styles.button} onPress={this.handleSubmit} color={Colors.accentOrange}/>
             </ScrollView>
         </View>
       );
@@ -135,5 +137,10 @@ var styles = StyleSheet.create({
       flex : 1,
       padding: 10,
       width: '100%',
+  },
+  button:{
+      padding:10,
+      marginTop:10,
   }
+
 });
