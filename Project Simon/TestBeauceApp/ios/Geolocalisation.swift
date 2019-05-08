@@ -28,10 +28,10 @@ class Geolocalisation: RCTEventEmitter {
   @objc
   func toggle() {
     if Geolocalisation.isOn {
-      Geolocalisation.isOn = false
+      turnOff();
       //locationManager.stopUpdatingLocation()
     } else {
-      Geolocalisation.isOn = true
+      turnOn();
       //locationManager.startUpdatingLocation()
     }
     sendEvent(withName: "onGeolocalisationToggle", body: ["isOn": Geolocalisation.isOn])
