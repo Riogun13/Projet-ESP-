@@ -11,12 +11,19 @@ const Form = t.form.Form;
 var Positive = t.refinement(t.Number, function (n) {
     return n >= 0;
   });
+
+var Latitude = t.refinement(t.Number, function (n) {
+  return n <= 90 && n >= -90;
+});
+var Longitude = t.refinement(t.Number, function (n) {
+  return n <= 180 && n >= -180;
+});
 var Sculpture = t.struct({
     Name: t.String,
     ArtistName: t.String,
     ArtisticApproach: t.String,
-    Latitude: t.Number,
-    Longitude: t.Number,
+    Latitude: Latitude,
+    Longitude: Longitude,
     Material: t.maybe(t.String),
     ThematicName: t.String,
     ThematicYear: Positive,
@@ -39,10 +46,10 @@ var Sculpture = t.struct({
           'Démarche artistique obligatoire',
       },
       Latitude: {
-        error: 'Latitude obligatoire',
+        error: 'Latitude obligatoire entre -90 et 90',
       },
       Longitude: {
-        error: 'Longitude obligatoire',
+        error: 'Longitude obligatoire entre -90 et 90',
       },
       Material: {
         label: 'Matériaux utilisés',
@@ -219,6 +226,9 @@ export default class App extends Component {
       } else {
         this.addNewSculpture(value);
       }
+    }
+    else {
+      ToastAndroid.show('Erreur dans le formulaire, veuillez corriger les erreurs', ToastAndroid.LONG);
     }
   };
 
