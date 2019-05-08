@@ -30,7 +30,6 @@ sculpturesEmitter.on('onSculptureCollectionUpdate', function (sculptures) {
 function updateStateSculpture(){
   try {
     this.setState({sculptures: sculptureList, markers: this.generarteMarkers(sculptureList)});
-    console.log("updateStateSculpture MAP");
   } catch (error) {
     //path to exile
   }
