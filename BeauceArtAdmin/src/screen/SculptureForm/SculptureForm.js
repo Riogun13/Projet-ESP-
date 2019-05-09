@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Button, ScrollView, ToastAndroid } from 'react-native';
+import { View, StyleSheet, Button, ScrollView, ToastAndroid, Alert } from 'react-native';
 import firebase from 'react-native-firebase';
 import Image from './Image';
 import t from 'tcomb-form-native';
@@ -115,14 +115,14 @@ export default class App extends Component {
       if(image){
         let storage = firebase.storage();
         let mref = storage.ref(doc.Thematic.Year+'/sculpture/').child(image.fileName);
-    
+
         await mref.putFile(image.path, { contentType: image.type })
-            .then((success) => {
-              imageUrl = success.downloadURL;
-            })
-            .catch((error) => {
-              ToastAndroid.show("Erreur lors de l'upload de l'image", ToastAndroid.LONG);
-            })
+          .then((success) => {
+            imageUrl = success.downloadURL;
+          })
+          .catch((error) => {
+            ToastAndroid.show("Erreur lors de l'upload de l'image", ToastAndroid.LONG);
+          })
       }
     }
     
@@ -138,12 +138,12 @@ export default class App extends Component {
         let thumbnailRef = storage.ref(doc.Thematic.Year+'/sculpture/thumbnail').child(thumbnail.fileName);
     
         await thumbnailRef.putFile(thumbnail.path, { contentType: thumbnail.type })
-            .then((success) => {
-              thumbnailUrl = success.downloadURL;
-            })
-            .catch((error) => {
-              ToastAndroid.show("Erreur lors de l'upload du thumbnail", ToastAndroid.LONG);
-            })
+          .then((success) => {
+            thumbnailUrl = success.downloadURL;
+          })
+          .catch((error) => {
+            ToastAndroid.show("Erreur lors de l'upload du thumbnail", ToastAndroid.LONG);
+          })
       }
     }
     return thumbnailUrl;
@@ -155,8 +155,8 @@ export default class App extends Component {
       ArtistName: value.ArtistName,
       Material: (value.Material == null) ? "" : value.Material,
       Thematic: {
-          Name: value.ThematicName,
-          Year: value.ThematicYear
+        Name: value.ThematicName,
+        Year: value.ThematicYear
       },
       ArtisticApproach: value.ArtisticApproach,
       Coordinate: new firebase.firestore.GeoPoint(value.Latitude, value.Longitude),
@@ -184,8 +184,8 @@ export default class App extends Component {
       ArtistName: value.ArtistName,
       Material: (value.Material == null) ? "" : value.Material,
       Thematic: {
-          Name: value.ThematicName,
-          Year: value.ThematicYear
+        Name: value.ThematicName,
+        Year: value.ThematicYear
       },
       ArtisticApproach: value.ArtisticApproach,
       Coordinate: new firebase.firestore.GeoPoint(value.Latitude, value.Longitude),
@@ -218,6 +218,7 @@ export default class App extends Component {
     const sculptureId = this.props.navigation.getParam('sculptureId');
     this.setState({sculpture: sculpture, sculptureId: sculptureId});
   }
+
   handleSubmit = () => {
     const value = this.refs.form.getValue();
     if(value != null){
@@ -231,6 +232,50 @@ export default class App extends Component {
       ToastAndroid.show('Erreur dans le formulaire, veuillez corriger les erreurs', ToastAndroid.LONG);
     }
   };
+
+  handleDeleteSculpture = () => {
+    if(this.state.sculptureId){
+      Alert.alert(
+        'Suppression',
+        'Voulez-vous vraiment supprimer cette sculpture?',
+        [
+          {text: 'Cancel'},
+          {text: 'OK', onPress: () => this.deleteSculpture()},
+        ],
+        {cancelable: true},
+      );
+    }
+  };
+
+  deleteSculpture() {
+    this.deleteImage();
+    this.deleteThumbnail();
+    this.deleteDataFromFirestore();
+    this.props.navigation.goBack();
+  };
+
+  deleteImage() {
+    let imageName = this.state.sculpture.Image;
+    imageName = imageName.substring(imageName.indexOf("%2Fsculpture%2F")+15);
+    imageName = imageName.substring(0, imageName.indexOf("?alt"));
+    let storage = firebase.storage();
+    let mref = storage.ref(this.state.sculpture.Thematic.Year+'/sculpture/').child(imageName);
+    mref.delete();
+  }
+
+  deleteThumbnail(){
+    let thumbnailName = this.state.sculpture.Thumbnail;
+    thumbnailName = thumbnailName.substring(thumbnailName.indexOf("%2Fthumbnail%2F")+15);
+    thumbnailName = thumbnailName.substring(0, thumbnailName.indexOf("?alt"));
+    let storage = firebase.storage();
+    let mref = storage.ref(this.state.sculpture.Thematic.Year+'/sculpture/thumbnail/').child(thumbnailName);
+    mref.delete();
+  }
+
+  deleteDataFromFirestore(){
+    let collectionSculpture = firebase.firestore().collection('Sculpture').doc(this.state.sculptureId);
+    collectionSculpture.delete();
+  }
 
   render() {
     if(this.state.sculpture != null){
@@ -251,7 +296,8 @@ export default class App extends Component {
                 <Form ref="form" type={Sculpture} options={options} value={value} />
                 <Image ref={ref => (this._ImageInfo = ref)} buttonText="Ajouter Image" url={this.state.sculpture.Image}></Image>
                 <Image ref={ref => (this._ImageThumbnail = ref)} buttonText="Ajouter Thumbnail" url={this.state.sculpture.Thumbnail}></Image>
-                <Button title="Enregistrer" onPress={this.handleSubmit} color={Colors.accentOrange} />
+                <Button title="Enregistrer la sculpture" onPress={this.handleSubmit} color={Colors.accentOrange} />
+                <Button title="Supprimer la sculpture" onPress={this.handleDeleteSculpture} color={Colors.deleteRed} />
             </ScrollView>
         </View>
       );
@@ -263,7 +309,7 @@ export default class App extends Component {
                 <Form ref="form" type={Sculpture} options={options} />
                 <Image ref={ref => (this._ImageInfo = ref)} buttonText="Ajouter Image"></Image>
                 <Image ref={ref => (this._ImageThumbnail = ref)} buttonText="Ajouter Thumbnail"></Image>
-                <Button title="Enregistrer" onPress={this.handleSubmit} color={Colors.accentOrange}/>
+                <Button title="Enregistrer la sculpture" onPress={this.handleSubmit} color={Colors.accentOrange}/>
             </ScrollView>
         </View>
       );
