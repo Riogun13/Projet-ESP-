@@ -85,6 +85,40 @@ export default class App extends Component {
       await this.addDocument(doc);
   }
 
+  handleDeleteNews = () => {
+    if(this.state.newsId){
+      Alert.alert(
+        'Suppression',
+        'Voulez-vous vraiment supprimer cette nouvelle?',
+        [
+          {text: 'Cancel'},
+          {text: 'OK', onPress: () => this.deleteNews()},
+        ],
+        {cancelable: true},
+      );
+    }
+  };
+
+  deleteNews() {
+    this.deleteImage();
+    this.deleteDataFromFirestore();
+    this.props.navigation.goBack();
+  };
+
+  deleteImage(){
+      let imageName = this.state.news.Image;
+      imageName = imageName.substring(imageName.indexOf("%2Fnouvelle%2F")+14);
+      imageName = imageName.substring(0,imageName.indexOf("?alt"));
+      let storage = firebase.storage();
+      let mref = storage.ref('nouvelle/').child(imageName);
+      mref.delete();
+  }
+
+  deleteDataFromFirestore(){
+      let collectionNews = firebase.firestore().collection('Nouvelles').doc(this.state.newsId);
+      collectionNews.delete();
+  }
+
   componentDidMount(){
     const collaborater = this.props.navigation.getParam('collaborater');
     const collaboraterId = this.props.navigation.getParam('collaboraterId');
@@ -112,8 +146,8 @@ export default class App extends Component {
           <LoadingScreen ref={ref =>(this._LoadingScreen = ref)}></LoadingScreen>
             <ScrollView>
                 <Form ref="form" type={Collaborater} options={options} value={value} />
-                <Button title="Enregistrer" style={styles.button} onPress={this.handleSubmit} color={Colors.accentOrange} />
-                <Button title="Supprimer" style={styles.button} onPress={this.handleSubmit} color={Colors.accentOrange} />
+                <Button title="Enregistrer le Collaborateur" style={styles.button} onPress={this.handleSubmit} color={Colors.accentOrange} />
+                <Button title="Supprimer le Collaborateur" style={styles.button} onPress={this.handleSubmit} color={Colors.deleteRed} />
             </ScrollView>
         </View>
       );
@@ -123,8 +157,7 @@ export default class App extends Component {
           <LoadingScreen ref={ref =>(this._LoadingScreen = ref)}></LoadingScreen>
             <ScrollView>
                 <Form ref="form" type={Collaborater} options={options} />
-                <Button title="Enregistrer" style={styles.button} onPress={this.handleSubmit} color={Colors.accentOrange}/>
-                <Button title="Supprimer" style={styles.button} onPress={this.handleSubmit} color={Colors.accentOrange}/>
+                <Button title="Enregistrer le Collaborateur" style={styles.button} onPress={this.handleSubmit} color={Colors.accentOrange}/>
             </ScrollView>
         </View>
       );

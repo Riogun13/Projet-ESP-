@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TouchableOpacity, Button, ScrollView, ToastAndroid } from 'react-native';
+import { View, Alert, StyleSheet, TouchableOpacity, Button, ScrollView, ToastAndroid } from 'react-native';
 import firebase from 'react-native-firebase';
 import Image from './ImageN';
 import t from 'tcomb-form-native';
@@ -111,22 +111,22 @@ export default class App extends Component {
     await this.addDocument(doc);
   }
 
-  async deleteNews(value){
-    let doc = {
-      Name: value.Name,
-      Date: value.Date,
-      ExternalUrl: value.ExternalUrl,
-      Image: this.state.news.Image
-    };
+//   async deleteNews(value){
+//     let doc = {
+//       Name: value.Name,
+//       Date: value.Date,
+//       ExternalUrl: value.ExternalUrl,
+//       Image: this.state.news.Image
+//     };
 
-    this._LoadingScreen.updateUI(true);
-    await this.addNewImage(doc).then((imageUrl) => {
-      if(imageUrl != ""){
-        doc.Image = imageUrl;
-      }
-    });
-    await this.addDocument(doc);
-  }
+//     this._LoadingScreen.updateUI(true);
+//     await this.addNewImage(doc).then((imageUrl) => {
+//       if(imageUrl != ""){
+//         doc.Image = imageUrl;
+//       }
+//     });
+//     await this.addDocument(doc);
+//   }
 
   async addNewNews(value){
     let doc = {
@@ -136,8 +136,7 @@ export default class App extends Component {
       Image: ""
     };
     let image = this._ImageInfo.getImage();
-    let thumbnail = this._ImageThumbnail.getImage();
-    if(image && thumbnail){
+    if(image){
 
       this._LoadingScreen.updateUI(true);
       await this.addNewImage(doc).then((imageUrl) => {
@@ -146,9 +145,41 @@ export default class App extends Component {
         }
       });
       await this.addDocument(doc);
-    } else {
-      ToastAndroid.show('Veuillez ajouter une image et un thumbnail', ToastAndroid.LONG);
     }
+  }
+
+  handleDeleteNews = () => {
+    if(this.state.newsId){
+      Alert.alert(
+        'Suppression',
+        'Voulez-vous vraiment supprimer cette nouvelle?',
+        [
+          {text: 'Cancel'},
+          {text: 'OK', onPress: () => this.deleteNews()},
+        ],
+        {cancelable: true},
+      );
+    }
+  };
+
+  deleteNews() {
+    this.deleteImage();
+    this.deleteDataFromFirestore();
+    this.props.navigation.goBack();
+  };
+
+  deleteImage(){
+      let imageName = this.state.news.Image;
+      imageName = imageName.substring(imageName.indexOf("%2Fnouvelle%2F")+14);
+      imageName = imageName.substring(0,imageName.indexOf("?alt"));
+      let storage = firebase.storage();
+      let mref = storage.ref('nouvelle/').child(imageName);
+      mref.delete();
+  }
+
+  deleteDataFromFirestore(){
+      let collectionNews = firebase.firestore().collection('Nouvelles').doc(this.state.newsId);
+      collectionNews.delete();
   }
 
   componentDidMount(){
@@ -183,11 +214,11 @@ export default class App extends Component {
                     style={styles.mapButton}
                       
                   >
-                    <Ionicons name={"ios-add"}  size={40} color={Colors.text} />
+                    <Ionicons name={"ios-bookmarks"}  size={40} color={Colors.text} />
                   </TouchableOpacity>
                 <Image ref={ref => (this._ImageInfo = ref)} buttonText="Ajouter Image" url={this.state.news.Image}></Image>
-                <Button title="Enregistrer" onPress={this.handleSubmit} color={Colors.accentOrange} />
-                <Button title="Supprimer Nouvelle" onPress={this.handleSubmit} color={Colors.deleteRed} />
+                <Button title="Enregistrer la Nouvelle" onPress={this.handleSubmit} color={Colors.accentOrange} />
+                <Button title="Supprimer la Nouvelle" onPress={this.handleDeleteNews} color={Colors.deleteRed} />
             </ScrollView>
         </View>
       );
@@ -201,11 +232,10 @@ export default class App extends Component {
                     style={styles.mapButton}
                       
                   >
-                    <Ionicons name={"ios-add"}  size={40} color={Colors.redDelete} />
+                    <Ionicons name={"ios-bookmarks"}  size={40} color={Colors.text} />
                   </TouchableOpacity>
                 <Image ref={ref => (this._ImageInfo = ref)} buttonText="Ajouter Image"></Image>
-                <Button title="Enregistrer" onPress={this.handleSubmit} color={Colors.accentOrange}/>
-                <Button title="Supprimer Nouvelle" onPress={this.handleSubmit} color={Colors.deleteRed}/>
+                <Button title="Enregistrer la Nouvelle" onPress={this.handleSubmit} color={Colors.accentOrange}/>
             </ScrollView>
         </View>
       );
@@ -229,7 +259,7 @@ var styles = StyleSheet.create({
     height: 50,
     backgroundColor:Colors.accentOrange,
     borderRadius: 25,
-    bottom: 10,
+    top: 225,
     right: 10,
   }
 });
