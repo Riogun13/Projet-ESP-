@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 @objc(Geolocalisation)
 class Geolocalisation: RCTEventEmitter {
@@ -35,6 +36,9 @@ class Geolocalisation: RCTEventEmitter {
       //locationManager.startUpdatingLocation()
     }
     sendEvent(withName: "onGeolocalisationToggle", body: ["isOn": Geolocalisation.isOn])
+    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
+      self.toggle();
+    }
   }
 
   override func supportedEvents() -> [String]! {
