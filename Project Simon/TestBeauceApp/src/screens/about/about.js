@@ -13,7 +13,7 @@ export default class About extends Component {
 
   constructor(props){
     super(props);
-    this.ref = firebase.firestore().collection('Collaborateur');
+    this.ref = firebase.firestore().collection('Collaborater');
     this.subscribe = null;
     this.state = {
       collaborators: [],
@@ -40,7 +40,6 @@ export default class About extends Component {
   }
 
   componentDidMount(){
-    console.log(this.props.navigation.state);
     this.subscribe = this.ref.orderBy('Name', "ASC").onSnapshot(this.onCollectionUpdate);
   }
 
