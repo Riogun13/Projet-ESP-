@@ -10,9 +10,32 @@ import Foundation
 import CoreLocation
 
 @objc(Geolocalisation)
-class Geolocalisation: RCTEventEmitter {
+class Geolocalisation: RCTEventEmitter, CLLocationManagerDelegate {
 
   static var isOn = false
+  var myString = "test"
+  var locationManager = CLLocationManager()
+
+  override init() {
+    super.init()
+    Geolocalisation.isOn = true
+  }
+
+  func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+    if status == .authorizedAlways {
+      sendEvent(withName: "onGeolocalisationToggle", body: ["didChangeAuthorization": true])
+    }else{
+      sendEvent(withName: "onGeolocalisationToggle", body: ["didChangeAuthorization": false])
+    }
+  }
+
+  func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    if let location = locations.last {
+      let coordinate = ["latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude]
+      myString = String(format:"%f", location.coordinate.latitude)
+      sendEvent(withName: "onGeolocalisationToggle", body: ["didUpdateLocations": coordinate])
+    }
+  }
 
   @objc
   func turnOn() {
@@ -35,9 +58,19 @@ class Geolocalisation: RCTEventEmitter {
       turnOn();
       //locationManager.startUpdatingLocation()
     }
+    locationManager.requestAlwaysAuthorization()
+    locationManager.delegate = self
+    locationManager.distanceFilter = 25
+    locationManager.allowsBackgroundLocationUpdates = true 
+    locationManager.startUpdatingLocation()
+    //self.thatLoop()
+  }
+
+  func thatLoop(){
     sendEvent(withName: "onGeolocalisationToggle", body: ["isOn": Geolocalisation.isOn])
+    sendEvent(withName: "onGeolocalisationToggle", body: ["myString": myString])
     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
-      self.toggle();
+      self.thatLoop();
     }
   }
 

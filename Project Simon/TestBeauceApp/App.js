@@ -45,27 +45,49 @@ AppRegistry.registerHeadlessTask('LogLocation', () => LogLocation);
 const CounterEvents = new NativeEventEmitter(NativeModules.Geolocalisation)
 CounterEvents.addListener(
   "onGeolocalisationToggle",
-  res => console.log("onGeolocalisationToggle event", res)
+  res => checkGeoFence()
 )
 
-function checkGeoFence(){
+function checkGeoFence(userCoordinate){
   if(sculptures == null){
-    setTimeout(function(){ checkGeoFence(); }, 3000);
+    setTimeout(function(){ checkGeoFence(userCoordinate); }, 3000);
   }else{
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        Object.keys(sculptures).map((year, yearIndex) => {
-          Object.keys(sculptures[year]).map((sculptueId, index) => {
-            if(distanceEntreDeuxCoordonees(position.coords.latitude, position.coords.longitude, sculptures[year][sculptueId].Coordinate.latitude, sculptures[year][sculptueId].Coordinate.longitude) <= 25){
-              notifService = new NotifService();
-              notifService.localNotif("MapInformationNotif", "Beauce Art", "Vous êtes proche d'une sculpture", {tabToOpen:"Carte"});
-            }
-          });
-        });
-      },
-      error => console.log("error: navigator.geolocation.getCurrentPosition"),
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 5000 }
-    );
+    if (typeof userCoordinate == "undefined") {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          userCoordinate = {
+            "longitude":position.coords.longitude,
+            "latitude":position.coords.latitude,
+          }
+          checkIfUserNearSculpture(userCoordinate);
+        },
+        error => console.log("error: navigator.geolocation.getCurrentPosition"),
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 5000 }
+      );
+    }else{
+      checkIfUserNearSculpture(userCoordinate);
+    }
+  }
+}
+
+function checkIfUserNearSculpture(userCoordinate){
+  let years = Object.keys(sculptures);
+  let yearCount = years.length;
+  yearLoop:
+  for (let yearIndex = 0; yearIndex < yearCount; yearIndex++) {
+    let year = years[yearIndex];
+    let sculptueIds = Object.keys(sculptures[year]);
+    let sculptueIdCount = sculptueIds.length;
+    sculptureLoop:
+    for (let sculptureIndex = 0; sculptureIndex < sculptueIdCount; sculptureIndex++) {
+      let sculptueId = sculptueIds[sculptureIndex];
+      if(distanceEntreDeuxCoordonees(userCoordinate.latitude, userCoordinate.longitude, sculptures[year][sculptueId].Coordinate.latitude, sculptures[year][sculptueId].Coordinate.longitude) <= 25){
+        console.log("User Near Sculpture");
+        notifService = new NotifService();
+        notifService.localNotif("MapInformationNotif", "Beauce Art", "Vous êtes proche d'une sculpture", {tabToOpen:"Carte"});
+        break yearLoop;
+      }
+    }
   }
 }
 
