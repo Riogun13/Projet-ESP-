@@ -25,21 +25,28 @@ import { NavigationActions } from 'react-navigation';
 import SplashScreen from 'react-native-splash-screen';
 import sculpturesEmitter from './src/res/sculptures';
 
-import { BackHandler, DeviceEventEmitter, AppRegistry, PermissionsAndroid, Alert, NativeModules, Platform} from 'react-native';
+import { BackHandler, DeviceEventEmitter, AppRegistry, PermissionsAndroid, Alert, NativeModules, NativeEventEmitter, Platform, NetInfo} from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
-import OfflineNotice from './src/library/noConnectionSign/offlineNotice'
-import { NetInfo } from 'react-native'
+import OfflineNotice from './src/library/noConnectionSign/offlineNotice';
 let sculptures = null;
 
 sculpturesEmitter.on('onSculptureCollectionUpdate', function (sculpturesList) {
   sculptures = sculpturesList;
 });
 
+//Android
 const LogLocation = async (data) => {
   checkGeoFence();
 }
 AppRegistry.registerHeadlessTask('LogLocation', () => LogLocation);
+
+//iOS
+const CounterEvents = new NativeEventEmitter(NativeModules.Geolocalisation)
+CounterEvents.addListener(
+  "onGeolocalisationToggle",
+  res => console.log("onGeolocalisationToggle event", res)
+)
 
 function checkGeoFence(){
   if(sculptures == null){
@@ -77,7 +84,7 @@ function distanceEntreDeuxCoordonees(lat1,lon1,lat2,lon2) {
 async function requestLocationPermission() 
 {
   if (Platform.OS === 'ios') {
-    //Code graveyard
+    NativeModules.Geolocalisation.toggle(); 
   }else{
     try {
       const granted = await PermissionsAndroid.request(
@@ -148,7 +155,7 @@ class App extends React.Component<Props> {
     };
   }
 
-  componentWillMount(){
+  UNSAFE_componentWillMount(){
     requestLocationPermission();
     if(Platform.OS != 'ios'){
 

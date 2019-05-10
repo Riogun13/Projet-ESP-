@@ -15,7 +15,6 @@ module.exports = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontFamily: 'OpenSans',
     fontWeight: 'bold',
     color: 'rgba(68, 68, 68, 1)',
     textShadowColor: Colors.primaryDark,

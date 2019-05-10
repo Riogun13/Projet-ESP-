@@ -11,7 +11,7 @@
     "react": "16.8.3",
     "react-native": "^0.59.6",
     "react-native-android-location-services-dialog-box": "^2.8.0",
-    "react-native-firebase": "^5.2.3",
+    "react-native-firebase": "^5.3.1",
     "react-native-gesture-handler": "^1.1.0",
     "react-native-maps": "^0.23.0",
     "react-native-splash-screen": "^3.2.0",

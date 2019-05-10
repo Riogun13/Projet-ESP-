@@ -5,7 +5,8 @@ import {
   StyleSheet,
   View,
   Dimensions,
-  Alert
+  Alert,
+  Platform
 } from 'react-native';
 
 import MapView, { Marker } from 'react-native-maps';
@@ -29,7 +30,6 @@ sculpturesEmitter.on('onSculptureCollectionUpdate', function (sculptures) {
 function updateStateSculpture(){
   try {
     this.setState({sculptures: sculptureList, markers: this.generarteMarkers(sculptureList)});
-    console.log("updateStateSculpture MAP");
   } catch (error) {
     //path to exile
   }
@@ -74,6 +74,8 @@ class Map extends Component {
         this.focusOnUserCoordinate();
       }else if(this.selectedSculpture){
         this.focusOnSculpture(this.selectedSculpture);
+      }else {
+        this.verifSiPorcheStatueOuverture();
       }
     }, 1000);
   }
@@ -106,7 +108,7 @@ class Map extends Component {
             latitudeDelta: 0.0022921918458749246,
             longitudeDelta: 0.0024545565247535706,
             }, 1000);
-            this._MapInformation.updateMapInformationState(false, null);
+            this._MapInformation.updateMapInformationState(false, {string: 'focus on user'});
         }, 
         error => this.setState({error : error.message}),
         { enableHighAccuracy: true, timeout: 20000, maximumAge: 2000 }
@@ -206,7 +208,11 @@ class Map extends Component {
             key={sculptureId}
             coordinate={{latitude: this.state.sculptures[year][sculptureId].Coordinate.latitude, longitude: this.state.sculptures[year][sculptureId].Coordinate.longitude}}
             onPress={(event) =>{
+              if(Platform.OS == "ios"){
+                this.focusOnSculpture(this.state.sculptures[year][sculptureId]);
+              }
               this._MapInformation.updateMapInformationState(true, this.state.sculptures[year][sculptureId]);
+              event.stopPropagation();
             }}
             pinColor={
               this.getMarkerColor(this.state.sculptures[year][sculptureId].Thematic.Year)
@@ -220,7 +226,7 @@ class Map extends Component {
     return markers
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     setTimeout(()=>this.setState({marginBottom: 0}),1000);
   }
 
@@ -242,15 +248,14 @@ class Map extends Component {
           onLayout={(e)=>{
             this.getNewDimensions(e);
             //on change of orientation make the popup
-            this._MapInformation.updateMapInformationState(false, null);
+            this._MapInformation.updateMapInformationState(false, {string: 'layout'});
           }}
         >
           <NavigationEvents
             onWillFocus={payload =>{
-              this._MapInformation.updateMapInformationState(false,null);
+              this._MapInformation.updateMapInformationState(false,{string: 'focus'});
               this.getParams();
               this.focusPosition();
-              this.verifSiPorcheStatueOuverture();
             }}>
 
 
@@ -268,10 +273,12 @@ class Map extends Component {
                 longitudeDelta: 0.0421,
               }}
               showsUserLocation={true}
-              followsUserLocation={true}
               scrollEnabled={true}
               onPress={() =>{
-                this._MapInformation.updateMapInformationState(false, null);
+                if(Platform.OS == 'android'){
+                  this.notifService.localNotif("MapInformationNotif", "Beauce Art", "Vous êtes proche d'une sculpture", {tabToOpen:"Carte"});
+                }
+                this._MapInformation.updateMapInformationState(false, {string: 'mapview'});
               }}
             >
               {this.showMarkers()}
