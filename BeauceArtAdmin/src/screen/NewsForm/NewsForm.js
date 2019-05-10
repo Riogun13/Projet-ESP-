@@ -28,17 +28,18 @@ var News = t.struct({
           "Lien de l\'événement obligatoire",
       },
       Date: {
-        label: 'Date de la nouvelle (exemple: 25 Mars 2020)',
+        label: 'Date de l\'événement',
         error:
           'Date obligatoire',
           mode: 'date',
-          mode: 'time',
+          format: (date) => String(date),
       },
       Time: {
-        label: 'Date de la nouvelle (exemple: 25 Mars 2020)',
+        label: 'Heure de l\'événement',
         error:
           'Heure obligatoire',
           mode:'time',
+          format: (date) => String(date),
       },
     },
   };
@@ -197,7 +198,7 @@ export default class App extends Component {
         Name: this.state.news.Name,
         ExternalUrl: this.state.news.ExternalUrl,
         Date: this.state.news.Date,
-        Time: this.state.news.Time
+        Time: this.state.news.Time,
       }
       return (
         <View style={styles.container}>
