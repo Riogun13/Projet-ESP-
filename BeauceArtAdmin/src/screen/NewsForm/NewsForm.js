@@ -12,7 +12,8 @@ const Form = t.form.Form;
 var News = t.struct({
     Name: t.String,
     ExternalUrl: t.String,
-    Date: t.String,
+    Date: t.Date,
+    Time: t.Date,
   });
   const options = {
     fields: {
@@ -30,6 +31,14 @@ var News = t.struct({
         label: 'Date de la nouvelle (exemple: 25 Mars 2020)',
         error:
           'Date obligatoire',
+          mode: 'date',
+          mode: 'time',
+      },
+      Time: {
+        label: 'Date de la nouvelle (exemple: 25 Mars 2020)',
+        error:
+          'Heure obligatoire',
+          mode:'time',
       },
     },
   };
@@ -98,6 +107,7 @@ export default class App extends Component {
     let doc = {
       Name: value.Name,
       Date: value.Date,
+      Time: value.Time,
       ExternalUrl: value.ExternalUrl,
       Image: this.state.news.Image
     };
@@ -110,7 +120,6 @@ export default class App extends Component {
     });
     await this.addDocument(doc);
   }
-
 
   async addNewNews(value){
     let doc = {
@@ -188,6 +197,7 @@ export default class App extends Component {
         Name: this.state.news.Name,
         ExternalUrl: this.state.news.ExternalUrl,
         Date: this.state.news.Date,
+        Time: this.state.news.Time
       }
       return (
         <View style={styles.container}>
