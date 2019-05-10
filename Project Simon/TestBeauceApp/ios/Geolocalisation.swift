@@ -7,43 +7,43 @@
 //
 
 import Foundation
+import CoreLocation
 
 @objc(Geolocalisation)
-class Geolocalisation: RCTEventEmitter {
+class Geolocalisation: RCTEventEmitter, CLLocationManagerDelegate {
 
-  static var isOn = false
+  var locationManager = CLLocationManager()
 
-  @objc
-  func turnOn() {
-    Geolocalisation.isOn = true
-    //locationManager.startUpdatingLocation()
+  override init() {
+    super.init()
   }
 
-  @objc
-  func turnOff() {
-    Geolocalisation.isOn = false
-    //locationManager.stopUpdatingLocation()
-  }
-
-  @objc
-  func toggle() {
-    if Geolocalisation.isOn {
-      turnOff();
-      //locationManager.stopUpdatingLocation()
-    } else {
-      turnOn();
-      //locationManager.startUpdatingLocation()
+  func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+    if status == .authorizedAlways {
+      sendEvent(withName: "onGeolocalisationDidChangeAuthorization", body: ["didChangeAuthorization": true])
+    }else{
+      sendEvent(withName: "onGeolocalisationDidChangeAuthorization", body: ["didChangeAuthorization": false])
     }
-    sendEvent(withName: "onGeolocalisationToggle", body: ["isOn": Geolocalisation.isOn])
+  }
+
+  func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    if let location = locations.last {
+      let coordinate = ["latitude": location.coordinate.latitude, "longitude": location.coordinate.longitude]
+      sendEvent(withName: "onGeolocalisationDidUpdateLocations", body: ["didUpdateLocations": coordinate])
+    }
+  }
+
+  @objc
+  func start() {
+    locationManager.requestAlwaysAuthorization()
+    locationManager.delegate = self
+    locationManager.distanceFilter = 25
+    locationManager.allowsBackgroundLocationUpdates = true 
+    locationManager.startUpdatingLocation()
   }
 
   override func supportedEvents() -> [String]! {
-    return ["onGeolocalisationToggle"]
-  }
-
-  @objc
-  func getStatus(_ callback: RCTResponseSenderBlock) {
-    callback([NSNull(), Geolocalisation.isOn])
+    return ["onGeolocalisationDidChangeAuthorization", "onGeolocalisationDidUpdateLocations"]
   }
 
   @objc
@@ -52,71 +52,3 @@ class Geolocalisation: RCTEventEmitter {
   }
 
 }
-
-// class LocationViewController: UIViewController {
-//   @IBOutlet var mapView: MKMapView!
-  
-//   private var locations: [MKPointAnnotation] = []
-  
-//   private lazy var locationManager: CLLocationManager = {
-//     let manager = CLLocationManager()
-//     manager.desiredAccuracy = kCLLocationAccuracyBest
-//     manager.delegate = self
-//     manager.requestAlwaysAuthorization()
-//     manager.allowsBackgroundLocationUpdates = true
-//     return manager
-//   }()
-  
-//   @IBAction func enabledChanged(_ sender: UISwitch) {
-//     if sender.isOn {
-//       locationManager.startUpdatingLocation()
-//     } else {
-//       locationManager.stopUpdatingLocation()
-//     }
-//   }
-  
-//   @IBAction func accuracyChanged(_ sender: UISegmentedControl) {
-//     let accuracyValues = [
-//       kCLLocationAccuracyBestForNavigation,
-//       kCLLocationAccuracyBest,
-//       kCLLocationAccuracyNearestTenMeters,
-//       kCLLocationAccuracyHundredMeters,
-//       kCLLocationAccuracyKilometer,
-//       kCLLocationAccuracyThreeKilometers]
-    
-//     locationManager.desiredAccuracy = accuracyValues[sender.selectedSegmentIndex];
-//   }
-// }
-
-// // MARK: - CLLocationManagerDelegate
-// extension LocationViewController: CLLocationManagerDelegate {
-  
-//   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-//     guard let mostRecentLocation = locations.last else {
-//       return
-//     }
-    
-//     // Add another annotation to the map.
-//     let annotation = MKPointAnnotation()
-//     annotation.coordinate = mostRecentLocation.coordinate
-    
-//     // Also add to our map so we can remove old values later
-//     self.locations.append(annotation)
-    
-//     // Remove values if the array is too big
-//     while locations.count > 100 {
-//       let annotationToRemove = self.locations.first!
-//       self.locations.remove(at: 0)
-      
-//       // Also remove from the map
-//       mapView.removeAnnotation(annotationToRemove)
-//     }
-    
-//     if UIApplication.shared.applicationState == .active {
-//       mapView.showAnnotations(self.locations, animated: true)
-//     } else {
-//       print("App is backgrounded. New location is %@", mostRecentLocation)
-//     }
-//   }
-  
-// }
