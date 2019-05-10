@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Button, ScrollView, ToastAndroid } from 'react-native';
+import { View, Alert, StyleSheet, Button, ScrollView, ToastAndroid } from 'react-native';
 import firebase from 'react-native-firebase';
 import t from 'tcomb-form-native';
 import LoadingScreen from '../LoadingScreen';
@@ -77,46 +77,34 @@ export default class App extends Component {
 
   async addNewCollaborater(value){
     let doc = {
+      Title: value.Title,
       Name: value.Name,
-      ExternalUrl: value.ExternalUrl,
-      Date: value.Date,
-      Image: ""
     };
       await this.addDocument(doc);
   }
 
-  handleDeleteNews = () => {
-    if(this.state.newsId){
+  handleDeleteCollaborater = () => {
+    if(this.state.collaboraterId){
       Alert.alert(
         'Suppression',
-        'Voulez-vous vraiment supprimer cette nouvelle?',
+        'Voulez-vous vraiment supprimer ce collaborateur?',
         [
           {text: 'Cancel'},
-          {text: 'OK', onPress: () => this.deleteNews()},
+          {text: 'OK', onPress: () => this.deleteCollaborater()},
         ],
         {cancelable: true},
       );
     }
   };
 
-  deleteNews() {
-    this.deleteImage();
+  deleteCollaborater() {
     this.deleteDataFromFirestore();
     this.props.navigation.goBack();
   };
 
-  deleteImage(){
-      let imageName = this.state.news.Image;
-      imageName = imageName.substring(imageName.indexOf("%2Fnouvelle%2F")+14);
-      imageName = imageName.substring(0,imageName.indexOf("?alt"));
-      let storage = firebase.storage();
-      let mref = storage.ref('nouvelle/').child(imageName);
-      mref.delete();
-  }
-
   deleteDataFromFirestore(){
-      let collectionNews = firebase.firestore().collection('Nouvelles').doc(this.state.newsId);
-      collectionNews.delete();
+      let collectionCollaborater = firebase.firestore().collection('Collaborater').doc(this.state.collaboraterId);
+      collectionCollaborater.delete();
   }
 
   componentDidMount(){
@@ -147,7 +135,7 @@ export default class App extends Component {
             <ScrollView>
                 <Form ref="form" type={Collaborater} options={options} value={value} />
                 <Button title="Enregistrer le Collaborateur" style={styles.button} onPress={this.handleSubmit} color={Colors.accentOrange} />
-                <Button title="Supprimer le Collaborateur" style={styles.button} onPress={this.handleSubmit} color={Colors.deleteRed} />
+                <Button title="Supprimer le Collaborateur" style={styles.button} onPress={this.handleDeleteCollaborater} color={Colors.deleteRed} />
             </ScrollView>
         </View>
       );

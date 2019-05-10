@@ -111,22 +111,6 @@ export default class App extends Component {
     await this.addDocument(doc);
   }
 
-//   async deleteNews(value){
-//     let doc = {
-//       Name: value.Name,
-//       Date: value.Date,
-//       ExternalUrl: value.ExternalUrl,
-//       Image: this.state.news.Image
-//     };
-
-//     this._LoadingScreen.updateUI(true);
-//     await this.addNewImage(doc).then((imageUrl) => {
-//       if(imageUrl != ""){
-//         doc.Image = imageUrl;
-//       }
-//     });
-//     await this.addDocument(doc);
-//   }
 
   async addNewNews(value){
     let doc = {
@@ -210,12 +194,6 @@ export default class App extends Component {
           <LoadingScreen ref={ref =>(this._LoadingScreen = ref)}></LoadingScreen>
             <ScrollView>
                 <Form ref="form" type={News} options={options} value={value} />
-                <TouchableOpacity
-                    style={styles.mapButton}
-                      
-                  >
-                    <Ionicons name={"ios-bookmarks"}  size={40} color={Colors.text} />
-                  </TouchableOpacity>
                 <Image ref={ref => (this._ImageInfo = ref)} buttonText="Ajouter Image" url={this.state.news.Image}></Image>
                 <Button title="Enregistrer la Nouvelle" onPress={this.handleSubmit} color={Colors.accentOrange} />
                 <Button title="Supprimer la Nouvelle" onPress={this.handleDeleteNews} color={Colors.deleteRed} />
@@ -228,12 +206,6 @@ export default class App extends Component {
           <LoadingScreen ref={ref =>(this._LoadingScreen = ref)}></LoadingScreen>
             <ScrollView>
                 <Form ref="form" type={News} options={options} />
-                <TouchableOpacity
-                    style={styles.mapButton}
-                      
-                  >
-                    <Ionicons name={"ios-bookmarks"}  size={40} color={Colors.text} />
-                  </TouchableOpacity>
                 <Image ref={ref => (this._ImageInfo = ref)} buttonText="Ajouter Image"></Image>
                 <Button title="Enregistrer la Nouvelle" onPress={this.handleSubmit} color={Colors.accentOrange}/>
             </ScrollView>
