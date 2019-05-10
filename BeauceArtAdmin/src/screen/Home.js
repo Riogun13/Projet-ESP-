@@ -12,6 +12,7 @@ export default class Home extends Component {
         <Text>Vous êtes présentement un administrateur</Text>
         <Text>Pour ajouter une sculpture, allez dans l'onglet Sculptures</Text>
         <Text>Pour ajouter une nouvelle, allez dans l'onglet Nouvelles</Text>
+        <Text>Pour ajouter un collaborateur, allez dans l'onglet Collaborateur</Text>
       </View>
     );
   }
