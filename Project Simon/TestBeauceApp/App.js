@@ -42,11 +42,11 @@ const LogLocation = async (data) => {
 AppRegistry.registerHeadlessTask('LogLocation', () => LogLocation);
 
 //iOS
-const CounterEvents = new NativeEventEmitter(NativeModules.Geolocalisation)
+const CounterEvents = new NativeEventEmitter(NativeModules.Geolocalisation);
 CounterEvents.addListener(
-  "onGeolocalisationToggle",
+  "onGeolocalisationDidUpdateLocations",
   res => checkGeoFence()
-)
+);
 
 function checkGeoFence(userCoordinate){
   if(sculptures == null){
@@ -106,7 +106,7 @@ function distanceEntreDeuxCoordonees(lat1,lon1,lat2,lon2) {
 async function requestLocationPermission() 
 {
   if (Platform.OS === 'ios') {
-    NativeModules.Geolocalisation.toggle(); 
+    NativeModules.Geolocalisation.start(); 
   }else{
     try {
       const granted = await PermissionsAndroid.request(
