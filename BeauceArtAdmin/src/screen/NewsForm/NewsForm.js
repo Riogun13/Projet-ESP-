@@ -129,6 +129,8 @@ export default class App extends Component {
         }
       });
       await this.addDocument(doc);
+    } else {
+      ToastAndroid.show('Veuillez ajouter une image', ToastAndroid.LONG);
     }
   }
 
