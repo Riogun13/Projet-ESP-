@@ -45,7 +45,7 @@ AppRegistry.registerHeadlessTask('LogLocation', () => LogLocation);
 const CounterEvents = new NativeEventEmitter(NativeModules.Geolocalisation);
 CounterEvents.addListener(
   "onGeolocalisationDidUpdateLocations",
-  res => checkGeoFence()
+  res => checkGeoFence(res["didUpdateLocations"])
 );
 
 function checkGeoFence(userCoordinate){
