@@ -25,40 +25,69 @@ import { NavigationActions } from 'react-navigation';
 import SplashScreen from 'react-native-splash-screen';
 import sculpturesEmitter from './src/res/sculptures';
 
-import { BackHandler, DeviceEventEmitter, AppRegistry, PermissionsAndroid, Alert, NativeModules, Platform} from 'react-native';
+import { BackHandler, DeviceEventEmitter, AppRegistry, PermissionsAndroid, Alert, NativeModules, NativeEventEmitter, Platform, NetInfo} from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
-import OfflineNotice from './src/library/noConnectionSign/offlineNotice'
-import { NetInfo } from 'react-native'
+import OfflineNotice from './src/library/noConnectionSign/offlineNotice';
 let sculptures = null;
 
 sculpturesEmitter.on('onSculptureCollectionUpdate', function (sculpturesList) {
   sculptures = sculpturesList;
 });
 
+//Android
 const LogLocation = async (data) => {
   checkGeoFence();
 }
 AppRegistry.registerHeadlessTask('LogLocation', () => LogLocation);
 
-function checkGeoFence(){
+//iOS
+const CounterEvents = new NativeEventEmitter(NativeModules.Geolocalisation);
+CounterEvents.addListener(
+  "onGeolocalisationDidUpdateLocations",
+  res => checkGeoFence()
+);
+
+function checkGeoFence(userCoordinate){
   if(sculptures == null){
-    setTimeout(function(){ checkGeoFence(); }, 3000);
+    setTimeout(function(){ checkGeoFence(userCoordinate); }, 3000);
   }else{
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        Object.keys(sculptures).map((year, yearIndex) => {
-          Object.keys(sculptures[year]).map((sculptueId, index) => {
-            if(distanceEntreDeuxCoordonees(position.coords.latitude, position.coords.longitude, sculptures[year][sculptueId].Coordinate.latitude, sculptures[year][sculptueId].Coordinate.longitude) <= 25){
-              notifService = new NotifService();
-              notifService.localNotif("MapInformationNotif", "Beauce Art", "Vous êtes proche d'une sculpture", {tabToOpen:"Carte"});
-            }
-          });
-        });
-      },
-      error => console.log("error: navigator.geolocation.getCurrentPosition"),
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 5000 }
-    );
+    if (typeof userCoordinate == "undefined") {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          userCoordinate = {
+            "longitude":position.coords.longitude,
+            "latitude":position.coords.latitude,
+          }
+          checkIfUserNearSculpture(userCoordinate);
+        },
+        error => console.log("error: navigator.geolocation.getCurrentPosition"),
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 5000 }
+      );
+    }else{
+      checkIfUserNearSculpture(userCoordinate);
+    }
+  }
+}
+
+function checkIfUserNearSculpture(userCoordinate){
+  let years = Object.keys(sculptures);
+  let yearCount = years.length;
+  yearLoop:
+  for (let yearIndex = 0; yearIndex < yearCount; yearIndex++) {
+    let year = years[yearIndex];
+    let sculptueIds = Object.keys(sculptures[year]);
+    let sculptueIdCount = sculptueIds.length;
+    sculptureLoop:
+    for (let sculptureIndex = 0; sculptureIndex < sculptueIdCount; sculptureIndex++) {
+      let sculptueId = sculptueIds[sculptureIndex];
+      if(distanceEntreDeuxCoordonees(userCoordinate.latitude, userCoordinate.longitude, sculptures[year][sculptueId].Coordinate.latitude, sculptures[year][sculptueId].Coordinate.longitude) <= 25){
+        console.log("User Near Sculpture");
+        notifService = new NotifService();
+        notifService.localNotif("MapInformationNotif", "Beauce Art", "Vous êtes proche d'une sculpture", {tabToOpen:"Carte"});
+        break yearLoop;
+      }
+    }
   }
 }
 
@@ -77,7 +106,7 @@ function distanceEntreDeuxCoordonees(lat1,lon1,lat2,lon2) {
 async function requestLocationPermission() 
 {
   if (Platform.OS === 'ios') {
-    //Code graveyard
+    NativeModules.Geolocalisation.start(); 
   }else{
     try {
       const granted = await PermissionsAndroid.request(
@@ -148,7 +177,7 @@ class App extends React.Component<Props> {
     };
   }
 
-  componentWillMount(){
+  UNSAFE_componentWillMount(){
     requestLocationPermission();
     if(Platform.OS != 'ios'){
 
