@@ -49,7 +49,7 @@ var Sculpture = t.struct({
         error: 'Latitude obligatoire entre -90 et 90',
       },
       Longitude: {
-        error: 'Longitude obligatoire entre -90 et 90',
+        error: 'Longitude obligatoire entre -180 et 180',
       },
       Material: {
         label: 'Matériaux utilisés',
